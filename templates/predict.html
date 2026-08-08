@@ -1,0 +1,699 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Enter your academic details to get an AI-powered campus placement prediction." />
+  <title>Predict Placement — PlacementAI</title>
+
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}" />
+
+  <style>
+    .predict-wrapper {
+      min-height: calc(100vh - 70px);
+      padding: 3rem 0 4rem;
+      background: var(--bg-dark);
+    }
+    .predict-form-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-xl);
+      overflow: hidden;
+      box-shadow: var(--shadow-lg);
+    }
+    .form-section-header {
+      background: rgba(67,97,238,0.06);
+      border-bottom: 1px solid var(--border-subtle);
+      padding: 1rem 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+    }
+    .form-section-title {
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin: 0;
+    }
+    .form-section-icon {
+      width: 30px; height: 30px;
+      border-radius: 8px;
+      background: var(--gradient-primary);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.8rem;
+      flex-shrink: 0;
+    }
+    .form-body { padding: 1.75rem 1.5rem; }
+    .range-widget { background: var(--bg-surface); border-radius: var(--radius-md); padding: 1rem; }
+    .range-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.6rem; }
+    .range-label { font-size: 0.82rem; color: var(--text-secondary); font-weight: 500; }
+    .range-value { font-family: var(--font-display); font-size: 1.1rem; font-weight: 800; color: var(--primary-light); }
+    .range-category { font-size: 0.72rem; font-weight: 600; margin-top: 4px; }
+    .custom-range {
+      -webkit-appearance: none; appearance: none;
+      width: 100%; height: 6px; border-radius: 3px; outline: none; cursor: pointer;
+      transition: background 0.2s;
+    }
+    .custom-range::-webkit-slider-thumb {
+      -webkit-appearance: none; appearance: none;
+      width: 18px; height: 18px; border-radius: 50%;
+      background: var(--primary); border: 2px solid white;
+      cursor: pointer; box-shadow: 0 2px 8px rgba(67,97,238,0.5);
+      transition: transform 0.15s;
+    }
+    .custom-range::-webkit-slider-thumb:hover { transform: scale(1.2); }
+    .submit-section { padding: 1.5rem; background: rgba(67,97,238,0.04); border-top: 1px solid var(--border-subtle); }
+    .info-sidebar { position: sticky; top: 90px; }
+    .tips-card { background: var(--bg-card); border: 1px solid var(--border-subtle); border-radius: var(--radius-lg); padding: 1.5rem; }
+    .tip-item { display: flex; gap: 0.6rem; padding: 0.6rem 0; border-bottom: 1px solid var(--border-subtle); font-size: 0.82rem; }
+    .tip-item:last-child { border-bottom: none; }
+    .tip-icon { color: var(--primary-light); flex-shrink: 0; margin-top: 2px; }
+    .tip-text { color: var(--text-secondary); line-height: 1.5; }
+    .form-step-panel { display: none; }
+    .form-step-panel.active { display: block; }
+  </style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar navbar-expand-lg navbar-custom" id="mainNavbar" aria-label="Main navigation">
+  <div class="container">
+    <a class="navbar-brand-logo" href="{{ url_for('index') }}">
+      <div class="brand-icon"><i class="bi bi-mortarboard-fill text-white"></i></div>
+      <div><div class="brand-text">PlacementAI</div><div class="brand-subtitle">Prediction System</div></div>
+    </a>
+    <button class="navbar-toggler border-0 shadow-none" type="button" data-bs-toggle="collapse"
+            data-bs-target="#navbarContent" aria-controls="navbarContent" aria-expanded="false">
+      <i class="bi bi-list text-white fs-5"></i>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarContent">
+      <ul class="navbar-nav ms-auto align-items-lg-center gap-1">
+        <li class="nav-item"><a class="nav-link nav-link-custom" href="{{ url_for('index') }}"><i class="bi bi-house-door me-1"></i>Home</a></li>
+        <li class="nav-item"><a class="nav-link nav-link-custom active" href="{{ url_for('predict_form') }}"><i class="bi bi-cpu me-1"></i>Predict</a></li>
+        <li class="nav-item"><a class="nav-link nav-link-custom" href="{{ url_for('dashboard') }}"><i class="bi bi-bar-chart-line me-1"></i>Dashboard</a></li>
+        <li class="nav-item"><a class="nav-link nav-link-custom" href="{{ url_for('about') }}"><i class="bi bi-info-circle me-1"></i>About</a></li>
+        <li class="nav-item ms-2"><a class="nav-link nav-link-custom nav-cta" href="{{ url_for('predict_form') }}"><i class="bi bi-lightning-fill"></i>Get Prediction</a></li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<!-- FLASH MESSAGES -->
+{% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+    <div class="container mt-3" role="alert" aria-live="polite">
+      {% for category, message in messages %}
+        <div class="flash-alert alert-{{ category }}">
+          {% if category == 'success' %}<i class="bi bi-check-circle-fill"></i>
+          {% elif category == 'danger' %}<i class="bi bi-exclamation-triangle-fill"></i>
+          {% else %}<i class="bi bi-info-circle-fill"></i>{% endif %}
+          {{ message }}
+          <button class="btn-close-flash ms-auto" style="background:none;border:none;cursor:pointer;color:inherit;"><i class="bi bi-x-lg"></i></button>
+        </div>
+      {% endfor %}
+    </div>
+  {% endif %}
+{% endwith %}
+
+<!-- PAGE HEADER -->
+<div class="page-header">
+  <div class="container">
+    <nav aria-label="Breadcrumb">
+      <ol class="breadcrumb-custom">
+        <li><a href="{{ url_for('index') }}"><i class="bi bi-house-door me-1"></i>Home</a></li>
+        <li aria-hidden="true"><i class="bi bi-chevron-right" style="font-size:0.7rem;"></i></li>
+        <li aria-current="page">Placement Prediction</li>
+      </ol>
+    </nav>
+    <h1 class="page-header-title mt-2">
+      <i class="bi bi-cpu gradient-text me-2" aria-hidden="true"></i>Placement Prediction
+    </h1>
+    <p class="page-header-subtitle">Fill in your academic details to get your AI-powered placement prediction.</p>
+  </div>
+</div>
+
+<!-- MAIN CONTENT -->
+<div class="predict-wrapper">
+  <div class="container">
+
+    <!-- Form Error Alert -->
+    <div id="formSubmitAlert" class="flash-alert alert-danger mb-3" style="display:none;" role="alert">
+      <i class="bi bi-exclamation-triangle-fill"></i>
+      <span>Please fix the errors below before submitting.</span>
+    </div>
+
+    <div class="row g-4">
+
+      <!-- LEFT: FORM -->
+      <div class="col-lg-8">
+
+        <!-- Step Indicator -->
+        <div class="step-indicator mb-4" role="list" aria-label="Form steps">
+          {% for i, label in [(1,'Personal'), (2,'HSC Info'), (3,'Degree'), (4,'MBA & Test')] %}
+          <div class="step-item {{ 'active' if i == 1 }}" id="step-indicator-{{ i }}" role="listitem"
+               aria-label="Step {{ i }}: {{ label }}">
+            <div class="step-circle">{{ i }}</div>
+            <div class="step-label">{{ label }}</div>
+          </div>
+          {% endfor %}
+        </div>
+
+        <!-- Progress Bar -->
+        <div class="mb-3">
+          <div class="progress-custom" style="height:4px;" role="progressbar" aria-label="Form completion progress"
+               aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
+            <div class="progress-bar-custom" id="formProgress" style="width:0%;"></div>
+          </div>
+        </div>
+
+        <!-- Form -->
+        <form id="predictionForm" method="POST" action="{{ url_for('predict_submit') }}" novalidate
+              aria-label="Placement prediction form">
+
+          <!-- ─── STEP 1: PERSONAL & SSC ─────────────────────────────── -->
+          <div class="predict-form-card mb-4 form-step-panel active" id="formStep1">
+            <div class="form-section-header">
+              <div class="form-section-icon" aria-hidden="true"><i class="bi bi-person-fill text-white"></i></div>
+              <h2 class="form-section-title">Personal & SSC Information</h2>
+            </div>
+            <div class="form-body">
+              <div class="row g-3">
+
+                <!-- Gender -->
+                <div class="col-md-6">
+                  <label class="form-label-custom" for="gender">Gender <span class="text-danger" aria-hidden="true">*</span></label>
+                  <div class="field-wrapper">
+                    <div class="form-group-icon">
+                      <i class="bi bi-person input-icon" aria-hidden="true"></i>
+                      <select class="form-select-custom w-100" id="gender" name="gender" required
+                              aria-required="true" aria-label="Select gender">
+                        <option value="">Select Gender</option>
+                        {% for g in genders %}
+                          <option value="{{ g }}" {{ 'selected' if form_data and form_data.gender == g }}>
+                            {{ 'Male' if g == 'M' else 'Female' }}
+                          </option>
+                        {% endfor %}
+                      </select>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- SSC Board -->
+                <div class="col-md-6">
+                  <label class="form-label-custom" for="ssc_b">SSC Board <span class="text-danger" aria-hidden="true">*</span></label>
+                  <div class="field-wrapper">
+                    <div class="form-group-icon">
+                      <i class="bi bi-building input-icon" aria-hidden="true"></i>
+                      <select class="form-select-custom w-100" id="ssc_b" name="ssc_b" required
+                              aria-required="true" aria-label="Select SSC board">
+                        <option value="">Select SSC Board</option>
+                        {% for b in ssc_boards %}
+                          <option value="{{ b }}" {{ 'selected' if form_data and form_data.ssc_b == b }}>{{ b }}</option>
+                        {% endfor %}
+                      </select>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- SSC Percentage -->
+                <div class="col-12">
+                  <label class="form-label-custom" for="ssc_p">SSC (10th) Percentage <span class="text-danger" aria-hidden="true">*</span></label>
+                  <div class="field-wrapper">
+                    <div class="range-widget">
+                      <div class="range-header">
+                        <div>
+                          <div class="range-label">Secondary School Certificate</div>
+                          <div class="range-category" id="ssc_p-cat" aria-live="polite"></div>
+                        </div>
+                        <div class="text-end">
+                          <div class="range-value" id="ssc_p-display" aria-live="polite">
+                            {{ form_data.ssc_p if form_data else '60.0' }}%
+                          </div>
+                        </div>
+                      </div>
+                      <input type="range" class="custom-range" id="ssc_p_range" min="0" max="100" step="0.5"
+                             value="{{ form_data.ssc_p if form_data else '60.0' }}"
+                             aria-label="SSC percentage slider"
+                             oninput="syncRangeToInput('ssc_p', this.value)" />
+                      <div class="mt-2">
+                        <div class="form-group-icon">
+                          <i class="bi bi-123 input-icon" aria-hidden="true"></i>
+                          <input type="number" class="form-control-custom w-100" id="ssc_p" name="ssc_p"
+                                 min="0" max="100" step="0.01" required
+                                 value="{{ form_data.ssc_p if form_data else '60.0' }}"
+                                 placeholder="e.g., 75.50"
+                                 aria-required="true" aria-label="SSC percentage"
+                                 oninput="syncInputToRange('ssc_p', this.value)" />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+            <!-- Step Nav -->
+            <div class="submit-section d-flex justify-content-end">
+              <button type="button" class="btn-primary-custom" data-step-next id="nextBtn1" aria-label="Next step">
+                Next: HSC Info <i class="bi bi-arrow-right" aria-hidden="true"></i>
+              </button>
+            </div>
+          </div>
+
+          <!-- ─── STEP 2: HSC ────────────────────────────────────────── -->
+          <div class="predict-form-card mb-4 form-step-panel" id="formStep2">
+            <div class="form-section-header">
+              <div class="form-section-icon" style="background:var(--gradient-secondary);" aria-hidden="true">
+                <i class="bi bi-book-fill text-white"></i>
+              </div>
+              <h2 class="form-section-title">HSC (12th) Information</h2>
+            </div>
+            <div class="form-body">
+              <div class="row g-3">
+
+                <div class="col-md-6">
+                  <label class="form-label-custom" for="hsc_b">HSC Board <span class="text-danger" aria-hidden="true">*</span></label>
+                  <div class="field-wrapper">
+                    <div class="form-group-icon">
+                      <i class="bi bi-building input-icon" aria-hidden="true"></i>
+                      <select class="form-select-custom w-100" id="hsc_b" name="hsc_b" required aria-required="true">
+                        <option value="">Select HSC Board</option>
+                        {% for b in hsc_boards %}
+                          <option value="{{ b }}" {{ 'selected' if form_data and form_data.hsc_b == b }}>{{ b }}</option>
+                        {% endfor %}
+                      </select>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="col-md-6">
+                  <label class="form-label-custom" for="hsc_s">HSC Stream <span class="text-danger" aria-hidden="true">*</span></label>
+                  <div class="field-wrapper">
+                    <div class="form-group-icon">
+                      <i class="bi bi-journals input-icon" aria-hidden="true"></i>
+                      <select class="form-select-custom w-100" id="hsc_s" name="hsc_s" required aria-required="true">
+                        <option value="">Select Stream</option>
+                        {% for s in hsc_streams %}
+                          <option value="{{ s }}" {{ 'selected' if form_data and form_data.hsc_s == s }}>{{ s }}</option>
+                        {% endfor %}
+                      </select>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="col-12">
+                  <label class="form-label-custom" for="hsc_p">HSC (12th) Percentage <span class="text-danger" aria-hidden="true">*</span></label>
+                  <div class="field-wrapper">
+                    <div class="range-widget">
+                      <div class="range-header">
+                        <div>
+                          <div class="range-label">Higher Secondary Certificate</div>
+                          <div class="range-category" id="hsc_p-cat" aria-live="polite"></div>
+                        </div>
+                        <div class="range-value" id="hsc_p-display" aria-live="polite">
+                          {{ form_data.hsc_p if form_data else '60.0' }}%
+                        </div>
+                      </div>
+                      <input type="range" class="custom-range" id="hsc_p_range" min="0" max="100" step="0.5"
+                             value="{{ form_data.hsc_p if form_data else '60.0' }}"
+                             aria-label="HSC percentage slider"
+                             oninput="syncRangeToInput('hsc_p', this.value)" />
+                      <div class="mt-2">
+                        <div class="form-group-icon">
+                          <i class="bi bi-123 input-icon" aria-hidden="true"></i>
+                          <input type="number" class="form-control-custom w-100" id="hsc_p" name="hsc_p"
+                                 min="0" max="100" step="0.01" required
+                                 value="{{ form_data.hsc_p if form_data else '60.0' }}"
+                                 placeholder="e.g., 68.00" aria-required="true"
+                                 oninput="syncInputToRange('hsc_p', this.value)" />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+            <div class="submit-section d-flex justify-content-between">
+              <button type="button" class="btn-secondary-custom" data-step-prev id="prevBtn2">
+                <i class="bi bi-arrow-left" aria-hidden="true"></i> Back
+              </button>
+              <button type="button" class="btn-primary-custom" data-step-next id="nextBtn2">
+                Next: Degree Info <i class="bi bi-arrow-right" aria-hidden="true"></i>
+              </button>
+            </div>
+          </div>
+
+          <!-- ─── STEP 3: DEGREE & WORK EX ─────────────────────────── -->
+          <div class="predict-form-card mb-4 form-step-panel" id="formStep3">
+            <div class="form-section-header">
+              <div class="form-section-icon" style="background:var(--gradient-accent);" aria-hidden="true">
+                <i class="bi bi-award-fill text-white"></i>
+              </div>
+              <h2 class="form-section-title">Degree & Work Experience</h2>
+            </div>
+            <div class="form-body">
+              <div class="row g-3">
+
+                <div class="col-md-6">
+                  <label class="form-label-custom" for="degree_t">Degree Type <span class="text-danger" aria-hidden="true">*</span></label>
+                  <div class="field-wrapper">
+                    <div class="form-group-icon">
+                      <i class="bi bi-file-earmark-text input-icon" aria-hidden="true"></i>
+                      <select class="form-select-custom w-100" id="degree_t" name="degree_t" required aria-required="true">
+                        <option value="">Select Degree Type</option>
+                        {% for d in degree_types %}
+                          <option value="{{ d }}" {{ 'selected' if form_data and form_data.degree_t == d }}>{{ d }}</option>
+                        {% endfor %}
+                      </select>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="col-md-6">
+                  <label class="form-label-custom" for="workex">Work Experience <span class="text-danger" aria-hidden="true">*</span></label>
+                  <div class="field-wrapper">
+                    <div class="form-group-icon">
+                      <i class="bi bi-briefcase input-icon" aria-hidden="true"></i>
+                      <select class="form-select-custom w-100" id="workex" name="workex" required aria-required="true">
+                        <option value="">Work Experience?</option>
+                        {% for w in work_exp %}
+                          <option value="{{ w }}" {{ 'selected' if form_data and form_data.workex == w }}>{{ w }}</option>
+                        {% endfor %}
+                      </select>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="col-12">
+                  <label class="form-label-custom" for="degree_p">Degree Percentage <span class="text-danger" aria-hidden="true">*</span></label>
+                  <div class="field-wrapper">
+                    <div class="range-widget">
+                      <div class="range-header">
+                        <div>
+                          <div class="range-label">Undergraduate / Degree Score</div>
+                          <div class="range-category" id="degree_p-cat" aria-live="polite"></div>
+                        </div>
+                        <div class="range-value" id="degree_p-display" aria-live="polite">
+                          {{ form_data.degree_p if form_data else '60.0' }}%
+                        </div>
+                      </div>
+                      <input type="range" class="custom-range" id="degree_p_range" min="0" max="100" step="0.5"
+                             value="{{ form_data.degree_p if form_data else '60.0' }}"
+                             aria-label="Degree percentage slider"
+                             oninput="syncRangeToInput('degree_p', this.value)" />
+                      <div class="mt-2">
+                        <div class="form-group-icon">
+                          <i class="bi bi-123 input-icon" aria-hidden="true"></i>
+                          <input type="number" class="form-control-custom w-100" id="degree_p" name="degree_p"
+                                 min="0" max="100" step="0.01" required
+                                 value="{{ form_data.degree_p if form_data else '60.0' }}"
+                                 placeholder="e.g., 72.00" aria-required="true"
+                                 oninput="syncInputToRange('degree_p', this.value)" />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+            <div class="submit-section d-flex justify-content-between">
+              <button type="button" class="btn-secondary-custom" data-step-prev id="prevBtn3">
+                <i class="bi bi-arrow-left" aria-hidden="true"></i> Back
+              </button>
+              <button type="button" class="btn-primary-custom" data-step-next id="nextBtn3">
+                Next: MBA &amp; Test <i class="bi bi-arrow-right" aria-hidden="true"></i>
+              </button>
+            </div>
+          </div>
+
+          <!-- ─── STEP 4: MBA & ETEST ───────────────────────────────── -->
+          <div class="predict-form-card mb-4 form-step-panel" id="formStep4">
+            <div class="form-section-header">
+              <div class="form-section-icon" style="background:var(--gradient-success);" aria-hidden="true">
+                <i class="bi bi-mortarboard-fill text-white"></i>
+              </div>
+              <h2 class="form-section-title">MBA & Employability Test</h2>
+            </div>
+            <div class="form-body">
+              <div class="row g-3">
+
+                <div class="col-md-6">
+                  <label class="form-label-custom" for="specialisation">MBA Specialisation <span class="text-danger" aria-hidden="true">*</span></label>
+                  <div class="field-wrapper">
+                    <div class="form-group-icon">
+                      <i class="bi bi-diagram-3 input-icon" aria-hidden="true"></i>
+                      <select class="form-select-custom w-100" id="specialisation" name="specialisation" required aria-required="true">
+                        <option value="">Select Specialisation</option>
+                        {% for s in specialisations %}
+                          <option value="{{ s }}" {{ 'selected' if form_data and form_data.specialisation == s }}>{{ s }}</option>
+                        {% endfor %}
+                      </select>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="col-md-6">
+                  <!-- Spacer to balance layout -->
+                  <div style="height:100%;"></div>
+                </div>
+
+                <!-- Etest Percentage -->
+                <div class="col-12">
+                  <label class="form-label-custom" for="etest_p">Employability Test Percentage <span class="text-danger" aria-hidden="true">*</span></label>
+                  <div class="field-wrapper">
+                    <div class="range-widget">
+                      <div class="range-header">
+                        <div>
+                          <div class="range-label">Aptitude / Employability Assessment</div>
+                          <div class="range-category" id="etest_p-cat" aria-live="polite"></div>
+                        </div>
+                        <div class="range-value" id="etest_p-display" aria-live="polite">
+                          {{ form_data.etest_p if form_data else '60.0' }}%
+                        </div>
+                      </div>
+                      <input type="range" class="custom-range" id="etest_p_range" min="0" max="100" step="0.5"
+                             value="{{ form_data.etest_p if form_data else '60.0' }}"
+                             aria-label="Employability test percentage slider"
+                             oninput="syncRangeToInput('etest_p', this.value)" />
+                      <div class="mt-2">
+                        <div class="form-group-icon">
+                          <i class="bi bi-123 input-icon" aria-hidden="true"></i>
+                          <input type="number" class="form-control-custom w-100" id="etest_p" name="etest_p"
+                                 min="0" max="100" step="0.01" required
+                                 value="{{ form_data.etest_p if form_data else '60.0' }}"
+                                 placeholder="e.g., 65.00" aria-required="true"
+                                 oninput="syncInputToRange('etest_p', this.value)" />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- MBA Percentage -->
+                <div class="col-12">
+                  <label class="form-label-custom" for="mba_p">MBA Percentage <span class="text-danger" aria-hidden="true">*</span></label>
+                  <div class="field-wrapper">
+                    <div class="range-widget">
+                      <div class="range-header">
+                        <div>
+                          <div class="range-label">MBA Programme Score</div>
+                          <div class="range-category" id="mba_p-cat" aria-live="polite"></div>
+                        </div>
+                        <div class="range-value" id="mba_p-display" aria-live="polite">
+                          {{ form_data.mba_p if form_data else '60.0' }}%
+                        </div>
+                      </div>
+                      <input type="range" class="custom-range" id="mba_p_range" min="0" max="100" step="0.5"
+                             value="{{ form_data.mba_p if form_data else '60.0' }}"
+                             aria-label="MBA percentage slider"
+                             oninput="syncRangeToInput('mba_p', this.value)" />
+                      <div class="mt-2">
+                        <div class="form-group-icon">
+                          <i class="bi bi-123 input-icon" aria-hidden="true"></i>
+                          <input type="number" class="form-control-custom w-100" id="mba_p" name="mba_p"
+                                 min="0" max="100" step="0.01" required
+                                 value="{{ form_data.mba_p if form_data else '60.0' }}"
+                                 placeholder="e.g., 62.50" aria-required="true"
+                                 oninput="syncInputToRange('mba_p', this.value)" />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+
+            <!-- Submit -->
+            <div class="submit-section d-flex justify-content-between align-items-center flex-wrap gap-3">
+              <button type="button" class="btn-secondary-custom" data-step-prev id="prevBtn4">
+                <i class="bi bi-arrow-left" aria-hidden="true"></i> Back
+              </button>
+              <div class="d-flex gap-3 flex-wrap">
+                <button type="button" class="btn-secondary-custom" onclick="fillDemoData()" id="demoFillBtn"
+                        aria-label="Fill form with demo data">
+                  <i class="bi bi-magic" aria-hidden="true"></i> Demo Data
+                </button>
+                <button type="submit" class="btn-primary-custom" data-step-submit id="submitPredictBtn"
+                        aria-label="Submit prediction form">
+                  <i class="bi bi-lightning-fill" aria-hidden="true"></i>
+                  Predict My Placement
+                </button>
+              </div>
+            </div>
+          </div>
+
+        </form>
+      </div>
+
+      <!-- RIGHT: INFO SIDEBAR -->
+      <div class="col-lg-4">
+        <div class="info-sidebar">
+
+          <!-- Tips Card -->
+          <div class="tips-card mb-3">
+            <h3 style="font-size:0.9rem;font-weight:700;color:var(--text-primary);margin-bottom:1rem;
+                       display:flex;align-items:center;gap:6px;">
+              <i class="bi bi-lightbulb-fill" style="color:var(--accent-yellow);" aria-hidden="true"></i>
+              Input Tips
+            </h3>
+            <div class="tip-item">
+              <i class="bi bi-check-circle tip-icon" aria-hidden="true"></i>
+              <span class="tip-text">Enter percentages from 0–100. Use decimal values for precision.</span>
+            </div>
+            <div class="tip-item">
+              <i class="bi bi-check-circle tip-icon" aria-hidden="true"></i>
+              <span class="tip-text">SSC = 10th grade, HSC = 12th grade results.</span>
+            </div>
+            <div class="tip-item">
+              <i class="bi bi-check-circle tip-icon" aria-hidden="true"></i>
+              <span class="tip-text">Etest = employability aptitude test percentage.</span>
+            </div>
+            <div class="tip-item">
+              <i class="bi bi-check-circle tip-icon" aria-hidden="true"></i>
+              <span class="tip-text">Use sliders for quick input or type exact values.</span>
+            </div>
+            <div class="tip-item">
+              <i class="bi bi-info-circle tip-icon" aria-hidden="true"></i>
+              <span class="tip-text">All fields are required for accurate prediction.</span>
+            </div>
+          </div>
+
+          <!-- What We Predict -->
+          <div class="tips-card mb-3">
+            <h3 style="font-size:0.9rem;font-weight:700;color:var(--text-primary);margin-bottom:1rem;
+                       display:flex;align-items:center;gap:6px;">
+              <i class="bi bi-cpu-fill" style="color:var(--primary-light);" aria-hidden="true"></i>
+              What You Get
+            </h3>
+            {% for item in [
+              ('bi-check2-circle', 'var(--accent-green)', 'Placement prediction (Placed/Not Placed)'),
+              ('bi-percent', 'var(--primary-light)', 'Probability score (0–100%)'),
+              ('bi-shield-check', 'var(--accent-yellow)', 'Confidence level (High/Moderate/Low)'),
+              ('bi-lightbulb', 'var(--accent)', 'Personalised recommendations'),
+              ('bi-download', 'var(--secondary)', 'Downloadable report')
+            ] %}
+            <div class="d-flex align-items-start gap-2 mb-2">
+              <i class="bi {{ item[0] }}" style="color:{{ item[1] }};font-size:0.9rem;margin-top:2px;" aria-hidden="true"></i>
+              <span style="font-size:0.82rem;color:var(--text-secondary);">{{ item[2] }}</span>
+            </div>
+            {% endfor %}
+          </div>
+
+          <!-- Demo Button Card -->
+          <div class="tips-card" style="background:rgba(67,97,238,0.06);border-color:rgba(67,97,238,0.15);">
+            <h3 style="font-size:0.88rem;font-weight:700;color:var(--primary-light);margin-bottom:0.5rem;">
+              <i class="bi bi-play-circle-fill me-1" aria-hidden="true"></i>Try Demo Mode
+            </h3>
+            <p style="font-size:0.8rem;color:var(--text-muted);margin-bottom:1rem;">
+              Click below to auto-fill the form with sample student data and see how predictions work.
+            </p>
+            <button class="btn-primary-custom w-100" onclick="fillDemoData()" id="sidebarDemoBtn"
+                    style="justify-content:center;" aria-label="Fill form with demo data">
+              <i class="bi bi-magic" aria-hidden="true"></i> Fill Demo Data
+            </button>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer class="footer-custom" role="contentinfo">
+  <div class="container">
+    <div class="footer-bottom d-flex align-items-center justify-content-between flex-wrap gap-2">
+      <p style="font-size:0.8rem;color:var(--text-muted);margin:0;">
+        &copy; {{ current_year }} PlacementAI. All rights reserved.
+      </p>
+      <span class="badge-custom" style="font-size:0.7rem;">v{{ app_version }}</span>
+    </div>
+  </div>
+</footer>
+
+<!-- LOADING OVERLAY -->
+<div class="loading-overlay" id="loadingOverlay" role="status" aria-live="polite">
+  <div class="loading-ring" aria-hidden="true"></div>
+  <p class="loading-text" id="loadingText">Analyzing your profile with AI...</p>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="{{ url_for('static', filename='js/validation.js') }}"></script>
+<script>
+  // ── RANGE-INPUT SYNC ─────────────────────────────────────────
+  function syncRangeToInput(field, value) {
+    const input   = document.getElementById(field);
+    const display = document.getElementById(`${field}-display`);
+    const catEl   = document.getElementById(`${field}-cat`);
+    const parsed  = parseFloat(value);
+
+    if (input)   input.value = parsed.toFixed(2);
+    if (display) display.textContent = `${parsed.toFixed(1)}%`;
+
+    if (catEl) {
+      const cat = getScoreCategory(parsed);
+      catEl.textContent  = cat.label;
+      catEl.style.color  = cat.color;
+    }
+
+    updateRangeBackground(document.getElementById(`${field}_range`));
+    if (window.validateNumericField && input) validateNumericField(input, field);
+  }
+
+  function syncInputToRange(field, value) {
+    const range   = document.getElementById(`${field}_range`);
+    const display = document.getElementById(`${field}-display`);
+    const catEl   = document.getElementById(`${field}-cat`);
+    const parsed  = parseFloat(value);
+
+    if (!isNaN(parsed)) {
+      if (range)   range.value = Math.min(100, Math.max(0, parsed));
+      if (display) display.textContent = `${parsed.toFixed(1)}%`;
+
+      if (catEl) {
+        const cat = getScoreCategory(parsed);
+        catEl.textContent = cat.label;
+        catEl.style.color = cat.color;
+      }
+
+      updateRangeBackground(range);
+    }
+  }
+
+  // Init range UI on load
+  document.addEventListener('DOMContentLoaded', function() {
+    ['ssc_p', 'hsc_p', 'degree_p', 'etest_p', 'mba_p'].forEach(field => {
+      const input = document.getElementById(field);
+      if (input) syncRangeToInput(field, input.value || '60');
+    });
+  });
+</script>
+</body>
+</html>

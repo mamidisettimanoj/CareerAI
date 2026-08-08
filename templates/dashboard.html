@@ -1,0 +1,658 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Analytics dashboard showing ML model performance, dataset statistics, and prediction history for the Placement Prediction System." />
+  <title>Analytics Dashboard — PlacementAI</title>
+
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}" />
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar navbar-expand-lg navbar-custom" id="mainNavbar" aria-label="Main navigation">
+  <div class="container-fluid px-4">
+    <a class="navbar-brand-logo" href="{{ url_for('index') }}">
+      <div class="brand-icon"><i class="bi bi-mortarboard-fill text-white"></i></div>
+      <div><div class="brand-text">PlacementAI</div><div class="brand-subtitle">Prediction System</div></div>
+    </a>
+    <button class="navbar-toggler border-0 shadow-none" type="button" data-bs-toggle="collapse"
+            data-bs-target="#navbarContent" aria-controls="navbarContent" aria-expanded="false">
+      <i class="bi bi-list text-white fs-5"></i>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarContent">
+      <ul class="navbar-nav ms-auto align-items-lg-center gap-1">
+        <li class="nav-item"><a class="nav-link nav-link-custom" href="{{ url_for('index') }}"><i class="bi bi-house-door me-1"></i>Home</a></li>
+        <li class="nav-item"><a class="nav-link nav-link-custom" href="{{ url_for('predict_form') }}"><i class="bi bi-cpu me-1"></i>Predict</a></li>
+        <li class="nav-item"><a class="nav-link nav-link-custom active" href="{{ url_for('dashboard') }}"><i class="bi bi-bar-chart-line me-1"></i>Dashboard</a></li>
+        <li class="nav-item"><a class="nav-link nav-link-custom" href="{{ url_for('about') }}"><i class="bi bi-info-circle me-1"></i>About</a></li>
+        <li class="nav-item ms-2"><a class="nav-link nav-link-custom nav-cta" href="{{ url_for('predict_form') }}"><i class="bi bi-lightning-fill"></i>Get Prediction</a></li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<!-- Hidden chart data for JS -->
+<script id="chartDataJson" type="application/json">{{ model_chart_data | safe }}</script>
+
+<!-- FLASH MESSAGES -->
+{% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+    <div class="container-fluid px-4 mt-3" role="alert" aria-live="polite">
+      {% for category, message in messages %}
+        <div class="flash-alert alert-{{ category }}">
+          <i class="bi bi-info-circle-fill"></i> {{ message }}
+          <button class="btn-close-flash ms-auto" style="background:none;border:none;cursor:pointer;color:inherit;"><i class="bi bi-x-lg"></i></button>
+        </div>
+      {% endfor %}
+    </div>
+  {% endif %}
+{% endwith %}
+
+<!-- DASHBOARD WRAPPER -->
+<div class="dashboard-wrapper">
+
+  <!-- ── SIDEBAR ─────────────────────────────────────────────── -->
+  <aside class="dashboard-sidebar" role="complementary" aria-label="Dashboard navigation">
+    <span class="sidebar-section-label">Overview</span>
+    <button class="sidebar-nav-item active" data-tab="panelOverview" id="sidebarOverview">
+      <i class="bi bi-grid-1x2-fill" aria-hidden="true"></i> Overview
+    </button>
+
+    <span class="sidebar-section-label">Models</span>
+    <button class="sidebar-nav-item" data-tab="panelModels" id="sidebarModels">
+      <i class="bi bi-cpu-fill" aria-hidden="true"></i> Model Comparison
+    </button>
+    <button class="sidebar-nav-item" data-tab="panelCharts" id="sidebarCharts">
+      <i class="bi bi-bar-chart-fill" aria-hidden="true"></i> Performance Charts
+    </button>
+
+    <span class="sidebar-section-label">Data</span>
+    <button class="sidebar-nav-item" data-tab="panelPlots" id="sidebarPlots">
+      <i class="bi bi-image" aria-hidden="true"></i> EDA Plots
+    </button>
+    <button class="sidebar-nav-item" data-tab="panelHistory" id="sidebarHistory">
+      <i class="bi bi-clock-history" aria-hidden="true"></i> Prediction History
+    </button>
+
+    <div style="margin-top:auto;padding-top:2rem;">
+      <a href="{{ url_for('predict_form') }}" class="sidebar-nav-item"
+         style="background:var(--gradient-primary);color:white;justify-content:center;font-weight:600;">
+        <i class="bi bi-lightning-fill" aria-hidden="true"></i> New Prediction
+      </a>
+    </div>
+  </aside>
+
+  <!-- ── MAIN CONTENT ────────────────────────────────────────── -->
+  <main class="dashboard-main" role="main">
+
+    <!-- Header -->
+    <div class="dashboard-header">
+      <div>
+        <h1 class="dashboard-title">Analytics Dashboard</h1>
+        <p class="dashboard-subtitle">
+          ML model performance, dataset insights, and prediction history
+        </p>
+      </div>
+      <div class="d-flex align-items-center gap-3 flex-wrap">
+        <div id="modelStatusBadge" aria-live="polite"></div>
+        <a href="{{ url_for('predict_form') }}" class="btn-primary-custom"
+           style="padding:0.55rem 1.25rem;font-size:0.875rem;" id="dashPredictBtn">
+          <i class="bi bi-lightning-fill" aria-hidden="true"></i> Predict
+        </a>
+      </div>
+    </div>
+
+    <!-- Tab Buttons -->
+    <div class="dashboard-tabs" role="tablist" aria-label="Dashboard sections">
+      <button class="dashboard-tab active" data-target="panelOverview" role="tab" id="tabOverview"
+              aria-controls="panelOverview" aria-selected="true">
+        <i class="bi bi-grid-1x2" aria-hidden="true"></i> Overview
+      </button>
+      <button class="dashboard-tab" data-target="panelModels" role="tab" id="tabModels"
+              aria-controls="panelModels" aria-selected="false">
+        <i class="bi bi-cpu" aria-hidden="true"></i> Models
+      </button>
+      <button class="dashboard-tab" data-target="panelCharts" role="tab" id="tabCharts"
+              aria-controls="panelCharts" aria-selected="false">
+        <i class="bi bi-bar-chart" aria-hidden="true"></i> Charts
+      </button>
+      <button class="dashboard-tab" data-target="panelPlots" role="tab" id="tabPlots"
+              aria-controls="panelPlots" aria-selected="false">
+        <i class="bi bi-image" aria-hidden="true"></i> EDA Plots
+      </button>
+      <button class="dashboard-tab" data-target="panelHistory" role="tab" id="tabHistory"
+              aria-controls="panelHistory" aria-selected="false">
+        <i class="bi bi-clock-history" aria-hidden="true"></i> History
+      </button>
+    </div>
+
+    <!-- ════════════════════════════════════════════════════════
+         PANEL: OVERVIEW
+         ════════════════════════════════════════════════════════ -->
+    <div class="dashboard-panel" id="panelOverview" role="tabpanel" aria-labelledby="tabOverview">
+
+      <!-- Best model alert -->
+      {% if best_model_name %}
+      <div class="model-alert-card">
+        <div class="model-alert-icon" aria-hidden="true">
+          <i class="bi bi-stars" style="color:var(--accent-yellow);"></i>
+        </div>
+        <div class="model-alert-text">
+          <h6>Best Model: {{ best_model_name }}</h6>
+          <p>
+            Auto-selected based on highest accuracy from {{ metrics_table | length }} trained models.
+            {% if metrics_table %}
+              Accuracy: <strong style="color:var(--accent-green);">{{ metrics_table[0].accuracy }}%</strong>
+              &nbsp;|&nbsp; F1 Score: <strong style="color:var(--primary-light);">{{ metrics_table[0].f1 }}%</strong>
+              &nbsp;|&nbsp; ROC AUC: <strong style="color:var(--accent);">{{ metrics_table[0].roc_auc }}%</strong>
+            {% endif %}
+          </p>
+        </div>
+      </div>
+      {% endif %}
+
+      <!-- Dataset Stats -->
+      <h2 class="dashboard-section-title">
+        <i class="bi bi-database-fill" aria-hidden="true"></i> Dataset Statistics
+      </h2>
+
+      <div class="stats-grid" role="list" aria-label="Dataset statistics">
+        {% set stat_cards = [
+          ('Total Students', stats.total_students or 0, '+', 'bi-people-fill',
+           'var(--gradient-primary)', stats.total_students or 0, 215),
+          ('Placed Students', stats.placed_count or 0, '', 'bi-check-circle-fill',
+           'var(--gradient-success)', stats.placed_count or 0, stats.total_students or 215),
+          ('Not Placed', stats.not_placed_count or 0, '', 'bi-x-circle-fill',
+           'var(--gradient-secondary)', stats.not_placed_count or 0, stats.total_students or 215),
+          ('Placement Rate', stats.placement_rate or 0, '%', 'bi-graph-up-arrow',
+           'var(--gradient-accent)', stats.placement_rate or 0, 100)
+        ] %}
+        {% for label, value, suffix, icon, gradient, barVal, barMax in stat_cards %}
+        <div class="stat-card" role="listitem">
+          <i class="bi {{ icon }} stat-card-icon" style="color:{{ gradient.split(',')[0].replace('linear-gradient(135deg,','') }};" aria-hidden="true"></i>
+          <div class="stat-card-label">{{ label }}</div>
+          <div class="stat-card-value">
+            <span data-count-up="{{ value }}" data-suffix="{{ suffix }}" data-duration="1000"
+                  aria-label="{{ value }}{{ suffix }} {{ label }}">
+              {{ value }}{{ suffix }}
+            </span>
+          </div>
+          <div class="stat-card-sub">
+            {% if label == 'Placement Rate' %}of total students
+            {% elif label == 'Placed Students' %}successfully placed
+            {% elif label == 'Not Placed' %}require improvement
+            {% else %}in training dataset{% endif %}
+          </div>
+          <div class="stat-card-bar" role="progressbar"
+               aria-valuenow="{{ ((barVal / barMax) * 100) | int if barMax else 0 }}"
+               aria-valuemin="0" aria-valuemax="100">
+            <div class="stat-card-bar-fill"
+                 style="background:{{ gradient }};"
+                 data-width="{{ ((barVal / barMax) * 100) | round(1) }}%"></div>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+
+      <!-- Average Scores -->
+      <h2 class="dashboard-section-title mt-4">
+        <i class="bi bi-bar-chart-line-fill" aria-hidden="true"></i> Dataset Averages
+      </h2>
+      <div class="stats-grid">
+        {% set avg_items = [
+          ('Avg SSC %',   stats.avg_ssc_p or 0,   'var(--primary)'),
+          ('Avg HSC %',   stats.avg_hsc_p or 0,   'var(--secondary)'),
+          ('Avg Degree %',stats.avg_degree_p or 0, 'var(--accent)'),
+          ('Avg MBA %',   stats.avg_mba_p or 0,   'var(--accent-green)'),
+          ('Avg Etest %', stats.avg_etest_p or 0,  'var(--accent-yellow)')
+        ] %}
+        {% for label, value, color in avg_items %}
+        <div class="stat-card">
+          <div class="stat-card-label">{{ label }}</div>
+          <div class="stat-card-value" style="color:{{ color }};font-size:1.6rem;">{{ value }}%</div>
+          <div class="stat-card-bar" role="progressbar" aria-valuenow="{{ value | int }}"
+               aria-valuemin="0" aria-valuemax="100">
+            <div class="stat-card-bar-fill" style="background:{{ color }};"
+                 data-width="{{ value }}%"></div>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+
+      <!-- Overview Charts -->
+      <div class="row g-4 mt-2">
+        <div class="col-lg-5">
+          <div class="chart-panel">
+            <div class="chart-panel-header">
+              <h3 class="chart-panel-title">
+                <i class="bi bi-pie-chart-fill" style="color:var(--primary-light);" aria-hidden="true"></i>
+                Placement Distribution
+              </h3>
+              <span class="live-indicator" aria-label="Live data">
+                <span class="live-dot" aria-hidden="true"></span> Live
+              </span>
+            </div>
+            <div class="chart-panel-body">
+              <canvas id="placementDonutChart"
+                      data-placed="{{ stats.placed_count or 0 }}"
+                      data-not-placed="{{ stats.not_placed_count or 0 }}"
+                      aria-label="Placement distribution donut chart"
+                      role="img">
+              </canvas>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-7">
+          <div class="chart-panel">
+            <div class="chart-panel-header">
+              <h3 class="chart-panel-title">
+                <i class="bi bi-bar-chart-fill" style="color:var(--primary-light);" aria-hidden="true"></i>
+                Model Accuracy Comparison
+              </h3>
+            </div>
+            <div class="chart-panel-body">
+              <canvas id="accuracyChart" aria-label="Model accuracy comparison bar chart" role="img"></canvas>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ════════════════════════════════════════════════════════
+         PANEL: MODELS
+         ════════════════════════════════════════════════════════ -->
+    <div class="dashboard-panel" id="panelModels" style="display:none;" role="tabpanel" aria-labelledby="tabModels">
+
+      <h2 class="dashboard-section-title">
+        <i class="bi bi-table" aria-hidden="true"></i> Model Performance Metrics
+      </h2>
+
+      {% if metrics_table %}
+      <div class="chart-panel mb-4">
+        <div class="chart-panel-header">
+          <h3 class="chart-panel-title">
+            <i class="bi bi-grid-3x3-gap-fill" style="color:var(--primary-light);" aria-hidden="true"></i>
+            All Models Comparison
+          </h3>
+          <span style="font-size:0.75rem;color:var(--text-muted);">
+            {{ metrics_table | length }} models trained &nbsp;|&nbsp;
+            Best: <strong style="color:var(--accent-green);">{{ best_model_name }}</strong>
+          </span>
+        </div>
+        <div class="metrics-table-wrapper">
+          <table class="metrics-table" aria-label="Model performance metrics">
+            <thead>
+              <tr>
+                <th>Model</th>
+                <th>Accuracy</th>
+                <th>Precision</th>
+                <th>Recall</th>
+                <th>F1 Score</th>
+                <th>ROC AUC</th>
+                <th>CV Score</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for row in metrics_table %}
+              <tr class="{{ 'best-model-row' if row.model == best_model_name }}">
+                <td>
+                  {{ row.model }}
+                  {% if row.model == best_model_name %}
+                    <span class="model-best-badge" aria-label="Best model">BEST</span>
+                  {% endif %}
+                </td>
+                {% for metric in ['accuracy', 'precision', 'recall', 'f1', 'roc_auc', 'cv_score'] %}
+                <td>
+                  <div class="score-bar-mini">
+                    <div class="score-bar-track" role="presentation">
+                      <div class="score-bar-fill" style="width:{{ row[metric] }}%;"></div>
+                    </div>
+                    <span class="metrics-score">{{ row[metric] }}%</span>
+                  </div>
+                </td>
+                {% endfor %}
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+      {% else %}
+      <div class="empty-state">
+        <span class="empty-state-icon" aria-hidden="true"><i class="bi bi-cpu"></i></span>
+        <div class="empty-state-title">No Model Metrics Available</div>
+        <p class="empty-state-desc">Run <code>py -3 train_model.py</code> to train models and generate metrics.</p>
+      </div>
+      {% endif %}
+
+      <!-- Plot: Confusion Matrix + Feature Importance -->
+      <div class="row g-4 mt-2">
+        {% if available_plots.get('confusion_matrix') %}
+        <div class="col-md-6">
+          <div class="plot-panel">
+            <div class="plot-panel-header">
+              <i class="bi bi-grid-3x3" aria-hidden="true"></i> Confusion Matrix
+            </div>
+            <img src="{{ url_for('static', filename='plots/confusion_matrix.png') }}"
+                 alt="Confusion matrix for {{ best_model_name }}"
+                 loading="lazy" />
+          </div>
+        </div>
+        {% endif %}
+        {% if available_plots.get('feature_importance') %}
+        <div class="col-md-6">
+          <div class="plot-panel">
+            <div class="plot-panel-header">
+              <i class="bi bi-sort-down" aria-hidden="true"></i> Feature Importance
+            </div>
+            <img src="{{ url_for('static', filename='plots/feature_importance.png') }}"
+                 alt="Feature importance for {{ best_model_name }}"
+                 loading="lazy" />
+          </div>
+        </div>
+        {% endif %}
+      </div>
+
+      <!-- ROC Curve -->
+      {% if available_plots.get('roc_curve') %}
+      <div class="plot-panel mt-4">
+        <div class="plot-panel-header">
+          <i class="bi bi-graph-up" aria-hidden="true"></i> ROC Curve — {{ best_model_name }}
+        </div>
+        <img src="{{ url_for('static', filename='plots/roc_curve.png') }}"
+             alt="ROC Curve for {{ best_model_name }}"
+             loading="lazy" />
+      </div>
+      {% endif %}
+
+    </div>
+
+    <!-- ════════════════════════════════════════════════════════
+         PANEL: CHARTS
+         ════════════════════════════════════════════════════════ -->
+    <div class="dashboard-panel" id="panelCharts" style="display:none;" role="tabpanel" aria-labelledby="tabCharts">
+
+      <div class="row g-4">
+        <div class="col-12">
+          <div class="chart-panel">
+            <div class="chart-panel-header">
+              <h3 class="chart-panel-title">
+                <i class="bi bi-diagram-3-fill" style="color:var(--primary-light);" aria-hidden="true"></i>
+                Full Model Performance Comparison
+              </h3>
+            </div>
+            <div class="chart-panel-body" style="min-height:380px;">
+              <canvas id="metricsBarChart" aria-label="Full model performance comparison chart" role="img"></canvas>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-lg-6">
+          <div class="chart-panel">
+            <div class="chart-panel-header">
+              <h3 class="chart-panel-title">
+                <i class="bi bi-activity" style="color:var(--primary-light);" aria-hidden="true"></i>
+                Radar: Metrics Comparison
+              </h3>
+            </div>
+            <div class="chart-panel-body" style="min-height:340px;">
+              <canvas id="radarChart" aria-label="Radar chart comparing metrics across models" role="img"></canvas>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-lg-6">
+          <div class="chart-panel">
+            <div class="chart-panel-header">
+              <h3 class="chart-panel-title">
+                <i class="bi bi-bar-chart-steps" style="color:var(--primary-light);" aria-hidden="true"></i>
+                Horizontal Accuracy Bars
+              </h3>
+            </div>
+            <div class="chart-panel-body" style="min-height:340px;">
+              <canvas id="accuracyChart2" aria-label="Horizontal bar chart of model accuracy" role="img"></canvas>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Static plot images -->
+      {% if available_plots.get('accuracy_comparison') or available_plots.get('model_comparison_full') %}
+      <h2 class="dashboard-section-title mt-4">
+        <i class="bi bi-image-fill" aria-hidden="true"></i> Saved Visualizations
+      </h2>
+      <div class="plots-grid">
+        {% if available_plots.get('accuracy_comparison') %}
+        <div class="plot-panel">
+          <div class="plot-panel-header">
+            <i class="bi bi-bar-chart" aria-hidden="true"></i> Accuracy Comparison (Matplotlib)
+          </div>
+          <img src="{{ url_for('static', filename='plots/accuracy_comparison.png') }}"
+               alt="Model accuracy comparison bar chart" loading="lazy" />
+        </div>
+        {% endif %}
+        {% if available_plots.get('model_comparison_full') %}
+        <div class="plot-panel">
+          <div class="plot-panel-header">
+            <i class="bi bi-diagram-3" aria-hidden="true"></i> Full Metrics Comparison (Matplotlib)
+          </div>
+          <img src="{{ url_for('static', filename='plots/model_comparison_full.png') }}"
+               alt="Full model metrics comparison chart" loading="lazy" />
+        </div>
+        {% endif %}
+      </div>
+      {% endif %}
+
+    </div>
+
+    <!-- ════════════════════════════════════════════════════════
+         PANEL: EDA PLOTS
+         ════════════════════════════════════════════════════════ -->
+    <div class="dashboard-panel" id="panelPlots" style="display:none;" role="tabpanel" aria-labelledby="tabPlots">
+
+      <h2 class="dashboard-section-title">
+        <i class="bi bi-images" aria-hidden="true"></i> Exploratory Data Analysis
+      </h2>
+
+      {% set plot_definitions = [
+        ('placement_pie', 'Placement Distribution & Gender', 'bi-pie-chart'),
+        ('gender_placement', 'Gender vs Placement Status', 'bi-person-lines-fill'),
+        ('workex_placement', 'Work Experience vs Placement', 'bi-briefcase'),
+        ('specialisation_placement', 'MBA Specialisation vs Placement', 'bi-diagram-3'),
+        ('correlation_heatmap', 'Feature Correlation Heatmap', 'bi-grid-3x3'),
+        ('ssc_distribution', 'SSC % Distribution', 'bi-bar-chart'),
+        ('hsc_distribution', 'HSC % Distribution', 'bi-bar-chart'),
+        ('degree_distribution', 'Degree % Distribution', 'bi-bar-chart'),
+        ('mba_distribution', 'MBA % Distribution', 'bi-bar-chart'),
+        ('etest_distribution', 'Employability Test Distribution', 'bi-activity')
+      ] %}
+
+      <div class="plots-grid">
+        {% for plot_key, plot_title, plot_icon in plot_definitions %}
+          {% if available_plots.get(plot_key) %}
+          <div class="plot-panel">
+            <div class="plot-panel-header">
+              <i class="bi {{ plot_icon }}" aria-hidden="true"></i> {{ plot_title }}
+            </div>
+            <img src="{{ url_for('static', filename='plots/' + plot_key + '.png') }}"
+                 alt="{{ plot_title }}" loading="lazy" />
+          </div>
+          {% endif %}
+        {% endfor %}
+      </div>
+
+      {% set has_any_plot = namespace(found=false) %}
+      {% for plot_key, _, _ in plot_definitions %}
+        {% if available_plots.get(plot_key) %}{% set has_any_plot.found = true %}{% endif %}
+      {% endfor %}
+      {% if not has_any_plot.found %}
+      <div class="empty-state">
+        <span class="empty-state-icon" aria-hidden="true"><i class="bi bi-images"></i></span>
+        <div class="empty-state-title">No EDA Plots Generated</div>
+        <p class="empty-state-desc">Run <code>py -3 train_model.py</code> to generate visualizations.</p>
+      </div>
+      {% endif %}
+
+    </div>
+
+    <!-- ════════════════════════════════════════════════════════
+         PANEL: PREDICTION HISTORY
+         ════════════════════════════════════════════════════════ -->
+    <div class="dashboard-panel" id="panelHistory" style="display:none;" role="tabpanel" aria-labelledby="tabHistory">
+
+      <div class="d-flex align-items-center justify-content-between mb-3 flex-wrap gap-2">
+        <h2 class="dashboard-section-title" style="margin:0;">
+          <i class="bi bi-clock-history" aria-hidden="true"></i> Prediction History
+          <span style="font-size:0.78rem;color:var(--text-muted);font-weight:400;">
+            (session-based, max 50 entries)
+          </span>
+        </h2>
+        {% if history %}
+        <form id="clearHistoryForm" method="POST" action="{{ url_for('clear_history') }}" style="display:none;">
+        </form>
+        <button id="clearHistoryBtn" class="btn-secondary-custom"
+                style="padding:0.4rem 1rem;font-size:0.8rem;"
+                aria-label="Clear prediction history">
+          <i class="bi bi-trash" aria-hidden="true"></i> Clear History
+        </button>
+        {% endif %}
+      </div>
+
+      {% if history %}
+      <div class="chart-panel">
+        <div class="metrics-table-wrapper">
+          <table class="history-table" aria-label="Prediction history table">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Result</th>
+                <th>Gender</th>
+                <th>MBA %</th>
+                <th>Placed Prob.</th>
+                <th>Confidence</th>
+                <th>Timestamp</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for entry in history %}
+              <tr>
+                <td style="color:var(--text-muted);font-size:0.8rem;">{{ loop.index }}</td>
+                <td>
+                  {% if entry.is_placed %}
+                  <span class="status-badge-placed">
+                    <i class="bi bi-check-circle-fill" aria-hidden="true"></i> Placed
+                  </span>
+                  {% else %}
+                  <span class="status-badge-not-placed">
+                    <i class="bi bi-x-circle-fill" aria-hidden="true"></i> Not Placed
+                  </span>
+                  {% endif %}
+                </td>
+                <td>{{ entry.gender }}</td>
+                <td>{{ entry.mba_p }}</td>
+                <td>
+                  <span style="color:{{ 'var(--accent-green)' if entry.is_placed else 'var(--secondary)' }};font-weight:600;">
+                    {{ entry.placed_probability }}%
+                  </span>
+                </td>
+                <td><span class="confidence-pill">{{ entry.confidence }}%</span></td>
+                <td style="font-size:0.78rem;color:var(--text-muted);white-space:nowrap;">{{ entry.timestamp }}</td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+      {% else %}
+      <div class="empty-state">
+        <span class="empty-state-icon" aria-hidden="true"><i class="bi bi-clock-history"></i></span>
+        <div class="empty-state-title">No Predictions Yet</div>
+        <p class="empty-state-desc">
+          Make your first prediction to see it tracked here.
+          <br><br>
+          <a href="{{ url_for('predict_form') }}" class="btn-primary-custom" style="font-size:0.85rem;">
+            <i class="bi bi-lightning-fill" aria-hidden="true"></i> Make a Prediction
+          </a>
+        </p>
+      </div>
+      {% endif %}
+
+    </div>
+
+  </main>
+</div>
+
+<!-- FOOTER -->
+<footer class="footer-custom" role="contentinfo">
+  <div class="container">
+    <div class="footer-bottom d-flex align-items-center justify-content-between flex-wrap gap-2">
+      <p style="font-size:0.8rem;color:var(--text-muted);margin:0;">
+        &copy; {{ current_year }} PlacementAI. Dashboard powered by Chart.js &amp; Matplotlib.
+      </p>
+      <span class="badge-custom" style="font-size:0.7rem;">v{{ app_version }}</span>
+    </div>
+  </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
+<script src="{{ url_for('static', filename='js/validation.js') }}"></script>
+<script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
+<script>
+/* Clone accuracy chart for the charts panel */
+document.addEventListener('DOMContentLoaded', function() {
+  const chartDataEl = document.getElementById('chartDataJson');
+  if (!chartDataEl) return;
+  try {
+    const data = JSON.parse(chartDataEl.textContent || '{}');
+    const canvas2 = document.getElementById('accuracyChart2');
+    if (canvas2 && data.labels && data.labels.length > 0) {
+      const colors = ['#4361ee','#f72585','#4cc9f0','#06d6a0','#ffd166','#7209b7','#ef476f','#06d6a0'];
+      new Chart(canvas2, {
+        type: 'bar',
+        data: {
+          labels: data.labels,
+          datasets: [{
+            label: 'Accuracy (%)',
+            data: data.accuracy || [],
+            backgroundColor: colors.map(c => c + 'bb'),
+            borderColor: colors,
+            borderWidth: 1.5,
+            borderRadius: 6,
+            borderSkipped: false
+          }]
+        },
+        options: {
+          indexAxis: 'y',
+          responsive: true, maintainAspectRatio: false,
+          plugins: {
+            legend: { display: false },
+            tooltip: {
+              backgroundColor: '#1c2535', borderColor: 'rgba(255,255,255,0.1)',
+              borderWidth: 1, titleColor: '#f0f4ff', bodyColor: '#94a3b8',
+              padding: 12, cornerRadius: 10,
+              callbacks: { label: ctx => ` ${ctx.raw.toFixed(2)}%` }
+            }
+          },
+          scales: {
+            x: { min: 0, max: 100,
+                 grid: { color: 'rgba(255,255,255,0.04)' },
+                 ticks: { color: '#5a6a85', callback: v => `${v}%` } },
+            y: { grid: { color: 'rgba(255,255,255,0.04)' },
+                 ticks: { color: '#5a6a85' } }
+          }
+        }
+      });
+    }
+  } catch(e) { console.warn('Chart2 init failed:', e); }
+});
+</script>
+</body>
+</html>

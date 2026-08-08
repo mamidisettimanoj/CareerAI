@@ -1,0 +1,11 @@
+.git
+.gitignore
+.vscode
+__pycache__/
+*.pyc
+*.pyo
+venv/
+env/
+.env
+README.md
+train_model.py

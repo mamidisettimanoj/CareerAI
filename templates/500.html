@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Internal server error — PlacementAI" />
+  <title>500 — Server Error | PlacementAI</title>
+
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;800&family=Outfit:wght@400;700;900&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}" />
+
+  <style>
+    .error-page {
+      min-height: 100vh; display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      padding: 3rem 1rem; text-align: center; position: relative; overflow: hidden;
+    }
+    .error-code {
+      font-family: var(--font-display); font-size: clamp(6rem, 20vw, 12rem);
+      font-weight: 900; line-height: 1; letter-spacing: -0.05em;
+      background: var(--gradient-secondary);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-clip: text; opacity: 0.2; margin-bottom: -1rem;
+    }
+    .error-icon { font-size: 5rem; margin-bottom: 1rem; animation: float 3s ease-in-out infinite; }
+    .error-title {
+      font-family: var(--font-display); font-size: clamp(1.8rem, 4vw, 2.5rem);
+      font-weight: 800; color: var(--text-primary); margin-bottom: 1rem;
+    }
+    .error-desc { font-size: 1rem; color: var(--text-secondary); max-width: 480px; line-height: 1.7; margin-bottom: 2rem; }
+    .error-detail {
+      background: var(--bg-card); border: 1px solid rgba(247,37,133,0.15);
+      border-radius: var(--radius-md); padding: 1rem 1.5rem;
+      font-size: 0.82rem; color: var(--text-muted); max-width: 500px;
+      line-height: 1.6; margin-bottom: 2.5rem; text-align: left;
+    }
+    .error-actions { display: flex; gap: 1rem; flex-wrap: wrap; justify-content: center; }
+  </style>
+</head>
+<body>
+
+<nav class="navbar navbar-expand-lg navbar-custom" aria-label="Main navigation">
+  <div class="container">
+    <a class="navbar-brand-logo" href="{{ url_for('index') }}">
+      <div class="brand-icon"><i class="bi bi-mortarboard-fill text-white"></i></div>
+      <div><div class="brand-text">PlacementAI</div><div class="brand-subtitle">Prediction System</div></div>
+    </a>
+  </div>
+</nav>
+
+<main class="error-page" role="main">
+  <div class="hero-grid-bg" aria-hidden="true"></div>
+  <div class="z-1">
+    <div class="error-code" aria-hidden="true">500</div>
+    <div class="error-icon" aria-hidden="true">⚙️</div>
+    <h1 class="error-title">Internal Server Error</h1>
+    <p class="error-desc">
+      Something went wrong on our end. This is likely a temporary issue.
+      Please try again or contact the administrator if the problem persists.
+    </p>
+    <div class="error-detail" role="alert">
+      <strong style="color:var(--secondary);">
+        <i class="bi bi-exclamation-triangle-fill me-1" aria-hidden="true"></i>
+        Possible causes:
+      </strong>
+      <ul style="margin:0.5rem 0 0 1rem;padding:0;">
+        <li>Model not trained — run <code>py -3 train_model.py</code> first.</li>
+        <li>Missing dataset file in <code>dataset/</code> directory.</li>
+        <li>Required Python packages not installed.</li>
+        <li>Unexpected input causing a processing error.</li>
+      </ul>
+    </div>
+    <div class="error-actions">
+      <a href="{{ url_for('index') }}" class="btn-primary-custom" id="error500HomeBtn">
+        <i class="bi bi-house-fill" aria-hidden="true"></i> Go Home
+      </a>
+      <a href="{{ url_for('predict_form') }}" class="btn-secondary-custom" id="error500PredictBtn">
+        <i class="bi bi-arrow-repeat" aria-hidden="true"></i> Try Again
+      </a>
+    </div>
+    <p style="font-size:0.78rem;color:var(--text-muted);margin-top:3rem;">
+      Error Code: 500 &nbsp;|&nbsp; PlacementAI v{{ app_version }}
+    </p>
+  </div>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="{{ url_for('static', filename='js/validation.js') }}"></script>
+</body>
+</html>

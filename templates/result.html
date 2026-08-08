@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Your AI-powered campus placement prediction result with personalised recommendations." />
+  <title>Prediction Result — PlacementAI</title>
+
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}" />
+
+  <style>
+    .result-wrapper { padding: 3rem 0 5rem; }
+
+    /* Confetti burst for placed result */
+    .confetti-container {
+      position: fixed; inset: 0; pointer-events: none; z-index: 999;
+      overflow: hidden;
+    }
+    .confetti-piece {
+      position: absolute; width: 8px; height: 8px;
+      animation: confettiFall linear forwards;
+      border-radius: 2px;
+    }
+    @keyframes confettiFall {
+      0%   { transform: translateY(-20px) rotate(0deg);   opacity: 1; }
+      100% { transform: translateY(110vh) rotate(720deg); opacity: 0; }
+    }
+
+    /* Probability ring */
+    .prob-ring-container { position: relative; display: inline-block; }
+    .prob-ring-svg { transform: rotate(-90deg); }
+    .prob-ring-bg { fill: none; stroke: rgba(255,255,255,0.07); }
+    .prob-ring-fill { fill: none; stroke-linecap: round; transition: stroke-dasharray 1.5s ease-out; }
+    .prob-ring-center {
+      position: absolute; inset: 0;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+    }
+
+    /* Verdict card glow */
+    .verdict-placed {
+      background: linear-gradient(145deg, rgba(6,214,160,0.08), rgba(67,97,238,0.08));
+      border: 1px solid rgba(6,214,160,0.2);
+    }
+    .verdict-not-placed {
+      background: linear-gradient(145deg, rgba(247,37,133,0.08), rgba(114,9,183,0.08));
+      border: 1px solid rgba(247,37,133,0.2);
+    }
+    .verdict-icon-placed  { color: var(--accent-green); }
+    .verdict-icon-not-placed { color: var(--secondary); }
+
+    /* Action buttons */
+    .result-actions { display: flex; gap: 1rem; flex-wrap: wrap; justify-content: center; margin-top: 2rem; }
+
+    /* Scroll Reveal */
+    .scroll-reveal { opacity: 0; transform: translateY(20px); transition: all 0.5s ease; }
+    .scroll-reveal.visible { opacity: 1; transform: translateY(0); }
+  </style>
+</head>
+<body>
+
+<!-- Confetti (placed only) -->
+{% if result.is_placed %}
+<div class="confetti-container" id="confettiContainer" aria-hidden="true"></div>
+{% endif %}
+
+<!-- NAVBAR -->
+<nav class="navbar navbar-expand-lg navbar-custom" id="mainNavbar" aria-label="Main navigation">
+  <div class="container">
+    <a class="navbar-brand-logo" href="{{ url_for('index') }}">
+      <div class="brand-icon"><i class="bi bi-mortarboard-fill text-white"></i></div>
+      <div><div class="brand-text">PlacementAI</div><div class="brand-subtitle">Prediction System</div></div>
+    </a>
+    <button class="navbar-toggler border-0 shadow-none" type="button" data-bs-toggle="collapse"
+            data-bs-target="#navbarContent" aria-controls="navbarContent" aria-expanded="false">
+      <i class="bi bi-list text-white fs-5"></i>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarContent">
+      <ul class="navbar-nav ms-auto align-items-lg-center gap-1">
+        <li class="nav-item"><a class="nav-link nav-link-custom" href="{{ url_for('index') }}"><i class="bi bi-house-door me-1"></i>Home</a></li>
+        <li class="nav-item"><a class="nav-link nav-link-custom" href="{{ url_for('predict_form') }}"><i class="bi bi-cpu me-1"></i>Predict</a></li>
+        <li class="nav-item"><a class="nav-link nav-link-custom" href="{{ url_for('dashboard') }}"><i class="bi bi-bar-chart-line me-1"></i>Dashboard</a></li>
+        <li class="nav-item"><a class="nav-link nav-link-custom" href="{{ url_for('about') }}"><i class="bi bi-info-circle me-1"></i>About</a></li>
+        <li class="nav-item ms-2"><a class="nav-link nav-link-custom nav-cta" href="{{ url_for('predict_form') }}"><i class="bi bi-lightning-fill"></i>New Prediction</a></li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<!-- FLASH MESSAGES -->
+{% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+    <div class="container mt-3" role="alert" aria-live="polite">
+      {% for category, message in messages %}
+        <div class="flash-alert alert-{{ category }}">
+          {% if category == 'success' %}<i class="bi bi-check-circle-fill"></i>
+          {% else %}<i class="bi bi-info-circle-fill"></i>{% endif %}
+          {{ message }}
+          <button class="btn-close-flash ms-auto" style="background:none;border:none;cursor:pointer;color:inherit;"><i class="bi bi-x-lg"></i></button>
+        </div>
+      {% endfor %}
+    </div>
+  {% endif %}
+{% endwith %}
+
+<!-- PAGE HEADER -->
+<div class="page-header">
+  <div class="container">
+    <nav aria-label="Breadcrumb">
+      <ol class="breadcrumb-custom">
+        <li><a href="{{ url_for('index') }}"><i class="bi bi-house-door me-1"></i>Home</a></li>
+        <li aria-hidden="true"><i class="bi bi-chevron-right" style="font-size:0.7rem;"></i></li>
+        <li><a href="{{ url_for('predict_form') }}">Predict</a></li>
+        <li aria-hidden="true"><i class="bi bi-chevron-right" style="font-size:0.7rem;"></i></li>
+        <li aria-current="page">Result</li>
+      </ol>
+    </nav>
+    <h1 class="page-header-title mt-2">
+      <i class="bi bi-award gradient-text me-2" aria-hidden="true"></i>Prediction Result
+    </h1>
+    <p class="page-header-subtitle">
+      Generated on {{ result.timestamp }} &nbsp;|&nbsp;
+      <span style="color:var(--primary-light);">Best Model: {{ best_model_name }}</span>
+      ({{ best_accuracy }}% accuracy)
+    </p>
+  </div>
+</div>
+
+<!-- MAIN RESULT CONTENT -->
+<main class="result-wrapper" role="main">
+  <div class="container">
+    <div class="row g-4">
+
+      <!-- ── LEFT COLUMN: VERDICT + PROBABILITIES ──────────── -->
+      <div class="col-lg-5">
+
+        <!-- Verdict Card -->
+        <div class="glass-card-elevated p-4 mb-4 text-center scroll-reveal
+                    {{ 'verdict-placed' if result.is_placed else 'verdict-not-placed' }}"
+             role="region" aria-labelledby="verdictTitle">
+
+          <span class="result-icon {{ 'verdict-icon-placed' if result.is_placed else 'verdict-icon-not-placed' }}"
+                aria-hidden="true">
+            {% if result.is_placed %}🎓{% else %}📚{% endif %}
+          </span>
+
+          <h2 class="result-title {{ 'gradient-text-accent' if result.is_placed else 'gradient-text-secondary' }}"
+              id="verdictTitle">
+            {{ result.prediction }}
+          </h2>
+
+          <p class="result-subtitle">
+            {% if result.is_placed %}
+              Congratulations! The AI predicts you are likely to be placed.
+            {% else %}
+              The AI predicts placement is unlikely with current profile. Improve your scores!
+            {% endif %}
+          </p>
+
+          <!-- Confidence Badge -->
+          <div class="mt-3">
+            <span class="badge-custom {{ 'badge-success' if result.confidence_level == 'High' else ('badge-warning' if result.confidence_level == 'Moderate' else 'badge-danger') }}"
+                  style="font-size:0.85rem;padding:0.5rem 1.2rem;">
+              <i class="bi {{ result.confidence_icon }} me-1" aria-hidden="true"></i>
+              {{ result.confidence_level }} Confidence: {{ result.confidence }}%
+            </span>
+          </div>
+
+          <!-- Timestamp -->
+          <div class="mt-3" style="font-size:0.75rem;color:var(--text-muted);">
+            <i class="bi bi-clock me-1" aria-hidden="true"></i>{{ result.timestamp }}
+          </div>
+        </div>
+
+        <!-- Probability Rings -->
+        <div class="glass-card p-4 mb-4 scroll-reveal" role="region" aria-label="Placement probabilities">
+          <h3 style="font-size:0.9rem;font-weight:700;color:var(--text-primary);margin-bottom:1.5rem;
+                     display:flex;align-items:center;gap:6px;">
+            <i class="bi bi-pie-chart-fill" style="color:var(--primary-light);" aria-hidden="true"></i>
+            Probability Breakdown
+          </h3>
+
+          <div class="row g-3">
+            <!-- Placed Ring -->
+            <div class="col-6 text-center">
+              {% set placed_pct = result.placed_probability %}
+              {% set placed_dash = (placed_pct / 100) * 283 %}
+              {% set placed_gap = 283 - placed_dash %}
+              <div class="prob-ring-container" role="img"
+                   aria-label="Placed probability: {{ placed_pct }}%">
+                <svg class="prob-ring-svg" width="110" height="110" viewBox="0 0 110 110">
+                  <circle class="prob-ring-bg" cx="55" cy="55" r="45" stroke-width="8"/>
+                  <circle class="prob-ring-fill animated-ring"
+                          cx="55" cy="55" r="45" stroke="#4361ee" stroke-width="8"
+                          stroke-dasharray="0 283"
+                          data-dash="{{ placed_dash }}" data-gap="{{ placed_gap }}" />
+                </svg>
+                <div class="prob-ring-center">
+                  <div style="font-family:var(--font-display);font-size:1.3rem;font-weight:800;
+                              color:var(--primary-light);">{{ placed_pct }}%</div>
+                  <div style="font-size:0.65rem;color:var(--text-muted);margin-top:2px;">Placed</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Not Placed Ring -->
+            <div class="col-6 text-center">
+              {% set np_pct = result.not_placed_probability %}
+              {% set np_dash = (np_pct / 100) * 283 %}
+              {% set np_gap = 283 - np_dash %}
+              <div class="prob-ring-container" role="img"
+                   aria-label="Not placed probability: {{ np_pct }}%">
+                <svg class="prob-ring-svg" width="110" height="110" viewBox="0 0 110 110">
+                  <circle class="prob-ring-bg" cx="55" cy="55" r="45" stroke-width="8"/>
+                  <circle class="prob-ring-fill animated-ring"
+                          cx="55" cy="55" r="45" stroke="#f72585" stroke-width="8"
+                          stroke-dasharray="0 283"
+                          data-dash="{{ np_dash }}" data-gap="{{ np_gap }}" />
+                </svg>
+                <div class="prob-ring-center">
+                  <div style="font-family:var(--font-display);font-size:1.3rem;font-weight:800;
+                              color:var(--secondary);">{{ np_pct }}%</div>
+                  <div style="font-size:0.65rem;color:var(--text-muted);margin-top:2px;">Not Placed</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Confidence Bar -->
+          <div class="mt-3 pt-3" style="border-top:1px solid var(--border-subtle);">
+            <div class="d-flex justify-content-between mb-1">
+              <span style="font-size:0.8rem;color:var(--text-muted);">Overall Confidence</span>
+              <span style="font-size:0.8rem;font-weight:700;
+                           color:{{ 'var(--accent-green)' if result.confidence_level=='High' else ('var(--accent-yellow)' if result.confidence_level=='Moderate' else 'var(--secondary)') }};">
+                {{ result.confidence }}%
+              </span>
+            </div>
+            <div class="progress-custom">
+              <div class="progress-bar-custom"
+                   style="width:{{ result.confidence }}%;
+                          background:{{ 'var(--gradient-success)' if result.confidence_level=='High' else ('linear-gradient(135deg,#ffd166,#ef476f)' if result.confidence_level=='Moderate' else 'var(--gradient-secondary)') }};"
+                   role="progressbar"
+                   aria-valuenow="{{ result.confidence }}" aria-valuemin="0" aria-valuemax="100"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="result-actions scroll-reveal">
+          <a href="{{ url_for('download_report') }}" class="btn-primary-custom" id="downloadReportBtn"
+             aria-label="Download prediction report">
+            <i class="bi bi-download" aria-hidden="true"></i> Download Report
+          </a>
+          <a href="{{ url_for('predict_form') }}" class="btn-secondary-custom" id="newPredictionBtn"
+             aria-label="Make a new prediction">
+            <i class="bi bi-arrow-repeat" aria-hidden="true"></i> New Prediction
+          </a>
+          <button class="btn-secondary-custom" onclick="copyResultToClipboard()" id="copyBtn"
+                  aria-label="Copy result to clipboard">
+            <i class="bi bi-clipboard" aria-hidden="true"></i> Copy
+          </button>
+        </div>
+
+      </div>
+
+      <!-- ── RIGHT COLUMN: PROFILE + RECOMMENDATIONS ───────── -->
+      <div class="col-lg-7">
+
+        <!-- Student Profile -->
+        <div class="glass-card p-4 mb-4 scroll-reveal result-text-copy"
+             role="region" aria-labelledby="profileTitle">
+          <h3 style="font-size:0.95rem;font-weight:700;color:var(--text-primary);margin-bottom:1rem;
+                     display:flex;align-items:center;gap:6px;" id="profileTitle">
+            <i class="bi bi-person-badge-fill" style="color:var(--primary-light);" aria-hidden="true"></i>
+            Student Profile Summary
+          </h3>
+
+          <div class="row g-0">
+            {% set profile_items = result.student_profile.items() | list %}
+            {% set half = (profile_items | length // 2) %}
+            <div class="col-md-6">
+              {% for key, value in profile_items[:half] %}
+              <div class="profile-row">
+                <span class="profile-label">{{ key }}</span>
+                <span class="profile-value">{{ value }}</span>
+              </div>
+              {% endfor %}
+            </div>
+            <div class="col-md-6">
+              {% for key, value in profile_items[half:] %}
+              <div class="profile-row" style="padding-left:0.75rem;">
+                <span class="profile-label">{{ key }}</span>
+                <span class="profile-value">{{ value }}</span>
+              </div>
+              {% endfor %}
+            </div>
+          </div>
+        </div>
+
+        <!-- Score Bars -->
+        <div class="glass-card p-4 mb-4 scroll-reveal" role="region" aria-labelledby="scoresTitle">
+          <h3 style="font-size:0.95rem;font-weight:700;color:var(--text-primary);margin-bottom:1.25rem;
+                     display:flex;align-items:center;gap:6px;" id="scoresTitle">
+            <i class="bi bi-bar-chart-fill" style="color:var(--accent);" aria-hidden="true"></i>
+            Academic Score Overview
+          </h3>
+
+          {% set scores = [
+            ('SSC %',    result.student_profile.get('SSC Percentage', '0%') | replace('%','') | float,  '#4361ee'),
+            ('HSC %',    result.student_profile.get('HSC Percentage', '0%') | replace('%','') | float,  '#f72585'),
+            ('Degree %', result.student_profile.get('Degree Percentage', '0%') | replace('%','') | float,'#4cc9f0'),
+            ('Etest %',  result.student_profile.get('Employability Test %', '0%') | replace('%','') | float, '#06d6a0'),
+            ('MBA %',    result.student_profile.get('MBA Percentage', '0%') | replace('%','') | float,  '#ffd166')
+          ] %}
+
+          {% for label, value, color in scores %}
+          <div class="mb-3">
+            <div class="d-flex justify-content-between mb-1">
+              <span style="font-size:0.82rem;color:var(--text-secondary);font-weight:500;">{{ label }}</span>
+              <span style="font-size:0.82rem;font-weight:700;color:{{ color }};">{{ value }}%</span>
+            </div>
+            <div class="progress-custom" role="progressbar"
+                 aria-label="{{ label }}: {{ value }}%" aria-valuenow="{{ value | int }}"
+                 aria-valuemin="0" aria-valuemax="100">
+              <div class="progress-bar-custom"
+                   style="width:{{ value }}%;background:linear-gradient(90deg,{{ color }},{{ color }}aa);">
+              </div>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+
+        <!-- Recommendations -->
+        <div class="glass-card p-4 scroll-reveal" role="region" aria-labelledby="recsTitle">
+          <h3 style="font-size:0.95rem;font-weight:700;color:var(--text-primary);margin-bottom:1rem;
+                     display:flex;align-items:center;gap:6px;" id="recsTitle">
+            <i class="bi bi-lightbulb-fill" style="color:var(--accent-yellow);" aria-hidden="true"></i>
+            Personalised Recommendations
+          </h3>
+          <div role="list">
+            {% for rec in result.recommendations %}
+            <div class="recommendation-item" role="listitem">
+              <div class="recommendation-dot" aria-hidden="true"></div>
+              <p class="recommendation-text">{{ rec }}</p>
+            </div>
+            {% endfor %}
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ── MODEL INFO FOOTER ───────────────────────────────── -->
+    <div class="mt-4 p-3 scroll-reveal"
+         style="background:rgba(67,97,238,0.05);border:1px solid rgba(67,97,238,0.12);
+                border-radius:var(--radius-md);">
+      <div class="row align-items-center g-2">
+        <div class="col-auto">
+          <i class="bi bi-info-circle-fill" style="color:var(--primary-light);font-size:1rem;" aria-hidden="true"></i>
+        </div>
+        <div class="col">
+          <p style="font-size:0.8rem;color:var(--text-muted);margin:0;">
+            <strong style="color:var(--text-secondary);">Disclaimer:</strong>
+            This prediction is based on historical campus placement data and machine learning algorithms.
+            It should be used as a reference tool only and not as a definitive career decision.
+            Results may vary based on individual circumstances and market conditions.
+            Best Model Used: <strong style="color:var(--primary-light);">{{ best_model_name }}</strong>
+            (Accuracy: {{ best_accuracy }}%).
+          </p>
+        </div>
+        <div class="col-auto">
+          <a href="{{ url_for('dashboard') }}" class="btn-secondary-custom"
+             style="padding:0.4rem 1rem;font-size:0.8rem;" aria-label="View full model dashboard">
+            <i class="bi bi-bar-chart" aria-hidden="true"></i> View Dashboard
+          </a>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</main>
+
+<!-- FOOTER -->
+<footer class="footer-custom" role="contentinfo">
+  <div class="container">
+    <div class="footer-bottom d-flex align-items-center justify-content-between flex-wrap gap-2">
+      <p style="font-size:0.8rem;color:var(--text-muted);margin:0;">
+        &copy; {{ current_year }} PlacementAI. Predictions powered by machine learning.
+      </p>
+      <span class="badge-custom" style="font-size:0.7rem;">v{{ app_version }}</span>
+    </div>
+  </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="{{ url_for('static', filename='js/validation.js') }}"></script>
+<script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
+
+<script>
+/* ── CONFETTI (placed result) ──────────────────────────────── */
+{% if result.is_placed %}
+(function launchConfetti() {
+  const container = document.getElementById('confettiContainer');
+  if (!container) return;
+
+  const colors = ['#4361ee', '#f72585', '#4cc9f0', '#06d6a0', '#ffd166', '#7209b7'];
+  const count  = 100;
+
+  for (let i = 0; i < count; i++) {
+    const piece = document.createElement('div');
+    piece.className = 'confetti-piece';
+    piece.style.cssText = `
+      left: ${Math.random() * 100}%;
+      top: ${-10 - Math.random() * 20}px;
+      background: ${colors[Math.floor(Math.random() * colors.length)]};
+      transform: rotate(${Math.random() * 360}deg);
+      animation-duration: ${2 + Math.random() * 3}s;
+      animation-delay: ${Math.random() * 2}s;
+      width: ${6 + Math.random() * 6}px;
+      height: ${6 + Math.random() * 6}px;
+      border-radius: ${Math.random() > 0.5 ? '50%' : '2px'};
+      opacity: ${0.7 + Math.random() * 0.3};
+    `;
+    container.appendChild(piece);
+  }
+
+  // Remove confetti after animation
+  setTimeout(() => { container.innerHTML = ''; }, 6000);
+})();
+{% endif %}
+
+/* ── SCROLL REVEAL ─────────────────────────────────────────── */
+(function initScrollReveal() {
+  const els = document.querySelectorAll('.scroll-reveal');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry, i) => {
+      if (entry.isIntersecting) {
+        setTimeout(() => entry.target.classList.add('visible'), i * 80);
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.1 });
+  els.forEach(el => observer.observe(el));
+})();
+
+/* ── COPY RESULT ────────────────────────────────────────────── */
+function copyResultToClipboard() {
+  const profileEntries = {
+    {% for key, val in result.student_profile.items() %}
+    "{{ key }}": "{{ val }}",
+    {% endfor %}
+  };
+
+  let text = [
+    'PLACEMENT PREDICTION RESULT',
+    '═══════════════════════════',
+    `Prediction      : {{ result.prediction }}`,
+    `Placed Prob.    : {{ result.placed_probability }}%`,
+    `Not Placed Prob.: {{ result.not_placed_probability }}%`,
+    `Confidence      : {{ result.confidence }}% ({{ result.confidence_level }})`,
+    `Generated on    : {{ result.timestamp }}`,
+    '',
+    'STUDENT PROFILE',
+    '───────────────'
+  ];
+
+  Object.entries(profileEntries).forEach(([k, v]) => text.push(`${k.padEnd(25)}: ${v}`));
+
+  text.push('', 'RECOMMENDATIONS', '───────────────');
+  {% for rec in result.recommendations %}
+  text.push('• {{ rec }}');
+  {% endfor %}
+
+  navigator.clipboard.writeText(text.join('\n')).then(() => {
+    const btn = document.getElementById('copyBtn');
+    if (btn) {
+      const original = btn.innerHTML;
+      btn.innerHTML = '<i class="bi bi-check-lg"></i> Copied!';
+      btn.style.color = 'var(--accent-green)';
+      setTimeout(() => { btn.innerHTML = original; btn.style.color = ''; }, 2500);
+    }
+  });
+}
+
+window.copyResultToClipboard = copyResultToClipboard;
+</script>
+</body>
+</html>
