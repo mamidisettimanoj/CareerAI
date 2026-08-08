@@ -1,96 +1,24 @@
-# Byte-compiled / optimized / DLL files
-__pycache__/
-*.py[cod]
-*$py.class
-*.pyc
-*.pyo
-
-# Distribution / packaging
-.Python
-build/
-develop-eggs/
-dist/
-downloads/
-eggs/
-.eggs/
-lib/
-lib64/
-parts/
-sdist/
-var/
-wheels/
-pip-wheel-metadata/
-share/python-wheels/
-*.egg-info/
-.installed.cfg
-*.egg
-MANIFEST
-
-# Virtual environments
-.env
-.venv
-env/
-venv/
-ENV/
-env.bak/
-venv.bak/
-
-# Flask
-instance/
-.webassets-cache
-flask_session/
-
-# Jupyter Notebook
-.ipynb_checkpoints
-*.ipynb
-
-# Environment variables
-.env
-.env.local
-.env.*.local
-
-# IDE / Editors
-.idea/
-.vscode/
-*.swp
-*.swo
-*~
-.DS_Store
-Thumbs.db
-desktop.ini
-
 # Logs
+logs
 *.log
-logs/
-*.out
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
 
-# Testing
-.pytest_cache/
-.coverage
-coverage.xml
-htmlcov/
-.tox/
-.hypothesis/
+node_modules
+dist
+dist-ssr
+*.local
 
-# Type checking
-.mypy_cache/
-.dmypy.json
-dmypy.json
-
-# OS generated files
+# Editor directories and files
+.vscode/*
+!.vscode/extensions.json
+.idea
 .DS_Store
-.DS_Store?
-._*
-.Spotlight-V100
-.Trashes
-ehthumbs.db
-Thumbs.db
-
-# Project specific — DO NOT gitignore these:
-# models/          <- keep model artifacts
-# static/plots/    <- keep generated plots
-# dataset/         <- keep dataset
-
-# But DO ignore large generated files if needed:
-# models/*.pkl     <- uncomment to exclude trained models from git
-# static/plots/*.png <- uncomment to exclude plots from git
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
