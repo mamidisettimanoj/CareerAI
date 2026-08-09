@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { loadData } from '@/lib/storage';
-import { AppState } from '@/types';
+import { AppState, CareerEngineResult } from '@/types';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { 
   LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, ResponsiveContainer,
@@ -8,8 +8,7 @@ import {
 } from 'recharts';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
-import { ArrowRight, Trophy, BookOpen, Target, Briefcase } from 'lucide-react';
-import { calculatePlacementScore } from '@/lib/prediction';
+import { ArrowRight, Trophy, BookOpen, Target, Briefcase, Zap, AlertTriangle, ListTodo, Star } from 'lucide-react';
 
 export function Dashboard() {
   const [data, setData] = useState<AppState | null>(null);
@@ -34,21 +33,21 @@ export function Dashboard() {
     );
   }
 
-  const { score, category } = calculatePlacementScore(data.profile);
+  const engine: CareerEngineResult | null = data.engineResult || null;
   
   // Format data for SGPA trend chart
-  const sgpaData = data.semesters.map(sem => ({
+  const sgpaData = (data.semesters || []).map(sem => ({
     name: sem.name,
     sgpa: sem.sgpa
   }));
 
   // Format data for Skills Radar
   const skillsData = [
-    { subject: 'Technical', A: data.profile.skills.technicalScore, fullMark: 100 },
+    { subject: 'Technical', A: engine?.technicalScore || data.profile.skills.technicalScore, fullMark: 100 },
     { subject: 'Aptitude', A: data.profile.skills.employabilityScore, fullMark: 100 },
     { subject: 'Communication', A: data.profile.skills.communicationScore, fullMark: 100 },
-    { subject: 'Academics', A: (data.profile.degree.cgpa / 10) * 100, fullMark: 100 },
-    { subject: 'Experience', A: Math.min((data.profile.degree.workExperience * 5) + (data.profile.degree.internships * 15), 100), fullMark: 100 },
+    { subject: 'Academics', A: engine?.academicScore || (data.profile.degree.cgpa / 10) * 100, fullMark: 100 },
+    { subject: 'Experience', A: engine?.resumeScore || Math.min((data.profile.degree.workExperience * 5) + (data.profile.degree.internships * 15), 100), fullMark: 100 },
   ];
 
   const getScoreColor = (val: number) => {
@@ -57,28 +56,41 @@ export function Dashboard() {
     return 'text-destructive';
   };
 
+  const getReadinessLabel = (score: number) => {
+    if (score >= 80) return 'Highly Competitive';
+    if (score >= 60) return 'Placement Ready';
+    return 'Needs Preparation';
+  };
+
+  const readinessScore = engine?.readinessScore || 0;
+
   return (
-    <div className="space-y-6">
-      <div className="flex justify-between items-center">
+    <div className="space-y-6 w-full min-w-0">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
-          <h1 className="text-3xl font-heading font-bold">Career Dashboard</h1>
-          <p className="text-muted-foreground">Overview of your academic and professional readiness.</p>
+          <h1 className="text-2xl md:text-3xl font-heading font-bold">Career Dashboard</h1>
+          <p className="text-sm md:text-base text-muted-foreground">Overview of your academic and professional readiness.</p>
         </div>
-        <Link to="/predict">
-          <Button variant="outline" size="sm">Update Profile</Button>
-        </Link>
+        <div className="flex gap-2">
+          <Link to="/result">
+            <Button variant="default" size="sm" className="w-full sm:w-auto">View Full Report</Button>
+          </Link>
+          <Link to="/predict">
+            <Button variant="outline" size="sm" className="w-full sm:w-auto">Update Profile</Button>
+          </Link>
+        </div>
       </div>
 
       {/* Summary Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <Card className="glass-panel">
           <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground">Placement Readiness</CardTitle>
-            <Trophy className={`h-4 w-4 ${getScoreColor(score)}`} />
+            <CardTitle className="text-sm font-medium text-muted-foreground">Overall Readiness</CardTitle>
+            <Trophy className={`h-4 w-4 ${getScoreColor(readinessScore)}`} />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{score} <span className="text-sm text-muted-foreground font-normal">/ 100</span></div>
-            <p className={`text-xs font-medium mt-1 ${getScoreColor(score)}`}>{category}</p>
+            <div className="text-2xl font-bold">{readinessScore} <span className="text-sm text-muted-foreground font-normal">/ 100</span></div>
+            <p className={`text-xs font-medium mt-1 ${getScoreColor(readinessScore)}`}>{getReadinessLabel(readinessScore)}</p>
           </CardContent>
         </Card>
 
@@ -106,20 +118,77 @@ export function Dashboard() {
 
         <Card className="glass-panel">
           <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground">Projects / Internships</CardTitle>
+            <CardTitle className="text-sm font-medium text-muted-foreground">Projects</CardTitle>
             <Briefcase className="h-4 w-4 text-cyan-400" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{data.profile.skills.projectsCount} / {data.profile.degree.internships}</div>
-            <p className="text-xs text-muted-foreground mt-1">Total completed</p>
+            <div className="text-2xl font-bold">{(data.projects && data.projects.length > 0) ? data.projects.length : data.profile.skills.projectsCount}</div>
+            <p className="text-xs text-muted-foreground mt-1">Total portfolio items</p>
           </CardContent>
         </Card>
       </div>
 
+      {engine && (
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          {/* Action Item */}
+          <Card className="glass-panel border-primary/30 bg-primary/5">
+            <CardHeader className="pb-2">
+              <CardTitle className="flex items-center gap-2">
+                <ListTodo className="h-5 w-5 text-primary" /> What Should I Do Next?
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              {engine.priorityImprovements.length > 0 ? (
+                <div className="space-y-2 mt-2">
+                  <div className="flex items-center gap-2">
+                    <span className="bg-destructive text-white text-xs px-2 py-1 rounded font-bold">PRIORITY 1</span>
+                    <span className="font-semibold">{engine.priorityImprovements[0].area}</span>
+                  </div>
+                  <p className="text-sm text-foreground/80 mt-2">{engine.priorityImprovements[0].action}</p>
+                  <p className="text-xs text-muted-foreground mt-1">Reason: {engine.priorityImprovements[0].reason}</p>
+                </div>
+              ) : (
+                <div className="text-sm text-success flex items-center gap-2 mt-2">
+                  <Star className="h-4 w-4" /> You are perfectly on track! Keep up the good work.
+                </div>
+              )}
+            </CardContent>
+          </Card>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <Card className="glass-panel">
+              <CardHeader className="pb-2">
+                <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2">
+                  <Zap className="h-4 w-4 text-success" /> Strongest Area
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="font-semibold text-sm">
+                  {engine.topStrengths.length > 0 ? engine.topStrengths[0] : "Keep building your skills!"}
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card className="glass-panel">
+              <CardHeader className="pb-2">
+                <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2">
+                  <AlertTriangle className="h-4 w-4 text-gold" /> Biggest Opportunity
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="font-semibold text-sm">
+                  {engine.priorityImprovements.length > 0 ? engine.priorityImprovements[0].area : "None"}
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+      )}
+
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         
         {/* SGPA Trend */}
-        <Card className="glass-panel col-span-1">
+        <Card className="glass-panel w-full">
           <CardHeader>
             <CardTitle>SGPA Trend</CardTitle>
             <CardDescription>Your academic performance across semesters</CardDescription>
@@ -148,7 +217,7 @@ export function Dashboard() {
         </Card>
 
         {/* Skill Radar */}
-        <Card className="glass-panel col-span-1">
+        <Card className="glass-panel w-full">
           <CardHeader>
             <CardTitle>Skill Profile Radar</CardTitle>
             <CardDescription>Visual breakdown of your readiness factors</CardDescription>

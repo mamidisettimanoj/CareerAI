@@ -91,6 +91,7 @@ export function Predict() {
     const currentData = loadData();
     saveData({
       profile,
+      engineResult: null, // Invalidate old engine result
       predictions: [newPrediction, ...currentData.predictions]
     });
 
@@ -112,10 +113,10 @@ export function Predict() {
   const progress = (step / 4) * 100;
 
   return (
-    <div className="space-y-6 max-w-3xl mx-auto">
+    <div className="w-full max-w-3xl mx-auto px-4 sm:px-6 py-6 md:py-8 space-y-6 min-w-0">
       <div>
-        <h1 className="text-3xl font-heading font-bold mb-2">Placement Prediction Engine</h1>
-        <p className="text-muted-foreground">Complete your profile to get a comprehensive career readiness estimate.</p>
+        <h1 className="text-2xl md:text-3xl font-heading font-bold mb-2">Placement Prediction Engine</h1>
+        <p className="text-sm md:text-base text-muted-foreground">Complete your profile to get a comprehensive career readiness estimate.</p>
       </div>
 
       <Progress value={progress} className="h-2 mb-8" />
