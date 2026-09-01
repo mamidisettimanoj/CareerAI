@@ -1,0 +1,102 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 223 44% 5%; /* #070A12 */
+    --foreground: 210 40% 98%;
+    
+    --card: 219 39% 11%; /* #111827 approx */
+    --card-foreground: 210 40% 98%;
+    
+    --popover: 219 39% 11%;
+    --popover-foreground: 210 40% 98%;
+    
+    --primary: 231 82% 60%; /* #4361EE */
+    --primary-foreground: 210 40% 98%;
+    
+    --secondary: 217 33% 17%;
+    --secondary-foreground: 210 40% 98%;
+    
+    --muted: 217 33% 17%;
+    --muted-foreground: 215 20.2% 65.1%;
+    
+    --accent: 333 93% 54%; /* #F72585 */
+    --accent-foreground: 210 40% 98%;
+    
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 40% 98%;
+    
+    --border: 217 33% 17%;
+    --input: 217 33% 17%;
+    --ring: 231 82% 60%;
+    
+    --radius: 0.75rem;
+
+    --success: 164 94% 43%; /* #06D6A0 */
+    --cyan: 194 82% 62%; /* #4CC9F0 */
+    --gold: 42 100% 70%; /* #FFD166 */
+  }
+
+  .dark {
+    --background: 223 44% 5%;
+    --foreground: 210 40% 98%;
+    
+    --card: 219 39% 11%;
+    --card-foreground: 210 40% 98%;
+    
+    --popover: 219 39% 11%;
+    --popover-foreground: 210 40% 98%;
+    
+    --primary: 231 82% 60%;
+    --primary-foreground: 210 40% 98%;
+    
+    --secondary: 217 33% 17%;
+    --secondary-foreground: 210 40% 98%;
+    
+    --muted: 217 33% 17%;
+    --muted-foreground: 215 20.2% 65.1%;
+    
+    --accent: 333 93% 54%;
+    --accent-foreground: 210 40% 98%;
+    
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 40% 98%;
+    
+    --border: 217 33% 17%;
+    --input: 217 33% 17%;
+    --ring: 231 82% 60%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground font-sans;
+    background-image: radial-gradient(circle at center, rgba(67, 97, 238, 0.05) 0%, transparent 70%);
+  }
+}
+
+/* Glassmorphism utilities */
+.glass-panel {
+  @apply bg-card/60 backdrop-blur-md border border-white/5 shadow-xl rounded-xl;
+}
+
+.glass-panel-hover {
+  @apply hover:bg-card/80 transition-all duration-300 hover:border-primary/30 hover:shadow-[0_0_20px_rgba(67,97,238,0.15)];
+}
+
+.text-gradient {
+  @apply bg-clip-text text-transparent bg-gradient-to-r from-primary via-cyan-400 to-accent;
+}
+
+.glow-primary {
+  box-shadow: 0 0 20px rgba(67, 97, 238, 0.3);
+}
+
+.glow-accent {
+  box-shadow: 0 0 20px rgba(247, 37, 133, 0.3);
+}
