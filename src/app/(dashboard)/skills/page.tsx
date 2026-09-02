@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { loadData } from '@/lib/storage';
+import { dataService } from '@/services/LocalStorageDataService';
 import { AppState } from '@/types';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Progress } from '@/components/ui/progress';
@@ -39,7 +39,7 @@ export function Skills() {
   });
 
   useEffect(() => {
-    const loadedData = loadData();
+    const loadedData = dataService.loadData();
     setData(loadedData);
     if (loadedData?.profile?.targetRole && roleProfiles[loadedData.profile.targetRole]) {
       setSelectedRole(loadedData.profile.targetRole);

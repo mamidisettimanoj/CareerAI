@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
-import { loadData } from '@/lib/storage';
+import { dataService } from '@/services/LocalStorageDataService';
 import { AppState } from '@/types';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, ResponsiveContainer } from 'recharts';
 import { GraduationCap, AlertTriangle, CheckCircle2, TrendingUp, TrendingDown, Minus } from 'lucide-react';
@@ -12,7 +12,7 @@ export function Academic() {
   const [data, setData] = useState<AppState | null>(null);
 
   useEffect(() => {
-    setData(loadData());
+    setData(dataService.loadData());
   }, []);
 
   if (!data || !data.profile) {

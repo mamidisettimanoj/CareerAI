@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from 'react';
-import { loadData } from '@/lib/storage';
+import { dataService } from '@/services/LocalStorageDataService';
 import { AppState, CareerEngineResult } from '@/types';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { 
@@ -16,7 +16,7 @@ export function Dashboard() {
   const [data, setData] = useState<AppState | null>(null);
 
   useEffect(() => {
-    setData(loadData());
+    setData(dataService.loadData());
   }, []);
 
   if (!data || !data.profile) {

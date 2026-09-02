@@ -5,7 +5,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { loadData } from '@/lib/storage';
+import { dataService } from '@/services/LocalStorageDataService';
 import { AppState } from '@/types';
 import { CheckCircle2, XCircle, AlertCircle, Building2 } from 'lucide-react';
 
@@ -32,7 +32,7 @@ export function Eligibility() {
   const [checks, setChecks] = useState<Record<string, boolean>>({});
 
   useEffect(() => {
-    setData(loadData());
+    setData(dataService.loadData());
   }, []);
 
   if (!data || !data.profile) {

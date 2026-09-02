@@ -5,8 +5,8 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { loadData, saveData } from '@/lib/storage';
-import { analyzeCareerProfile } from '@/lib/careerEngine';
+import { dataService } from '@/services/LocalStorageDataService';
+import { analyzeCareerProfile } from '@/features/career-intelligence/CareerIntelligenceEngine';
 import { Progress } from '@/components/ui/progress';
 import { ArrowLeft, CheckCircle2, AlertTriangle, Lightbulb, Bot, RefreshCw, XCircle, Target, CalendarDays, ListTodo } from 'lucide-react';
 import { AppState, CareerEngineResult } from '@/types';
@@ -17,7 +17,7 @@ export function Result() {
   const [engineResult, setEngineResult] = useState<CareerEngineResult | null>(null);
 
   useEffect(() => {
-    const stored = loadData();
+    const stored = dataService.loadData();
     if (!stored.profile) {
       router.push('/predict');
       return;
@@ -38,7 +38,7 @@ export function Result() {
     try {
       const result = analyzeCareerProfile(appData);
       setEngineResult(result);
-      saveData({ engineResult: result });
+      dataService.saveData({ engineResult: result });
     } catch (error) {
       console.error(error);
     }

@@ -6,7 +6,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { loadData, saveData, loadDemoProfile, clearData, exportData } from '@/lib/storage';
+import { dataService } from '@/services/LocalStorageDataService';
 import { useToast } from '@/hooks/use-toast';
 import { AppState } from '@/types';
 
@@ -15,12 +15,12 @@ export function Settings() {
   const [data, setData] = useState<AppState | null>(null);
 
   useEffect(() => {
-    setData(loadData());
+    setData(dataService.loadData());
   }, []);
 
   const handleLoadDemo = () => {
-    loadDemoProfile();
-    setData(loadData());
+    dataService.loadDemoProfile();
+    setData(dataService.loadData());
     toast({
       title: "Demo Data Loaded",
       description: "Fictional profile data has been loaded into your workspace.",
@@ -30,8 +30,8 @@ export function Settings() {
 
   const handleClearData = () => {
     if (confirm("Are you sure you want to delete all local data? This cannot be undone.")) {
-      clearData();
-      setData(loadData());
+      dataService.clearData();
+      setData(dataService.loadData());
       toast({
         title: "Data Cleared",
         description: "All your local data has been removed.",
@@ -41,7 +41,7 @@ export function Settings() {
   };
 
   const handleExport = () => {
-    exportData();
+    dataService.exportData();
     toast({
       title: "Export Successful",
       description: "Your data has been downloaded as a JSON file.",

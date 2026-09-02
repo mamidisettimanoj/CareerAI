@@ -5,7 +5,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter }
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { loadData, saveData } from '@/lib/storage';
+import { dataService } from '@/services/LocalStorageDataService';
 import { AppState, ProjectData } from '@/types';
 import { Plus, Trash2, Github, ExternalLink, Code2, AlertTriangle, CheckCircle2 } from 'lucide-react';
 import { Progress } from '@/components/ui/progress';
@@ -15,7 +15,7 @@ export function Projects() {
   const [projects, setProjects] = useState<ProjectData[]>([]);
 
   useEffect(() => {
-    const d = loadData();
+    const d = dataService.loadData();
     setData(d);
     setProjects(d.projects || []);
   }, []);
@@ -42,8 +42,8 @@ export function Projects() {
   };
 
   const saveProjects = () => {
-    saveData({ projects });
-    setData(loadData());
+    dataService.saveData({ projects });
+    setData(dataService.loadData());
   };
 
   // Analyze Project Portfolio

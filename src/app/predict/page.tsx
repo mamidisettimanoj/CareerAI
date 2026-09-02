@@ -12,8 +12,8 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Slider } from '@/components/ui/slider';
 import { Progress } from '@/components/ui/progress';
-import { analyzeCareerProfile } from '@/lib/careerEngine';
-import { loadData, saveData } from '@/lib/storage';
+import { analyzeCareerProfile } from '@/features/career-intelligence/CareerIntelligenceEngine';
+import { dataService } from '@/services/LocalStorageDataService';
 import { UserProfile } from '@/types';
 import { useToast } from '@/hooks/use-toast';
 
@@ -70,7 +70,7 @@ export function Predict() {
   });
 
   useEffect(() => {
-    const data = loadData();
+    const data = dataService.loadData();
     if (data.profile) {
       form.reset(data.profile);
     }
@@ -78,7 +78,7 @@ export function Predict() {
 
   const onSubmit = (values: z.infer<typeof profileSchema>) => {
     const profile = values as UserProfile;
-    const currentData = loadData();
+    const currentData = dataService.loadData();
     const tempState = { ...currentData, profile };
     const engineResult = analyzeCareerProfile(tempState);
     
@@ -92,7 +92,7 @@ export function Predict() {
       targetRole: profile.targetRole
     };
 
-    saveData({
+    dataService.saveData({
       profile,
       engineResult,
       predictions: [newPrediction, ...currentData.predictions]

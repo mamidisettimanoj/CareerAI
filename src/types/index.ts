@@ -1,3 +1,7 @@
+// ----------------------------------------------------------------------------
+// LEGACY TYPES (Used for backwards compatibility during Phase 1 migration)
+// ----------------------------------------------------------------------------
+
 export interface SemesterData {
   id: string;
   name: string;
@@ -65,7 +69,7 @@ export interface UserProfile {
     branch: string;
     percentage: number;
     cgpa: number;
-    workExperience: number; // months
+    workExperience: number;
     internships: number;
     backlogs: number;
   };
@@ -131,4 +135,142 @@ export interface AppState {
     reducedAnimations: boolean;
   };
   engineResult?: CareerEngineResult | null;
+}
+
+// ----------------------------------------------------------------------------
+// NEW DOMAIN TYPES (Phase 2 & DB readiness)
+// ----------------------------------------------------------------------------
+
+export interface User {
+  id: string;
+  email: string;
+  role: 'STUDENT' | 'PLACEMENT_ADMIN' | 'RECRUITER';
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export interface Profile {
+  id: string;
+  userId: string;
+  firstName: string;
+  lastName: string;
+  targetRole?: string;
+}
+
+export interface Education {
+  id: string;
+  profileId: string;
+  institution: string;
+  degreeType: string; // e.g. B.Tech, M.Tech, SSC, HSC
+  branch?: string;
+  cgpa?: number;
+  percentage?: number;
+  startYear: number;
+  endYear: number;
+  hasBacklogs: boolean;
+}
+
+export interface Experience {
+  id: string;
+  profileId: string;
+  company: string;
+  role: string;
+  isInternship: boolean;
+  durationMonths: number;
+}
+
+export interface Skill {
+  id: string;
+  profileId: string;
+  name: string;
+  proficiency: number; // 0-100
+}
+
+export interface Project {
+  id: string;
+  profileId: string;
+  name: string;
+  description: string;
+  technologies: string[];
+  link?: string;
+}
+
+export interface Certification {
+  id: string;
+  profileId: string;
+  name: string;
+  provider: string;
+  issueDate: Date;
+}
+
+export interface Resume {
+  id: string;
+  profileId: string;
+  fileUrl: string;
+  atsScore?: number;
+  lastParsed?: Date;
+}
+
+export interface Assessment {
+  id: string;
+  profileId: string;
+  type: 'APTITUDE' | 'TECHNICAL' | 'COMMUNICATION';
+  score: number; // 0-100
+  takenAt: Date;
+}
+
+export interface Job {
+  id: string;
+  companyId: string;
+  title: string;
+  description: string;
+  requirements: string[];
+  eligibilityCriteria: Record<string, any>;
+}
+
+export interface Application {
+  id: string;
+  jobId: string;
+  userId: string;
+  status: 'APPLIED' | 'SHORTLISTED' | 'INTERVIEW' | 'REJECTED' | 'OFFERED';
+}
+
+export interface PlacementDrive {
+  id: string;
+  companyName: string;
+  date: Date;
+  roles: string[];
+}
+
+// Conceptually maps to CareerEngineResult but designed for time-series snapshot storage
+export interface ReadinessSnapshot {
+  id: string;
+  profileId: string;
+  overallScore: number;
+  academicScore: number;
+  technicalScore: number;
+  projectScore: number;
+  resumeScore: number;
+  interviewScore: number;
+  topStrengths: string[];
+  priorityImprovements: string[];
+  timestamp: Date;
+}
+
+export interface PreparationTask {
+  id: string;
+  profileId: string;
+  title: string;
+  category: string;
+  isCompleted: boolean;
+}
+
+export interface Roadmap {
+  id: string;
+  profileId: string;
+  weeks: {
+    weekNumber: number;
+    theme: string;
+    goals: string[];
+  }[];
 }

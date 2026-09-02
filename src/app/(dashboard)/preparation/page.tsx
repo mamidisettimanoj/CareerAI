@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { loadData, saveData } from '@/lib/storage';
+import { dataService } from '@/services/LocalStorageDataService';
 import { PrepTask, AppState } from '@/types';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Plus, Trash2, ListTodo, CheckCircle } from 'lucide-react';
@@ -20,7 +20,7 @@ export function Preparation() {
   const [newTaskCat, setNewTaskCat] = useState<string>('DSA');
 
   useEffect(() => {
-    setData(loadData());
+    setData(dataService.loadData());
   }, []);
 
   if (!data) return null;
@@ -36,7 +36,7 @@ export function Preparation() {
     };
 
     const updatedTasks = [newTask, ...data.tasks];
-    saveData({ tasks: updatedTasks });
+    dataService.saveData({ tasks: updatedTasks });
     setData({ ...data, tasks: updatedTasks });
     setNewTaskTitle('');
   };
@@ -45,13 +45,13 @@ export function Preparation() {
     const updatedTasks = data.tasks.map(t => 
       t.id === id ? { ...t, completed: !t.completed } : t
     );
-    saveData({ tasks: updatedTasks });
+    dataService.saveData({ tasks: updatedTasks });
     setData({ ...data, tasks: updatedTasks });
   };
 
   const deleteTask = (id: string) => {
     const updatedTasks = data.tasks.filter(t => t.id !== id);
-    saveData({ tasks: updatedTasks });
+    dataService.saveData({ tasks: updatedTasks });
     setData({ ...data, tasks: updatedTasks });
   };
 
