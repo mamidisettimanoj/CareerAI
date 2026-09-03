@@ -2,12 +2,12 @@
 
 import { requireCareerUser } from '@/lib/auth';
 import { handleActionError } from '@/lib/errors';
-import { PrismaClient } from '@prisma/client';
+
 import { NullJobProvider } from '@/domain/jobs/providers/NullJobProvider';
 import { JobSearchCriteria } from '@/domain/jobs/types/job.types';
 import { jobMatchEngine } from '@/domain/jobs/engine/JobMatchEngine';
 
-const prisma = new PrismaClient();
+import { prisma } from '@/lib/prisma';
 const jobProvider = new NullJobProvider();
 
 export async function searchJobsAction(criteria: JobSearchCriteria) {

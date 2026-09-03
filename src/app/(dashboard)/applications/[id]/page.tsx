@@ -1,12 +1,12 @@
 import React from 'react';
 import { ApplicationService } from '@/domain/applications/service/ApplicationService';
-import { PrismaClient } from '@prisma/client';
+
 import { requireCareerUser } from '@/lib/auth';
 import { Badge } from '@/components/ui/badge';
 import { ArrowLeft, Clock, MapPin, Globe, ExternalLink, Calendar, PlusCircle } from 'lucide-react';
 import Link from 'next/link';
 
-const prisma = new PrismaClient();
+import { prisma } from '@/lib/prisma';
 const applicationService = new ApplicationService(prisma);
 
 export default async function ApplicationDetailPage({ params }: { params: { id: string } }) {

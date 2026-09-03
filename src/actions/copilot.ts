@@ -3,9 +3,9 @@
 import { requireCareerUser } from '@/lib/auth';
 import { handleActionError } from '@/lib/errors';
 import { copilotService } from '@/features/copilot/service/CopilotService';
-import { PrismaClient } from '@prisma/client';
 
-const prisma = new PrismaClient();
+
+import { prisma } from '@/lib/prisma';
 
 /**
  * Sends a message to the Copilot securely.

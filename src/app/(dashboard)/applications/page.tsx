@@ -1,14 +1,14 @@
 import React from 'react';
 import { getDashboardMetricsAction } from '@/actions/applications';
 import { ApplicationService } from '@/domain/applications/service/ApplicationService';
-import { PrismaClient } from '@prisma/client';
+
 import { requireCareerUser } from '@/lib/auth';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Briefcase, CheckCircle, Clock, XCircle, TrendingUp } from 'lucide-react';
 import Link from 'next/link';
 import { Badge } from '@/components/ui/badge';
 
-const prisma = new PrismaClient();
+import { prisma } from '@/lib/prisma';
 const applicationService = new ApplicationService(prisma);
 
 export default async function ApplicationsDashboard() {

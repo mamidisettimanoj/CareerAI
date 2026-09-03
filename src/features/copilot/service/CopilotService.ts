@@ -4,15 +4,21 @@ import { COPILOT_SYSTEM_PROMPT } from '../prompts';
 import { CopilotResponseSchema, CopilotStructuredOutput } from '../validation';
 import { ICopilotConversation, ICopilotMessage } from '../types';
 
-const prisma = new PrismaClient();
+const prismaDefault = new PrismaClient();
 
 export class CopilotService {
+  private prisma: PrismaClient;
+
+  constructor(prismaClient?: PrismaClient) {
+    this.prisma = prismaClient ?? prismaDefault;
+  }
+
   /**
    * Retrieves or creates a conversation for a profile.
    */
   async getOrCreateConversation(profileId: string, conversationId?: string): Promise<ICopilotConversation> {
     if (conversationId) {
-      const conv = await prisma.copilotConversation.findUnique({
+      const conv = await this.prisma.copilotConversation.findUnique({
         where: { id: conversationId },
         include: { messages: { orderBy: { createdAt: 'asc' } } }
       });
@@ -22,7 +28,7 @@ export class CopilotService {
       return this.mapConversation(conv);
     }
 
-    const newConv = await prisma.copilotConversation.create({
+    const newConv = await this.prisma.copilotConversation.create({
       data: { profileId, title: 'Career Coaching Session' },
       include: { messages: true }
     });
@@ -62,7 +68,7 @@ ${safeUserInput}
     `.trim();
 
     // 6. Save User Message
-    await prisma.copilotMessage.create({
+    await this.prisma.copilotMessage.create({
       data: {
         conversationId: conversation.id,
         role: 'user',
@@ -79,7 +85,7 @@ ${safeUserInput}
     });
 
     // 8. Save Assistant Message
-    const assistantMessage = await prisma.copilotMessage.create({
+    const assistantMessage = await this.prisma.copilotMessage.create({
       data: {
         conversationId: conversation.id,
         role: 'assistant',
