@@ -3,6 +3,8 @@ import { prisma } from '@/lib/prisma';
 import { AppState } from '@/types';
 import { getSession } from '@/lib/auth';
 
+export const dynamic = 'force-dynamic';
+
 /**
  * Migration Utility for LocalStorage -> PostgreSQL
  * This route accepts a JSON payload of the AppState and inserts it into the database.
