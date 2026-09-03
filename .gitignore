@@ -24,3 +24,8 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Next.js and Playwright Generated
+.next
+playwright-report
+test-results

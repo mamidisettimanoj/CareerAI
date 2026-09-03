@@ -1,6 +1,7 @@
 'use server';
 
 import { requireCareerUser } from '@/lib/auth';
+import { handleActionError } from '@/lib/errors';
 import { copilotService } from '@/features/copilot/service/CopilotService';
 import { PrismaClient } from '@prisma/client';
 

@@ -20,7 +20,7 @@ export function CopilotChat() {
     if (isOpen && !conversationId) {
       loadConversation();
     }
-  }, [isOpen]);
+  }, [isOpen, conversationId]);
 
   useEffect(() => {
     if (scrollRef.current) {
@@ -31,12 +31,12 @@ export function CopilotChat() {
   const loadConversation = async () => {
     setIsLoading(true);
     const res = await getActiveConversationAction();
-    if (res.success && res.conversation) {
+    if (res.success && 'conversation' in res && res.conversation) {
       setConversationId(res.conversation.id);
       setMessages(res.conversation.messages || []);
       setError(null);
     } else {
-      setError(res.error || 'Failed to load AI conversation.');
+      setError('error' in res ? res.error : 'Failed to load AI conversation.');
     }
     setIsLoading(false);
   };
@@ -51,10 +51,10 @@ export function CopilotChat() {
     setError(null);
 
     const res = await sendCopilotMessageAction(conversationId, userMsg.content);
-    if (res.success && res.message) {
+    if (res.success && 'message' in res && res.message) {
       setMessages(prev => [...prev, res.message]);
     } else {
-      setError(res.error || 'AI Copilot is temporarily unavailable.');
+      setError('error' in res ? res.error : 'AI Copilot is temporarily unavailable.');
       // Remove optimistic user message on hard fail
       setMessages(prev => prev.filter(m => m.id !== userMsg.id));
     }

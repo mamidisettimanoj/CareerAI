@@ -5,13 +5,13 @@ import { CareerAIContextBuilder } from '../context/CareerAIContextBuilder';
 import { AIPrompts } from '../prompts';
 import { ResumeFeedbackSchema } from '../validation';
 
-// Mock the OpenAIProvider
-vi.mock('../providers/OpenAIProvider', () => {
+// Mock the GeminiProvider
+vi.mock('../providers/GeminiProvider', () => {
   return {
-    OpenAIProvider: class {
+    GeminiProvider: class {
       async generate(request: any, config: any) {
         if (request.userContext.includes('TIMEOUT_TRIGGER')) {
-          throw new AIError('AI_TIMEOUT', 'OpenAI provider timeout');
+          throw new AIError('AI_TIMEOUT', 'Gemini provider timeout');
         }
         if (request.userContext.includes('INVALID_JSON')) {
           throw new AIError('AI_INVALID_OUTPUT', 'Failed to parse structured output');
@@ -21,7 +21,7 @@ vi.mock('../providers/OpenAIProvider', () => {
           content: 'Success',
           structuredData: request.responseSchema ? { score: 85, strengths: [], weaknesses: [], recommendations: [], isHallucinated: false } : undefined,
           model: config.model,
-          provider: 'OPENAI'
+          provider: 'GEMINI'
         };
       }
     }

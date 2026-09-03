@@ -5,6 +5,7 @@ import { PlacementDriveService } from '@/domain/placement/service/PlacementDrive
 import { DriveParticipationService } from '@/domain/placement/service/DriveParticipationService';
 import { prisma } from '@/lib/prisma';
 import { DriveStatus, ParticipationStatus } from '@prisma/client';
+import { handleActionError } from '@/lib/errors';
 
 const driveService = new PlacementDriveService(prisma);
 const participationService = new DriveParticipationService(prisma);

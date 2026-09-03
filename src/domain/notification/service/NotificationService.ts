@@ -88,11 +88,11 @@ export class NotificationService {
         metadata: (notification.metadata as Record<string, unknown>) ?? null
       };
 
-      await this.supabase.channel(channelName).send({
-        type: 'broadcast',
-        event: 'new_notification',
+      // Use explicit REST delivery to avoid the warning since we don't open a full WebSocket connection
+      await this.supabase.channel(channelName).httpSend(
+        'new_notification',
         payload
-      });
+      );
     } catch (e) {
       console.error('Failed to broadcast realtime notification:', e);
       // We don't throw because DB persistence succeeded

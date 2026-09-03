@@ -22,12 +22,12 @@ export default async function JobsPage() {
         <Button>Search Jobs</Button>
       </div>
 
-      {!result.success || result.data?.status !== 'SUCCESS' ? (
+      {(!result.success || !('data' in result) || result.data?.status !== 'SUCCESS') ? (
         <div className="bg-red-50 text-red-700 p-8 rounded-xl border border-red-100 flex flex-col items-center justify-center text-center">
           <AlertTriangle size={48} className="text-red-500 mb-4" />
           <h2 className="text-xl font-bold mb-2">No Live Job Source Configured</h2>
           <p className="max-w-md text-sm">
-            {result.data?.error || result.error || 'The system is currently running in a closed environment without API credentials for external job boards.'}
+            {('error' in result ? result.error : null) || ('data' in result && result.data?.error) || 'The system is currently running in a closed environment without API credentials for external job boards.'}
           </p>
           <p className="text-xs font-semibold uppercase mt-6 text-red-500 tracking-wide">
             CareerAI explicitly forbids the hallucination of fake jobs.

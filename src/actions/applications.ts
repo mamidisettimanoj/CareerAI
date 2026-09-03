@@ -2,6 +2,7 @@
 
 import { requireCareerUser } from '@/lib/auth';
 import { PrismaClient, ApplicationStatus } from '@prisma/client';
+import { handleActionError } from '@/lib/errors';
 import { ApplicationService } from '@/domain/applications/service/ApplicationService';
 import { CreateApplicationDto } from '@/domain/applications/types';
 

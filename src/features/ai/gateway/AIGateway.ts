@@ -19,13 +19,8 @@ export class AIGateway {
   private readonly MAX_REQUESTS_PER_MINUTE = 10;
 
   constructor() {
-    // If we have a Gemini Key, we prefer GeminiProvider.
-    // Otherwise fallback to OpenAI if configured.
-    if (config.ai.geminiKey) {
-      this.provider = new GeminiProvider();
-    } else {
-      this.provider = new OpenAIProvider();
-    }
+    // CareerAI 2.0 explicitly uses Gemini as the primary AI provider
+    this.provider = new GeminiProvider();
   }
 
   /**
