@@ -7,10 +7,18 @@ import { Role } from '@prisma/client'
  * Returns the currently authenticated Supabase user.
  */
 export async function getSession() {
-  const supabase = createClient()
-  const { data, error } = await supabase.auth.getUser()
-  if (error || !data?.user) return null
-  return data.user
+  try {
+    if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY) {
+      return null
+    }
+    const supabase = createClient()
+    const { data, error } = await supabase.auth.getUser()
+    if (error || !data?.user) return null
+    return data.user
+  } catch (err) {
+    console.error('[Auth] getSession error:', err)
+    return null
+  }
 }
 
 /**
