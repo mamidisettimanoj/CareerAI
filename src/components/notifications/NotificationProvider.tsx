@@ -1,7 +1,6 @@
 'use client';
 
 import React, { createContext, useContext, useEffect, useState, ReactNode } from 'react';
-import { createClient } from '@/utils/supabase/client';
 import { getRealtimeChannelNameAction, getUserNotificationsAction, getUnreadCountAction, markAsReadAction, markAllAsReadAction } from '@/actions/notifications';
 import { NotificationDTO } from '@/domain/notification/service/NotificationService';
 
@@ -20,9 +19,6 @@ export function NotificationProvider({ children }: { children: ReactNode }) {
   const [notifications, setNotifications] = useState<NotificationDTO[]>([]);
   const [unreadCount, setUnreadCount] = useState(0);
   const [loading, setLoading] = useState(true);
-  
-  // Single supabase client instance for this provider
-  const [supabase] = useState(() => createClient());
 
   const fetchInitial = async () => {
     try {
