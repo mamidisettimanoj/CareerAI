@@ -19,8 +19,7 @@ export async function searchJobsAction(criteria: JobSearchCriteria) {
     
     return { success: true, data: result };
   } catch (error: any) {
-    console.error('Job search action error:', error);
-    return { success: false, error: error.message };
+    return handleActionError(error);
   }
 }
 
@@ -83,7 +82,6 @@ export async function getJobMatchAction(jobId: string) {
     };
 
   } catch (error: any) {
-    console.error('Job match action error:', error);
-    return { success: false, error: error.message };
+    return handleActionError(error);
   }
 }

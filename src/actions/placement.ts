@@ -21,7 +21,7 @@ export async function listDrivesAction(filters: any, pagination: any) {
     const result = await driveService.listDrives(admin.institutionId, filters, pagination);
     return { success: true, ...result };
   } catch (e: any) {
-    return { success: false, error: e.message };
+    return handleActionError(e);
   }
 }
 
@@ -31,7 +31,7 @@ export async function getDriveDetailAction(driveId: string) {
     const drive = await driveService.getDrive(admin.institutionId, driveId);
     return { success: true, drive };
   } catch (e: any) {
-    return { success: false, error: e.message };
+    return handleActionError(e);
   }
 }
 
@@ -41,7 +41,7 @@ export async function changeDriveStatusAction(driveId: string, status: DriveStat
     const drive = await driveService.changeStatus(admin.institutionId, driveId, status, expectedVersion);
     return { success: true, drive };
   } catch (e: any) {
-    return { success: false, error: e.message };
+    return handleActionError(e);
   }
 }
 
@@ -58,7 +58,7 @@ export async function changeParticipationStatusAction(participationId: string, s
     );
     return { success: true, participation: part };
   } catch (e: any) {
-    return { success: false, error: e.message };
+    return handleActionError(e);
   }
 }
 
@@ -76,6 +76,6 @@ export async function registerForDriveAction(driveId: string) {
     const part = await participationService.registerStudent(user.profile.id, driveId);
     return { success: true, participation: part };
   } catch (e: any) {
-    return { success: false, error: e.message };
+    return handleActionError(e);
   }
 }

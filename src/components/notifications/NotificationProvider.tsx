@@ -41,39 +41,48 @@ export function NotificationProvider({ children }: { children: ReactNode }) {
   };
 
   useEffect(() => {
-    let channel: any = null;
+    let eventSource: EventSource | null = null;
 
     const setupRealtime = async () => {
       await fetchInitial();
       
       try {
-        // Retrieve the cryptographically secure channel name specifically for this user
-        const channelName = await getRealtimeChannelNameAction();
+        eventSource = new EventSource('/api/notifications/stream');
         
-        channel = supabase.channel(channelName);
-        
-        channel.on('broadcast', { event: 'new_notification' }, (payload: any) => {
-          const newNotif = payload.payload as NotificationDTO;
-          setNotifications(prev => {
-            // Deduplicate in case of race condition
-            if (prev.some(n => n.id === newNotif.id)) return prev;
-            return [newNotif, ...prev];
-          });
-          setUnreadCount(prev => prev + 1);
-        }).subscribe();
+        eventSource.onmessage = (event) => {
+          const dataStr = event.data;
+          // Ignore keep-alive heartbeats
+          if (dataStr.includes('connected') || dataStr.includes('heartbeat')) return;
+          
+          try {
+            const newNotif = JSON.parse(dataStr) as NotificationDTO;
+            setNotifications(prev => {
+              if (prev.some(n => n.id === newNotif.id)) return prev;
+              return [newNotif, ...prev];
+            });
+            setUnreadCount(prev => prev + 1);
+          } catch (err) {
+            console.error('Failed to parse SSE notification', err);
+          }
+        };
+
+        eventSource.onerror = (err) => {
+          console.error('SSE Error:', err);
+          // EventSource auto-reconnects, but we log it
+        };
       } catch (e) {
-        console.error('Realtime setup failed, falling back to REST only.', e);
+        console.error('SSE setup failed, falling back to REST only.', e);
       }
     };
 
     setupRealtime();
 
     return () => {
-      if (channel) {
-        supabase.removeChannel(channel);
+      if (eventSource) {
+        eventSource.close();
       }
     };
-  }, [supabase]);
+  }, []);
 
   const markAsRead = async (id: string) => {
     const notif = notifications.find(n => n.id === id);

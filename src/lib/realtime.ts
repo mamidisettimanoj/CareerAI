@@ -9,9 +9,9 @@ import crypto from 'crypto';
 export function getSecureUserChannelName(userId: string): string {
   if (!userId) throw new Error('User ID is required for channel generation.');
   
-  // We use the service role key (or a fallback) as the HMAC secret.
+  // We use the dedicated notification secret key (or fallbacks) as the HMAC secret.
   // This value MUST NOT be exposed to the browser.
-  const secret = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.DATABASE_URL || 'local-fallback-secret';
+  const secret = process.env.NOTIFICATION_SECRET_KEY || process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.DATABASE_URL || 'local-fallback-secret';
   
   const hmac = crypto.createHmac('sha256', secret);
   hmac.update(userId);

@@ -1,4 +1,5 @@
 import { IAIProvider } from '../providers/IAIProvider';
+import { GeminiProvider } from '../providers/GeminiProvider';
 import { OpenAIProvider } from '../providers/OpenAIProvider';
 import { AIRequest, AIResponse, AIModelConfig, AIError } from '../types';
 import { config } from '../../../config';
@@ -18,8 +19,13 @@ export class AIGateway {
   private readonly MAX_REQUESTS_PER_MINUTE = 10;
 
   constructor() {
-    // We instantiate OpenAIProvider as the default for now
-    this.provider = new OpenAIProvider();
+    // If we have a Gemini Key, we prefer GeminiProvider.
+    // Otherwise fallback to OpenAI if configured.
+    if (config.ai.geminiKey) {
+      this.provider = new GeminiProvider();
+    } else {
+      this.provider = new OpenAIProvider();
+    }
   }
 
   /**
@@ -37,8 +43,8 @@ export class AIGateway {
     };
 
     const modelConfig: AIModelConfig = {
-      provider: 'OPENAI',
-      model: config.ai.defaultModel,
+      provider: config.ai.geminiKey ? 'GEMINI' : 'OPENAI',
+      model: config.ai.geminiKey ? 'gemini-3.6-flash' : config.ai.defaultModel,
       temperature: 0.7,
       ...overrideConfig
     };

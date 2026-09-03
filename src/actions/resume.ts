@@ -30,6 +30,11 @@ export async function uploadResumeAction(formData: FormData) {
     const arrayBuffer = await file.arrayBuffer()
     const buffer = Buffer.from(arrayBuffer)
     
+    // Debt 65: Hardened PDF Validation - Magic Bytes Check
+    if (buffer.length < 5 || buffer.toString('utf8', 0, 5) !== '%PDF-') {
+      throw new Error('Invalid PDF format. File is corrupted or not a true PDF.')
+    }
+    
     const text = await extractTextFromPDF(buffer)
     
     // We could pass full CareerIntelligenceInput here if we want ProfileConsistency

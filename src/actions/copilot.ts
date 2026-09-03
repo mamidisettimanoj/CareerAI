@@ -50,8 +50,7 @@ export async function sendCopilotMessageAction(conversationId: string, messageTe
 
     return { success: true, message: result };
   } catch (error: any) {
-    console.error('Copilot action error:', error);
-    return { success: false, error: error.message };
+    return handleActionError(error);
   }
 }
 
@@ -77,7 +76,6 @@ export async function getActiveConversationAction() {
 
     return { success: true, conversation };
   } catch (error: any) {
-    console.error('Copilot fetch error:', error);
-    return { success: false, error: error.message };
+    return handleActionError(error);
   }
 }

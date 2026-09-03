@@ -4,6 +4,7 @@ import { prisma } from '@/lib/prisma';
 import { requireRecruiter, requireStudent } from '@/lib/auth';
 import { RecruiterJobService, RecruitmentCandidateService, RecruitmentLifecycleService } from '@/domain/recruitment';
 import { JobStatus, RecruitmentStage } from '@prisma/client';
+import { handleActionError } from '@/lib/errors';
 
 // ─── RECRUITER ACTIONS ─────────────────────────────────────────────────────
 
@@ -95,7 +96,7 @@ export async function getResumeSignedUrlAction(applicationId: string): Promise<{
     return { url };
   } catch (err: any) {
     // Return a safe error message — never expose internals
-    return { error: err?.message ?? 'Resume access is currently unavailable.' };
+    return handleActionError(err);
   }
 }
 

@@ -17,7 +17,7 @@ export async function createManualApplicationAction(dto: CreateApplicationDto) {
     const app = await applicationService.createApplication(profileId, dto);
     return { success: true, application: app };
   } catch (e: any) {
-    return { success: false, error: e.message };
+    return handleActionError(e);
   }
 }
 
@@ -30,7 +30,7 @@ export async function createFromJobAction(jobId: string) {
     const app = await applicationService.createFromJob(profileId, jobId);
     return { success: true, application: app };
   } catch (e: any) {
-    return { success: false, error: e.message };
+    return handleActionError(e);
   }
 }
 
@@ -43,7 +43,7 @@ export async function listApplicationsAction(filters: any, pagination: any) {
     const result = await applicationService.listApplications(profileId, filters, pagination);
     return { success: true, ...result };
   } catch (e: any) {
-    return { success: false, error: e.message };
+    return handleActionError(e);
   }
 }
 
@@ -56,7 +56,7 @@ export async function changeApplicationStatusAction(applicationId: string, newSt
     const updated = await applicationService.changeStatus(profileId, applicationId, newStatus, expectedVersion, note);
     return { success: true, application: updated };
   } catch (e: any) {
-    return { success: false, error: e.message };
+    return handleActionError(e);
   }
 }
 
@@ -69,7 +69,7 @@ export async function getDashboardMetricsAction() {
     const metrics = await applicationService.getDashboardMetrics(profileId);
     return { success: true, metrics };
   } catch (e: any) {
-    return { success: false, error: e.message };
+    return handleActionError(e);
   }
 }
 
@@ -82,7 +82,7 @@ export async function addApplicationNoteAction(applicationId: string, expectedVe
     const app = await applicationService.addPrivateNote(profileId, applicationId, expectedVersion, note);
     return { success: true, application: app };
   } catch (e: any) {
-    return { success: false, error: e.message };
+    return handleActionError(e);
   }
 }
 
@@ -95,6 +95,6 @@ export async function archiveApplicationAction(applicationId: string, expectedVe
     const app = await applicationService.archiveApplication(profileId, applicationId, expectedVersion);
     return { success: true, application: app };
   } catch (e: any) {
-    return { success: false, error: e.message };
+    return handleActionError(e);
   }
 }
