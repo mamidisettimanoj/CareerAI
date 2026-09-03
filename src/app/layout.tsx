@@ -1,6 +1,5 @@
 import './globals.css';
 import { Inter } from 'next/font/google';
-import { Navbar } from '@/components/layout/Navbar';
 import { Toaster } from '@/components/ui/toaster';
 
 const inter = Inter({ subsets: ['latin'], variable: '--font-sans' });
@@ -19,8 +18,7 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <body className={`${inter.variable} font-sans antialiased`}>
         <div className="relative flex min-h-screen flex-col bg-background">
-          <Navbar />
-          <main className="flex-1 w-full min-w-0 flex">
+          <main className="flex-1 w-full min-w-0 flex flex-col">
             {children}
           </main>
           <Toaster />
@@ -29,3 +27,5 @@ export default function RootLayout({
     </html>
   );
 }
+
+

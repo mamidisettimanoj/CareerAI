@@ -6,21 +6,21 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { dataService } from '@/services/LocalStorageDataService';
+import { appService as dataService } from '@/services/AppService';
 import { useToast } from '@/hooks/use-toast';
 import { AppState } from '@/types';
 
-export function Settings() {
+export default function Settings() {
   const { toast } = useToast();
   const [data, setData] = useState<AppState | null>(null);
 
   useEffect(() => {
-    setData(dataService.loadData());
+    dataService.loadData().then(setData);
   }, []);
 
   const handleLoadDemo = () => {
     dataService.loadDemoProfile();
-    setData(dataService.loadData());
+    dataService.loadData().then(setData);
     toast({
       title: "Demo Data Loaded",
       description: "Fictional profile data has been loaded into your workspace.",
@@ -31,7 +31,7 @@ export function Settings() {
   const handleClearData = () => {
     if (confirm("Are you sure you want to delete all local data? This cannot be undone.")) {
       dataService.clearData();
-      setData(dataService.loadData());
+      dataService.loadData().then(setData);
       toast({
         title: "Data Cleared",
         description: "All your local data has been removed.",
@@ -63,7 +63,7 @@ export function Settings() {
         </TabsList>
         
         <TabsContent value="data" className="space-y-4 mt-4">
-          <Card className="glass-panel border-accent/20">
+          <Card className="border-accent/20">
             <CardHeader>
               <CardTitle>Demo Mode</CardTitle>
               <CardDescription>
@@ -78,7 +78,7 @@ export function Settings() {
             </CardContent>
           </Card>
 
-          <Card className="glass-panel">
+          <Card >
             <CardHeader>
               <CardTitle>Export / Import</CardTitle>
               <CardDescription>
@@ -92,7 +92,7 @@ export function Settings() {
             </CardContent>
           </Card>
 
-          <Card className="glass-panel border-destructive/20">
+          <Card className="border-destructive/20">
             <CardHeader>
               <CardTitle className="text-destructive">Danger Zone</CardTitle>
               <CardDescription>
@@ -108,7 +108,7 @@ export function Settings() {
         </TabsContent>
 
         <TabsContent value="preferences" className="mt-4">
-          <Card className="glass-panel">
+          <Card >
             <CardHeader>
               <CardTitle>Appearance</CardTitle>
             </CardHeader>
@@ -119,16 +119,16 @@ export function Settings() {
         </TabsContent>
 
         <TabsContent value="privacy" className="mt-4">
-          <Card className="glass-panel">
+          <Card >
             <CardHeader>
               <CardTitle>Privacy Notice</CardTitle>
             </CardHeader>
             <CardContent className="space-y-2 text-sm text-muted-foreground">
               <p>
-                <strong>Local Storage Only:</strong> CareerAI is a client-side application. All your academic records, scores, and personal data remain securely inside your browser's LocalStorage. We do not transmit your profile to any external servers.
+                <strong>Local Storage Only:</strong> CareerAI is a client-side application. All your academic records, scores, and personal data remain securely inside your browser&apos;s LocalStorage. We do not transmit your profile to any external servers.
               </p>
               <p>
-                <strong>Resume Analysis:</strong> The resume parsing tool processes PDF files locally using your device's computational power via pdf.js. No files are uploaded to the cloud.
+                <strong>Resume Analysis:</strong> The resume parsing tool processes PDF files locally using your device&apos;s computational power via pdf.js. No files are uploaded to the cloud.
               </p>
             </CardContent>
           </Card>
@@ -137,3 +137,5 @@ export function Settings() {
     </div>
   );
 }
+
+

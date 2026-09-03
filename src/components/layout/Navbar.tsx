@@ -62,10 +62,10 @@ export function Navbar() {
               <Link href="/predict" className={cn("transition-colors hover:text-foreground/80", pathname === '/predict' ? 'text-foreground' : 'text-foreground/60')}>
                 Predict
               </Link>
-              <Link href="/calculators" className={cn("transition-colors hover:text-foreground/80", pathname.includes('/calculators') ? 'text-foreground' : 'text-foreground/60')}>
+              <Link href="/calculators" className={cn("transition-colors hover:text-foreground/80", pathname?.includes('/calculators') ? 'text-foreground' : 'text-foreground/60')}>
                 Calculators
               </Link>
-              <Link href="/skills" className={cn("transition-colors hover:text-foreground/80", pathname.includes('/skills') ? 'text-foreground' : 'text-foreground/60')}>
+              <Link href="/skills" className={cn("transition-colors hover:text-foreground/80", pathname?.includes('/skills') ? 'text-foreground' : 'text-foreground/60')}>
                 Skills
               </Link>
               <Link href="/about" className={cn("transition-colors hover:text-foreground/80", pathname === '/about' ? 'text-foreground' : 'text-foreground/60')}>

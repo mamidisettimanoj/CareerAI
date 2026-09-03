@@ -1,21 +1,16 @@
-"use client";
-
-import { useState, useEffect } from 'react';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
-import { dataService } from '@/services/LocalStorageDataService';
-import { AppState } from '@/types';
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, ResponsiveContainer } from 'recharts';
-import { GraduationCap, AlertTriangle, CheckCircle2, TrendingUp, TrendingDown, Minus } from 'lucide-react';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { serverRepositories } from '@/services/ServerServiceLocator';
+import { AlertTriangle, CheckCircle2 } from 'lucide-react';
 import { Progress } from '@/components/ui/progress';
+import { requireUser } from '@/lib/auth';
+import { AcademicCharts } from '@/components/academic/AcademicCharts';
+import { analyzeAcademicRecord } from '@/domain/academic/engine/AcademicIntelligenceEngine';
 
-export function Academic() {
-  const [data, setData] = useState<AppState | null>(null);
-
-  useEffect(() => {
-    setData(dataService.loadData());
-  }, []);
-
-  if (!data || !data.profile) {
+export default async function Academic() {
+  await requireUser();
+  const profile = await serverRepositories.profile.getProfile();
+  
+  if (!profile) {
     return (
       <div className="text-center py-12">
         <h2 className="text-2xl font-bold mb-4">Profile Required</h2>
@@ -24,40 +19,39 @@ export function Academic() {
     );
   }
 
-  const semesters = data.semesters || [];
+  const semesters = await serverRepositories.academic.getSemesters();
   
-  // Backlog Logic
-  const backlogs = data.profile.degree.backlogs;
+  // Use Academic Intelligence Engine
+  const intelligence = analyzeAcademicRecord({
+    cgpa: profile.degree.cgpa,
+    percentage: profile.degree.percentage,
+    activeBacklogs: profile.degree.backlogs,
+    historicalBacklogs: 0,
+    semesters: semesters.map(s => ({
+      id: s.id,
+      termNumber: parseInt(s.name.replace('Semester ', '')) || 0,
+      sgpa: s.sgpa,
+      credits: s.credits
+    }))
+  });
+
+  const backlogs = profile.degree.backlogs;
+  
   let backlogRisk = 'Low';
   let backlogColor = 'text-success';
-  if (backlogs > 3) {
-    backlogRisk = 'High';
-    backlogColor = 'text-destructive';
-  } else if (backlogs > 0) {
-    backlogRisk = 'Moderate';
-    backlogColor = 'text-gold';
-  }
-
-  // SGPA Logic
-  const hasSemesters = semesters.length > 0;
-  let highestSgpa = 0;
-  let lowestSgpa = 10;
-  let avgSgpa = 0;
-  let trend = 'Stable';
-  
-  if (hasSemesters) {
-    const sgpas = semesters.map(s => s.sgpa);
-    highestSgpa = Math.max(...sgpas);
-    lowestSgpa = Math.min(...sgpas);
-    avgSgpa = sgpas.reduce((a, b) => a + b, 0) / sgpas.length;
-    
-    if (sgpas.length >= 2) {
-      const last = sgpas[sgpas.length - 1];
-      const prev = sgpas[sgpas.length - 2];
-      if (last > prev + 0.2) trend = 'Improving';
-      else if (last < prev - 0.2) trend = 'Declining';
+  if (intelligence.backlogStatus === 'ACTIVE') {
+    if (backlogs > 3) {
+      backlogRisk = 'High';
+      backlogColor = 'text-destructive';
+    } else {
+      backlogRisk = 'Moderate';
+      backlogColor = 'text-gold';
     }
   }
+
+  const hasSemesters = semesters.length > 0;
+  const highestSgpa = intelligence.metrics.bestSgpa;
+  const trend = intelligence.trend.charAt(0) + intelligence.trend.slice(1).toLowerCase();
 
   return (
     <div className="w-full max-w-5xl mx-auto px-4 sm:px-6 py-6 md:py-8 space-y-6 min-w-0">
@@ -69,27 +63,27 @@ export function Academic() {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         
         {/* Core Stats */}
-        <Card className="glass-panel">
+        <Card >
           <CardHeader className="pb-2">
             <CardTitle className="text-sm text-muted-foreground uppercase tracking-wider">Current CGPA</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-4xl font-bold text-primary">{data.profile.degree.cgpa}</div>
+            <div className="text-4xl font-bold text-primary">{profile.degree.cgpa.toFixed(2)}</div>
             <p className="text-xs text-muted-foreground mt-2">Target for most companies is 7.0+</p>
           </CardContent>
         </Card>
         
-        <Card className="glass-panel">
+        <Card >
           <CardHeader className="pb-2">
             <CardTitle className="text-sm text-muted-foreground uppercase tracking-wider">Best SGPA</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-4xl font-bold text-success">{hasSemesters ? highestSgpa.toFixed(2) : '-'}</div>
+            <div className="text-4xl font-bold text-success">{highestSgpa !== null ? highestSgpa.toFixed(2) : '-'}</div>
             <p className="text-xs text-muted-foreground mt-2">Your peak academic performance</p>
           </CardContent>
         </Card>
 
-        <Card className="glass-panel">
+        <Card >
           <CardHeader className="pb-2">
             <CardTitle className="text-sm text-muted-foreground uppercase tracking-wider">Active Backlogs</CardTitle>
           </CardHeader>
@@ -100,55 +94,10 @@ export function Academic() {
         </Card>
 
         {/* SGPA Trend Chart */}
-        <Card className="glass-panel md:col-span-2">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <TrendingUp className="h-5 w-5 text-primary" /> SGPA Trend Tracker
-            </CardTitle>
-            <CardDescription>Visualize your semester-over-semester performance.</CardDescription>
-          </CardHeader>
-          <CardContent>
-            {!hasSemesters ? (
-              <div className="h-64 flex items-center justify-center border border-dashed border-border/50 rounded text-muted-foreground">
-                No semester data added yet. Go to Dashboard to add.
-              </div>
-            ) : (
-              <div className="h-64 w-full">
-                <ResponsiveContainer width="100%" height="100%">
-                  <LineChart data={semesters} margin={{ top: 5, right: 20, bottom: 5, left: 0 }}>
-                    <CartesianGrid strokeDasharray="3 3" stroke="#333" opacity={0.5} />
-                    <XAxis dataKey="name" stroke="#888" fontSize={12} />
-                    <YAxis domain={[0, 10]} stroke="#888" fontSize={12} />
-                    <RechartsTooltip 
-                      contentStyle={{ backgroundColor: '#141b2d', borderColor: '#1f2937', color: '#fff' }}
-                      itemStyle={{ color: '#4361ee' }}
-                    />
-                    <Line type="monotone" dataKey="sgpa" stroke="#4361ee" strokeWidth={3} dot={{ r: 5, fill: '#4361ee' }} activeDot={{ r: 8 }} />
-                  </LineChart>
-                </ResponsiveContainer>
-              </div>
-            )}
-            
-            {hasSemesters && (
-              <div className="mt-6 p-4 bg-accent/5 rounded-lg border border-accent/20 flex items-start gap-3">
-                {trend === 'Improving' ? <TrendingUp className="h-5 w-5 text-success shrink-0 mt-0.5" /> : 
-                 trend === 'Declining' ? <TrendingDown className="h-5 w-5 text-destructive shrink-0 mt-0.5" /> : 
-                 <Minus className="h-5 w-5 text-gold shrink-0 mt-0.5" />}
-                <div>
-                  <p className="font-semibold text-sm">Trend: {trend}</p>
-                  <p className="text-xs text-muted-foreground mt-1">
-                    {trend === 'Improving' ? 'Great job! Your SGPA has improved recently. Maintain this momentum.' : 
-                     trend === 'Declining' ? 'Your SGPA has dipped recently. Identify weak subjects and allocate more study time.' :
-                     'Your performance is stable. Try to push it slightly higher in the upcoming semester.'}
-                  </p>
-                </div>
-              </div>
-            )}
-          </CardContent>
-        </Card>
+        <AcademicCharts semesters={semesters} hasSemesters={hasSemesters} trend={trend.replace('_', ' ')} />
 
         {/* Backlog Health */}
-        <Card className="glass-panel">
+        <Card >
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <AlertTriangle className={`h-5 w-5 ${backlogColor}`} /> Academic Health
@@ -184,3 +133,5 @@ export function Academic() {
     </div>
   );
 }
+
+

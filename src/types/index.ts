@@ -87,41 +87,7 @@ export interface UserProfile {
   targetRole: string;
 }
 
-export interface CareerEngineResult {
-  readinessScore: number;
-  academicScore: number;
-  technicalScore: number;
-  projectScore: number;
-  resumeScore: number;
-  interviewScore: number;
-  summary: string;
-  topStrengths: string[];
-  priorityImprovements: {
-    area: string;
-    reason: string;
-    action: string;
-    priority: 'HIGH' | 'MEDIUM' | 'LOW';
-  }[];
-  roleMatch: {
-    score: number;
-    breakdown: {
-      skill: string;
-      status: 'match' | 'missing' | 'warning';
-    }[];
-  };
-  sevenDayPlan: {
-    day: number;
-    focus: string;
-    task: string;
-    completed?: boolean;
-  }[];
-  thirtyDayRoadmap: {
-    week: number;
-    theme: string;
-    goals: string[];
-  }[];
-  timestamp: string;
-}
+export * from '../domain/career-intelligence/types/intelligence.types';
 
 export interface AppState {
   profile: UserProfile | null;
@@ -134,7 +100,7 @@ export interface AppState {
     theme: 'dark' | 'light';
     reducedAnimations: boolean;
   };
-  engineResult?: CareerEngineResult | null;
+  engineResult?: import('../domain/career-intelligence/types/intelligence.types').IntelligenceResult | null;
 }
 
 // ----------------------------------------------------------------------------

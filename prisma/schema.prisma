@@ -1,0 +1,727 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id            String        @id @default(uuid())
+  email         String        @unique
+  role          Role          @default(STUDENT)
+  accountStatus AccountStatus @default(ACTIVE)
+  institutionId String?
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+
+  profile              Profile?
+  institution          Institution?                 @relation(fields: [institutionId], references: [id])
+  recruiterMemberships RecruiterCompanyMembership[]
+  auditEventsAsActor   AdminAuditEvent[]
+  notifications        Notification[]
+}
+
+enum Role {
+  STUDENT
+  PLACEMENT_ADMIN
+  RECRUITER
+  SUPER_ADMIN
+}
+
+enum AccountStatus {
+  ACTIVE
+  SUSPENDED
+  DISABLED
+}
+
+enum CompanyStatus {
+  ACTIVE
+  ARCHIVED
+}
+
+enum InstitutionStatus {
+  ACTIVE
+  ARCHIVED
+}
+
+model Institution {
+  id        String            @id @default(uuid())
+  name      String            @unique
+  status    InstitutionStatus @default(ACTIVE)
+  createdAt DateTime          @default(now())
+  updatedAt DateTime          @updatedAt
+
+  users           User[]
+  placementDrives PlacementDrive[]
+  companies       Company[]
+}
+
+model Profile {
+  id         String   @id @default(uuid())
+  userId     String   @unique
+  firstName  String
+  lastName   String
+  targetRole String?
+
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  education     Education[]
+  experience    Experience[]
+  skills        Skill[]
+  projects      Project[]
+  certifications Certification[]
+  resumes       Resume[]
+  assessments   AssessmentAttempt[]
+  readinessSnapshots ReadinessSnapshot[]
+  preparationTasks PreparationTask[]
+  roadmaps      Roadmap[]
+  conversations CopilotConversation[]
+  applications  Application[]
+  driveParticipations PlacementDriveParticipation[]
+  candidateApplications CandidateApplication[]
+}
+
+model Education {
+  id           String  @id @default(uuid())
+  profileId    String
+  institution  String
+  degreeType   String
+  branch       String?
+  cgpa         Float?
+  percentage   Float?
+  startYear    Int
+  endYear      Int
+  hasBacklogs  Boolean @default(false)
+  activeBacklogs Int @default(0)
+  historicalBacklogs Int @default(0)
+
+  profile      Profile @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  semesters    Semester[]
+
+  @@index([profileId])
+}
+
+model Semester {
+  id          String    @id @default(uuid())
+  educationId String
+  termNumber  Int
+  sgpa        Float?
+  credits     Float?
+  
+  education   Education @relation(fields: [educationId], references: [id], onDelete: Cascade)
+  @@index([educationId])
+}
+
+model Experience {
+  id             String  @id @default(uuid())
+  profileId      String
+  company        String
+  role           String
+  isInternship   Boolean @default(false)
+  durationMonths Int
+
+  profile        Profile @relation(fields: [profileId], references: [id], onDelete: Cascade)
+
+  @@index([profileId])
+}
+
+model Skill {
+  id          String  @id @default(uuid())
+  profileId   String
+  name        String
+  category    String  @default("Other")
+  proficiency Int     @default(0) // 0-100
+
+  profile     Profile @relation(fields: [profileId], references: [id], onDelete: Cascade)
+
+  @@index([profileId])
+}
+
+model Project {
+  id           String   @id @default(uuid())
+  profileId    String
+  name         String
+  description  String
+  technologies String[]
+  githubUrl    String?
+  liveUrl      String?
+
+  profile      Profile  @relation(fields: [profileId], references: [id], onDelete: Cascade)
+
+  @@index([profileId])
+}
+
+model Certification {
+  id         String   @id @default(uuid())
+  profileId  String
+  name       String
+  provider   String
+  issueDate  DateTime
+
+  profile    Profile  @relation(fields: [profileId], references: [id], onDelete: Cascade)
+
+  @@index([profileId])
+}
+
+model Resume {
+  id           String    @id @default(uuid())
+  profileId    String
+  fileUrl      String    // the storage key
+  filename     String
+  mimeType     String
+  fileSize     Int
+  status       String    @default("PROCESSED")
+  completeness String    @default("MINIMAL")
+  qualityScore Float?
+  intelligence Json?
+  lastParsed   DateTime?
+
+  profile      Profile   @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  candidateApplications CandidateApplication[]
+
+  @@index([profileId])
+}
+
+model AssessmentTemplate {
+  id          String   @id @default(uuid())
+  title       String
+  description String
+  category    AssessmentType
+  difficulty  String   @default("MEDIUM")
+  duration    Int?     // in minutes
+  status      String   @default("PUBLISHED") // DRAFT, PUBLISHED, ARCHIVED
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  versions    AssessmentVersion[]
+}
+
+model AssessmentVersion {
+  id             String   @id @default(uuid())
+  assessmentId   String
+  versionNumber  Int
+  scoringVersion String   @default("1.0")
+  createdAt      DateTime @default(now())
+
+  assessment     AssessmentTemplate @relation(fields: [assessmentId], references: [id], onDelete: Cascade)
+  questions      AssessmentQuestion[]
+  attempts       AssessmentAttempt[]
+
+  @@unique([assessmentId, versionNumber])
+}
+
+model AssessmentQuestion {
+  id             String   @id @default(uuid())
+  versionId      String
+  text           String
+  category       String?
+  type           String   @default("MULTIPLE_CHOICE")
+  order          Int      @default(0)
+
+  version        AssessmentVersion @relation(fields: [versionId], references: [id], onDelete: Cascade)
+  options        AssessmentOption[]
+}
+
+model AssessmentOption {
+  id          String   @id @default(uuid())
+  questionId  String
+  text        String
+  isCorrect   Boolean  @default(false)
+  order       Int      @default(0)
+
+  question    AssessmentQuestion @relation(fields: [questionId], references: [id], onDelete: Cascade)
+}
+
+model AssessmentAttempt {
+  id             String   @id @default(uuid())
+  profileId      String
+  versionId      String
+  startTime      DateTime @default(now())
+  submissionTime DateTime?
+  status         String   @default("IN_PROGRESS") // IN_PROGRESS, COMPLETED, ABANDONED
+
+  profile        Profile  @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  version        AssessmentVersion @relation(fields: [versionId], references: [id], onDelete: Cascade)
+  answers        AssessmentAnswer[]
+  result         AssessmentResult?
+
+  @@index([profileId])
+}
+
+model AssessmentAnswer {
+  id          String   @id @default(uuid())
+  attemptId   String
+  questionId  String
+  optionId    String?  
+  createdAt   DateTime @default(now())
+
+  attempt     AssessmentAttempt @relation(fields: [attemptId], references: [id], onDelete: Cascade)
+
+  @@unique([attemptId, questionId])
+}
+
+model AssessmentResult {
+  id             String   @id @default(uuid())
+  attemptId      String   @unique
+  score          Float
+  maxScore       Float
+  percentage     Float
+  attempted      Int
+  correct        Int
+  incorrect      Int
+  unanswered     Int
+  categoryScores Json?
+  createdAt      DateTime @default(now())
+
+  attempt        AssessmentAttempt @relation(fields: [attemptId], references: [id], onDelete: Cascade)
+}
+
+enum AssessmentType {
+  APTITUDE
+  TECHNICAL
+  COMMUNICATION
+  LOGICAL_REASONING
+  ROLE_SPECIFIC
+}
+
+model ReadinessSnapshot {
+  id                   String   @id @default(uuid())
+  profileId            String
+  overallScore         Float
+  academicScore        Float
+  technicalScore       Float
+  projectScore         Float
+  resumeScore          Float
+  interviewScore       Float
+  topStrengths         String[]
+  priorityImprovements String[]
+  timestamp            DateTime @default(now())
+
+  profile              Profile  @relation(fields: [profileId], references: [id], onDelete: Cascade)
+
+  @@index([profileId])
+}
+
+model PreparationTask {
+  id               String   @id @default(uuid())
+  profileId        String
+  roadmapId        String
+  title            String
+  description      String?
+  type             String
+  priority         String   @default("MEDIUM") // HIGH, MEDIUM, LOW
+  horizon          Int      @default(30) // 7, 30, 90
+  status           String   @default("TODO") // TODO, IN_PROGRESS, COMPLETED, SKIPPED
+  estimatedMinutes Int      @default(60)
+  justification    String?
+  dependencies     String[]
+
+  profile          Profile  @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  roadmap          Roadmap  @relation(fields: [roadmapId], references: [id], onDelete: Cascade)
+
+  @@index([profileId])
+  @@index([roadmapId])
+}
+
+model Roadmap {
+  id                     String   @id @default(uuid())
+  profileId              String
+  version                Int      @default(1)
+  targetRole             String?
+  status                 String   @default("ACTIVE") // ACTIVE, ARCHIVED
+  generatedAt            DateTime @default(now())
+  sourceVersionMetadata  Json?
+
+  profile                Profile  @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  tasks                  PreparationTask[]
+
+  @@index([profileId])
+}
+
+model PlacementDrive {
+  id            String   @id @default(uuid())
+  institutionId String
+  companyId     String
+  date          DateTime
+  roles         String[]
+  status        DriveStatus @default(DRAFT)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  version       Int      @default(1)
+
+  institution   Institution @relation(fields: [institutionId], references: [id], onDelete: Cascade)
+  company       Company  @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  jobs          Job[]
+  eligibilityRules DriveEligibilityRule[]
+  participants  PlacementDriveParticipation[]
+
+  @@index([companyId])
+  @@index([institutionId])
+}
+
+enum DriveStatus {
+  DRAFT
+  OPEN
+  CLOSED
+  COMPLETED
+  CANCELLED
+}
+
+model DriveEligibilityRule {
+  id               String   @id @default(uuid())
+  placementDriveId String
+  minCgpa          Float?
+  maxActiveBacklogs Int?
+  graduationYears  Int[]
+  allowedBranches  String[]
+  requiredSkills   String[]
+  version          Int      @default(1)
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  placementDrive   PlacementDrive @relation(fields: [placementDriveId], references: [id], onDelete: Cascade)
+
+  @@index([placementDriveId])
+}
+
+model PlacementDriveParticipation {
+  id               String   @id @default(uuid())
+  placementDriveId String
+  profileId        String
+  status           ParticipationStatus @default(REGISTERED)
+  eligibilityResult String // ELIGIBLE, NOT_ELIGIBLE, INSUFFICIENT_DATA
+  eligibilityReason String?
+  ruleVersion      Int
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+  version          Int      @default(1)
+
+  placementDrive   PlacementDrive @relation(fields: [placementDriveId], references: [id], onDelete: Cascade)
+  profile          Profile        @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  events           DriveParticipationEvent[]
+
+  @@unique([placementDriveId, profileId])
+  @@index([profileId])
+}
+
+model DriveParticipationEvent {
+  id               String   @id @default(uuid())
+  participationId  String
+  actorId          String
+  previousStatus   ParticipationStatus?
+  newStatus        ParticipationStatus
+  note             String?  @db.Text
+  occurredAt       DateTime @default(now())
+
+  participation    PlacementDriveParticipation @relation(fields: [participationId], references: [id], onDelete: Cascade)
+
+  @@index([participationId])
+}
+
+enum ParticipationStatus {
+  REGISTERED
+  SHORTLISTED
+  ASSESSMENT
+  INTERVIEW
+  SELECTED
+  REJECTED
+  WITHDRAWN
+}
+
+model Company {
+  id            String        @id @default(uuid())
+  institutionId String?
+  name          String        @unique
+  description   String?
+  website       String?
+  status        CompanyStatus @default(ACTIVE)
+
+  institution     Institution?                 @relation(fields: [institutionId], references: [id], onDelete: Cascade)
+  placementDrives PlacementDrive[]
+  jobs            Job[]
+  memberships     RecruiterCompanyMembership[]
+
+  @@index([institutionId])
+  @@index([status])
+}
+
+model RecruiterCompanyMembership {
+  id        String   @id @default(uuid())
+  userId    String
+  companyId String
+  role      String   @default("MEMBER")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  company   Company  @relation(fields: [companyId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, companyId])
+  @@index([companyId])
+}
+
+
+model Job {
+  id                  String   @id @default(uuid())
+  source              String   @default("INTERNAL") // e.g., "LINKEDIN", "INTERNAL"
+  sourceJobId         String?  
+  title               String
+  companyName         String   @default("Unknown")
+  location            String?
+  remoteType          String?
+  employmentType      String?
+  experienceMin       Int?
+  experienceMax       Int?
+  salaryMin           Float?
+  salaryMax           Float?
+  salaryCurrency      String?
+  description         String   @db.Text
+  requiredSkills      String[]
+  preferredSkills     String[]
+  eligibilityCriteria Json?
+  sourceUrl           String?
+  publishedAt         DateTime?
+  expiresAt           DateTime?
+  fetchedAt           DateTime @default(now())
+  lastVerifiedAt      DateTime @default(now())
+  isActive            Boolean  @default(true) // Deprecated: use status instead
+  status              JobStatus @default(PUBLISHED)
+  version             Int      @default(1)
+
+  placementDriveId    String?
+  companyId           String?
+
+  placementDrive      PlacementDrive? @relation(fields: [placementDriveId], references: [id], onDelete: SetNull)
+  company             Company?        @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  applications        Application[]
+  candidateApplications CandidateApplication[]
+
+  @@unique([source, sourceJobId])
+  @@index([isActive])
+  @@index([status])
+  @@index([location])
+  @@index([publishedAt])
+  @@index([placementDriveId])
+  @@index([companyId])
+}
+
+enum JobStatus {
+  DRAFT
+  PUBLISHED
+  CLOSED
+  ARCHIVED
+}
+
+model Application {
+  id                    String   @id @default(uuid())
+  profileId             String
+  jobId                 String?
+  source                String   @default("MANUAL")
+  sourceDescription     String?
+  
+  // Snapshots (Immutable)
+  companySnapshot       String
+  jobTitleSnapshot      String
+  locationSnapshot      String?
+  sourceUrlSnapshot     String?
+  employmentTypeSnapshot String?
+  remoteTypeSnapshot    String?
+  salarySnapshot        String?
+  
+  // Match Snapshot metadata
+  matchScoreSnapshot    Float?
+  matchEngineVersion    String?
+  matchCapturedAt       DateTime?
+  
+  status                ApplicationStatus @default(SAVED)
+  appliedAt             DateTime?
+  createdAt             DateTime @default(now())
+  updatedAt             DateTime @updatedAt
+  
+  version               Int      @default(1)
+  archivedAt            DateTime?
+  
+  notes                 String?  @db.Text
+  
+  profile               Profile  @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  job                   Job?     @relation(fields: [jobId], references: [id], onDelete: SetNull)
+  events                ApplicationEvent[]
+  
+  @@index([profileId])
+  @@index([jobId])
+}
+
+model ApplicationEvent {
+  id               String   @id @default(uuid())
+  applicationId    String
+  previousStatus   ApplicationStatus?
+  newStatus        ApplicationStatus
+  note             String?  @db.Text
+  occurredAt       DateTime @default(now())
+  
+  application      Application @relation(fields: [applicationId], references: [id], onDelete: Cascade)
+  
+  @@index([applicationId])
+}
+
+enum ApplicationStatus {
+  SAVED
+  APPLIED
+  SCREENING
+  ASSESSMENT
+  INTERVIEW
+  OFFER
+  ACCEPTED
+  REJECTED
+  WITHDRAWN
+  ON_HOLD
+}
+
+model CandidateApplication {
+  id             String   @id @default(uuid())
+  jobId          String
+  profileId      String
+  status         RecruitmentStage @default(RECEIVED)
+  resumeId       String?
+  appliedAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+  version        Int      @default(1)
+
+  job            Job      @relation(fields: [jobId], references: [id], onDelete: Cascade)
+  profile        Profile  @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  resume         Resume?  @relation(fields: [resumeId], references: [id], onDelete: SetNull)
+  events         RecruitmentEvent[]
+  notes          RecruiterNote[]
+
+  @@unique([jobId, profileId])
+  @@index([profileId])
+  @@index([jobId])
+}
+
+model RecruitmentEvent {
+  id               String   @id @default(uuid())
+  applicationId    String
+  actorId          String
+  previousStage    RecruitmentStage?
+  newStage         RecruitmentStage
+  note             String?  @db.Text
+  occurredAt       DateTime @default(now())
+
+  application      CandidateApplication @relation(fields: [applicationId], references: [id], onDelete: Cascade)
+
+  @@index([applicationId])
+}
+
+model RecruiterNote {
+  id               String   @id @default(uuid())
+  applicationId    String
+  actorId          String
+  content          String   @db.Text
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  application      CandidateApplication @relation(fields: [applicationId], references: [id], onDelete: Cascade)
+
+  @@index([applicationId])
+}
+
+enum RecruitmentStage {
+  RECEIVED
+  REVIEWING
+  SHORTLISTED
+  ASSESSMENT
+  INTERVIEW
+  OFFER
+  HIRED
+  REJECTED
+  WITHDRAWN
+}
+
+model CopilotConversation {
+  id          String   @id @default(uuid())
+  profileId   String
+  title       String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  profile     Profile  @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  messages    CopilotMessage[]
+
+  @@index([profileId])
+}
+
+model CopilotMessage {
+  id             String   @id @default(uuid())
+  conversationId String
+  role           String   // 'user' or 'assistant'
+  content        String   @db.Text
+  structuredData Json?
+  createdAt      DateTime @default(now())
+
+  conversation   CopilotConversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+
+  @@index([conversationId])
+}
+
+// Append-only platform governance audit trail.
+// No UPDATE or DELETE should ever be issued on this table.
+// Actor is always server-resolved from the authenticated session.
+model AdminAuditEvent {
+  id         String   @id @default(uuid())
+  actorId    String
+  actorRole  Role
+  action     String
+  entityType String
+  entityId   String
+  metadata   Json?
+  occurredAt DateTime @default(now())
+
+  actor User @relation(fields: [actorId], references: [id])
+
+  @@index([actorId])
+  @@index([entityType, entityId])
+  @@index([occurredAt])
+}
+
+enum NotificationType {
+  // Student events
+  APPLICATION_STATUS_CHANGED
+  INTERVIEW_SCHEDULED
+  PLACEMENT_DRIVE_AVAILABLE
+  
+  // Recruiter events
+  NEW_CANDIDATE_APPLICATION
+  CANDIDATE_STAGE_CHANGED
+  JOB_STATUS_CHANGED
+  
+  // Placement Admin events
+  STUDENT_PLACEMENT_UPDATE
+  
+  // Global / System
+  SYSTEM_NOTIFICATION
+  ADMIN_ACTION_ALERT
+}
+
+model Notification {
+  id                String           @id @default(uuid())
+  recipientUserId   String
+  type              NotificationType
+  title             String
+  message           String           @db.Text
+  readAt            DateTime?
+  createdAt         DateTime         @default(now())
+  
+  relatedEntityType String?
+  relatedEntityId   String?
+  metadata          Json?
+  
+  idempotencyKey    String?
+  
+  recipient         User             @relation(fields: [recipientUserId], references: [id], onDelete: Cascade)
+
+  @@unique([recipientUserId, idempotencyKey])
+  @@index([recipientUserId, createdAt(sort: Desc)])
+  @@index([recipientUserId, readAt])
+}

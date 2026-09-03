@@ -9,7 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { ArrowRightLeft, Plus, Trash2, Calculator } from 'lucide-react';
 import { Progress } from '@/components/ui/progress';
 
-export function Calculators() {
+export default function Calculators() {
   // CGPA to Percentage State
   const [cgpa, setCgpa] = useState<string>('');
   const [percentage, setPercentage] = useState<string>('');
@@ -122,7 +122,7 @@ export function Calculators() {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         
         {/* CGPA to Percentage Converter */}
-        <Card className="glass-panel w-full">
+        <Card className="w-full">
           <CardHeader>
             <CardTitle>CGPA ↔ Percentage</CardTitle>
             <CardDescription>Convert your CGPA based on university rules.</CardDescription>
@@ -170,7 +170,7 @@ export function Calculators() {
         </Card>
 
         {/* Attendance Calculator */}
-        <Card className="glass-panel w-full flex flex-col">
+        <Card className="w-full flex flex-col">
           <CardHeader>
             <CardTitle>Attendance Calculator</CardTitle>
             <CardDescription>Track if you meet your university requirements.</CardDescription>
@@ -230,7 +230,7 @@ export function Calculators() {
         </Card>
 
         {/* SGPA Calculator */}
-        <Card className="glass-panel lg:col-span-2 w-full">
+        <Card className="lg:col-span-2 w-full">
           <CardHeader>
             <CardTitle>SGPA Calculator</CardTitle>
             <CardDescription>Calculate your Semester Grade Point Average.</CardDescription>
@@ -291,3 +291,5 @@ export function Calculators() {
     </div>
   );
 }
+
+

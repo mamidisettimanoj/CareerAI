@@ -3,11 +3,11 @@
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Database, BrainCircuit, ShieldCheck, Code2 } from 'lucide-react';
 
-export function About() {
+export default function About() {
   return (
     <div className="space-y-8 max-w-4xl mx-auto">
       <div className="text-center space-y-4 mb-12">
-        <h1 className="text-4xl font-heading font-bold text-gradient inline-block">About CareerAI</h1>
+        <h1 className="text-4xl font-heading font-bold inline-block">About CareerAI</h1>
         <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
           Understanding the methodology and technology behind the student career & placement analyzer.
         </p>
@@ -17,7 +17,7 @@ export function About() {
       </div>
 
       <div className="grid gap-6 md:grid-cols-2">
-        <Card className="glass-panel">
+        <Card >
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <BrainCircuit className="h-5 w-5 text-primary" />
@@ -37,7 +37,7 @@ export function About() {
           </CardContent>
         </Card>
 
-        <Card className="glass-panel">
+        <Card >
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <ShieldCheck className="h-5 w-5 text-success" />
@@ -49,7 +49,7 @@ export function About() {
               CareerAI is a <strong>100% Client-Side</strong> application. This means there is no backend database collecting your personal information.
             </p>
             <p>
-              All academic records, scores, and tasks are stored locally within your browser's <code className="bg-muted px-1 py-0.5 rounded">LocalStorage</code>. If you clear your browser data, your profile will be reset.
+              All academic records, scores, and tasks are stored locally within your browser&apos;s <code className="bg-muted px-1 py-0.5 rounded">LocalStorage</code>. If you clear your browser data, your profile will be reset.
             </p>
             <p>
               You can use the <strong>Settings</strong> page to export your data securely as a JSON file and import it on another device.
@@ -58,7 +58,7 @@ export function About() {
         </Card>
       </div>
 
-      <Card className="glass-panel border-cyan-400/20 bg-cyan-400/5 mt-8">
+      <Card className="border-cyan-400/20 bg-cyan-400/5 mt-8">
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Code2 className="h-5 w-5 text-cyan-400" />
@@ -106,3 +106,5 @@ export function About() {
     </div>
   );
 }
+
+
