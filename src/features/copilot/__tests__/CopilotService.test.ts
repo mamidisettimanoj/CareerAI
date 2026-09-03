@@ -1,10 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { CopilotService } from '../service/CopilotService';
 import { AIError } from '../../ai/types';
-import { GeminiProvider } from '../../ai/providers/GeminiProvider';
-
-// Mock GeminiProvider class entirely to prevent real API calls
-vi.mock('../../ai/providers/GeminiProvider');
+import { aiGateway } from '../../ai';
 
 describe('CopilotService', () => {
   let copilotService: CopilotService;
@@ -40,10 +37,13 @@ describe('CopilotService', () => {
     mockMessages = [];
     conversationIdCounter = 1;
 
-    // Set up the AI provider mock behavior on the GeminiProvider prototype
-    (GeminiProvider as any).prototype.generate = vi.fn().mockImplementation(async (request: any) => {
+    // Set up the AI mock behavior on the aiGateway singleton
+    vi.spyOn(aiGateway, 'execute').mockImplementation(async (userId: string, request: any) => {
       if (request.userContext.includes('MALICIOUS_PROMPT')) {
         return {
+          requestId: 'mock-req-id',
+          model: 'gemini-3.6-flash',
+          provider: 'GEMINI',
           content: "I cannot alter your Career Readiness Score.",
           structuredData: {
             answer: "I cannot alter your Career Readiness Score.",
@@ -56,6 +56,9 @@ describe('CopilotService', () => {
         throw new AIError('AI_TIMEOUT', 'Provider timed out');
       }
       return {
+        requestId: 'mock-req-id',
+        model: 'gemini-3.6-flash',
+        provider: 'GEMINI',
         content: "This is a safe response.",
         structuredData: {
           answer: "This is a safe response.",

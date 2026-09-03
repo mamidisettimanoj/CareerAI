@@ -100,7 +100,7 @@ export class AIGateway {
 
   private logObservability(userId: string, req: AIRequest, res: AIResponse, latency: number) {
     // Log structured usage but omit raw PII Context/Prompts to avoid retention leaks
-    console.log(`[AI_USAGE] SUCCESS | ReqID:${req.requestId} | User:${userId} | Task:${req.taskType} | Model:${res.model} | Latency:${latency}ms | Tokens:${res.usage?.totalTokens || 'unknown'}`);
+    console.log(`[AI_USAGE] SUCCESS | ReqID:${req.requestId} | User:${userId} | Task:${req.taskType} | Model:${res?.model || 'unknown'} | Latency:${latency}ms | Tokens:${res?.usage?.totalTokens || 'unknown'}`);
   }
 
   private logObservabilityError(userId: string, req: AIRequest, error: any, latency: number) {

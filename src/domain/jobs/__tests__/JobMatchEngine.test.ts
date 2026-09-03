@@ -10,7 +10,7 @@ vi.mock('../../../domain/skills/engine/SkillNormalizer', () => ({
 
 vi.mock('../../../domain/career-intelligence/config/roleCatalog', () => ({
   getRoleDefinition: vi.fn((roleId) => {
-    if (roleId === 'SOFTWARE ENGINEER') return { id: 'SOFTWARE ENGINEER' };
+    if (roleId === 'SOFTWARE ENGINEER') return { id: 'software-engineer' };
     return undefined;
   })
 }));
