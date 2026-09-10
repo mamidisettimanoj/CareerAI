@@ -117,7 +117,7 @@ export default function BackupCenter() {
   };
 
   return (
-    <div className="max-w-4xl mx-auto px-4 py-8 space-y-6">
+    <div className="space-y-6">
       <div className="border-b pb-4">
         <h1 className="text-3xl font-heading font-bold flex items-center gap-2"><HardDrive className="h-6 w-6 text-primary"/> Backup Center</h1>
         <p className="text-muted-foreground mt-1">Export, import, and verify your local database integrity.</p>

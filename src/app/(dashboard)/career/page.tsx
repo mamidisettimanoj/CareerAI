@@ -75,7 +75,7 @@ export default function CareerReadinessPage() {
   );
 
   return (
-    <div className="w-full max-w-6xl mx-auto px-4 sm:px-6 py-6 md:py-8 space-y-6">
+    <div className="space-y-6">
       <div>
         <h1 className="text-2xl md:text-3xl font-heading font-bold flex items-center gap-2">
           <Target className="h-6 w-6 text-primary" /> Career Readiness Center

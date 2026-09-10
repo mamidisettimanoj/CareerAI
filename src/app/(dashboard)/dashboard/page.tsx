@@ -67,16 +67,16 @@ export default function StudentCommandCenter() {
   const offered = applications.filter(a => a.status === 'OFFERED').length;
 
   return (
-    <div className="space-y-8 w-full max-w-7xl mx-auto px-4 py-6 md:py-8">
+    <div className="space-y-6 sm:space-y-8">
       
       {/* Header Section */}
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-4 border-b pb-6">
-        <div>
-          <h1 className="text-3xl md:text-4xl font-heading font-bold tracking-tight">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-end gap-4 border-b border-border/60 pb-4 sm:pb-6">
+        <div className="min-w-0">
+          <h1 className="page-title">
             Welcome back, {profile.personal.name || 'Student'}
           </h1>
-          <p className="text-lg text-muted-foreground mt-2">
-            {profile.degree.type} • {profile.degree.branch} • Target Role: {profile.targetRole || 'Not set'}
+          <p className="text-sm sm:text-base text-muted-foreground mt-1 sm:mt-2 break-words">
+            {profile.degree.type} • {profile.degree.branch} • Target: {profile.targetRole || 'Not set'}
           </p>
         </div>
         <div className="flex flex-wrap gap-2">
@@ -86,7 +86,7 @@ export default function StudentCommandCenter() {
       </div>
 
       {/* Core KPIs */}
-      <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4">
+      <div className="kpi-grid">
         <Card className="bg-primary/5 border-primary/20">
           <CardContent className="p-4">
             <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Career Readiness</p>
@@ -111,7 +111,7 @@ export default function StudentCommandCenter() {
             <div className="text-3xl font-bold mt-2">{interviewing}</div>
           </CardContent>
         </Card>
-        <Card className="hidden lg:block">
+        <Card className="hidden sm:block">
           <CardContent className="p-4">
             <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Profile Health</p>
             <div className="text-3xl font-bold mt-2">{profileCompleteness}%</div>
@@ -119,7 +119,7 @@ export default function StudentCommandCenter() {
         </Card>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div className="responsive-grid">
         
         {/* Academic Snapshot */}
         <Card>

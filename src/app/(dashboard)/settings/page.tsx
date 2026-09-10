@@ -21,9 +21,9 @@ export default function Settings() {
   };
 
   return (
-    <div className="space-y-6 max-w-4xl mx-auto px-4 py-8">
+    <div className="space-y-6">
       <div className="border-b pb-4">
-        <h1 className="text-3xl font-heading font-bold">Settings & Preferences</h1>
+        <h1 className="page-title">Settings & Preferences</h1>
         <p className="text-muted-foreground mt-1">Manage your local workspace, data backups, and privacy.</p>
       </div>
 

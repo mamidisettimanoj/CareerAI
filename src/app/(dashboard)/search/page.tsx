@@ -70,9 +70,9 @@ export default function GlobalSearchPage() {
   }, [query, projects, skills, applications, internships, certifications, goals]);
 
   return (
-    <div className="w-full max-w-3xl mx-auto px-4 py-6 md:py-12 space-y-6">
+    <div className="space-y-6">
       <div className="text-center space-y-2">
-        <h1 className="text-3xl font-heading font-bold">Global Search</h1>
+        <h1 className="page-title">Global Search</h1>
         <p className="text-muted-foreground">Find anything in your local workspace instantly.</p>
       </div>
 

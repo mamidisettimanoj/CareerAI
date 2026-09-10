@@ -5,10 +5,10 @@ import { Database, BrainCircuit, ShieldCheck, Code2 } from 'lucide-react';
 
 export default function About() {
   return (
-    <div className="space-y-8 max-w-4xl mx-auto">
-      <div className="text-center space-y-4 mb-12">
-        <h1 className="text-4xl font-heading font-bold inline-block">About CareerAI</h1>
-        <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+    <div className="space-y-6 sm:space-y-8">
+      <div className="text-center space-y-3 sm:space-y-4 mb-6 sm:mb-10">
+        <h1 className="page-title">About CareerAI</h1>
+        <p className="text-sm sm:text-base text-muted-foreground max-w-2xl mx-auto">
           Understanding the methodology and technology behind the student career & placement analyzer.
         </p>
         <p className="text-sm font-medium text-accent pt-2">
@@ -49,7 +49,7 @@ export default function About() {
               CareerAI is a <strong>100% Client-Side</strong> application. This means there is no backend database collecting your personal information.
             </p>
             <p>
-              All academic records, scores, and tasks are stored locally within your browser&apos;s <code className="bg-muted px-1 py-0.5 rounded">LocalStorage</code>. If you clear your browser data, your profile will be reset.
+              All academic records, scores, and tasks are stored locally within your browser&apos;s <code className="bg-muted px-1 py-0.5 rounded text-foreground">IndexedDB</code> via Dexie.js. If you clear your browser data, your profile will be reset.
             </p>
             <p>
               You can use the <strong>Settings</strong> page to export your data securely as a JSON file and import it on another device.
@@ -58,7 +58,7 @@ export default function About() {
         </Card>
       </div>
 
-      <Card className="border-cyan-400/20 bg-cyan-400/5 mt-8">
+      <Card className="border-cyan-400/20 bg-cyan-400/5 mt-4 sm:mt-8">
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Code2 className="h-5 w-5 text-cyan-400" />
@@ -67,7 +67,7 @@ export default function About() {
           <CardDescription>Built with modern web technologies for performance and scale.</CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4 text-center">
             <div className="p-4 bg-card rounded-lg border border-border">
               <div className="font-bold text-foreground">React 18</div>
               <div className="text-xs text-muted-foreground">UI Library</div>

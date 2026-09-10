@@ -4,7 +4,7 @@
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
+    --background: 210 20% 98%;
     --foreground: 222.2 84% 4.9%;
 
     --card: 0 0% 100%;
@@ -21,9 +21,9 @@
     --secondary: 210 40% 96.1%;
     --secondary-foreground: 222.2 47.4% 11.2%;
 
-    /* Muted: Slate-100 */
+    /* Muted — improved contrast */
     --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
+    --muted-foreground: 215 20% 40%;
 
     /* Accent: Indigo-50 */
     --accent: 210 40% 96.1%;
@@ -33,26 +33,29 @@
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 210 40% 98%;
 
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
+    --border: 214.3 31.8% 88%;
+    --input: 214.3 31.8% 88%;
     --ring: 221.2 83.2% 53.3%;
 
     --radius: 0.5rem;
 
     /* Semantic Status Colors */
-    --success: 142.1 76.2% 36.3%; /* Green 600 */
-    --warning: 38 92% 50%; /* Amber 500 */
-    --info: 199 89% 48%; /* Sky 500 */
+    --success: 142.1 76.2% 36.3%;
+    --success-foreground: 0 0% 100%;
+    --warning: 38 92% 50%;
+    --warning-foreground: 0 0% 100%;
+    --info: 199 89% 48%;
+    --info-foreground: 0 0% 100%;
   }
 
   .dark {
     --background: 222.2 84% 4.9%;
     --foreground: 210 40% 98%;
 
-    --card: 222.2 84% 4.9%;
+    --card: 224 50% 8%;
     --card-foreground: 210 40% 98%;
 
-    --popover: 222.2 84% 4.9%;
+    --popover: 224 50% 8%;
     --popover-foreground: 210 40% 98%;
 
     /* Primary: Indigo-500 */
@@ -63,7 +66,7 @@
     --secondary-foreground: 210 40% 98%;
 
     --muted: 217.2 32.6% 17.5%;
-    --muted-foreground: 215 20.2% 65.1%;
+    --muted-foreground: 215 20% 65%;
 
     --accent: 217.2 32.6% 17.5%;
     --accent-foreground: 210 40% 98%;
@@ -71,22 +74,77 @@
     --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 210 40% 98%;
 
-    --border: 217.2 32.6% 17.5%;
-    --input: 217.2 32.6% 17.5%;
+    --border: 217.2 32.6% 20%;
+    --input: 217.2 32.6% 20%;
     --ring: 224.3 76.3% 48%;
 
     /* Semantic Status Colors */
-    --success: 142.1 70.6% 45.3%; /* Green 500 */
-    --warning: 47.9 95.8% 53.1%; /* Yellow 500 */
-    --info: 199 89% 48%; /* Sky 500 */
+    --success: 142.1 70.6% 45.3%;
+    --success-foreground: 0 0% 100%;
+    --warning: 47.9 95.8% 53.1%;
+    --warning-foreground: 0 0% 0%;
+    --info: 199 89% 48%;
+    --info-foreground: 0 0% 100%;
   }
 }
 
 @layer base {
+  html {
+    overflow-x: hidden;
+    -webkit-text-size-adjust: 100%;
+    scroll-behavior: smooth;
+  }
   * {
     @apply border-border;
   }
   body {
     @apply bg-background text-foreground font-sans antialiased;
+    overflow-x: hidden;
+  }
+}
+
+/* --- Responsive utility classes --- */
+@layer components {
+  .page-container {
+    @apply w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6 lg:py-8;
+  }
+  .page-header {
+    @apply mb-6 sm:mb-8;
+  }
+  .page-title {
+    @apply text-xl sm:text-2xl lg:text-3xl font-heading font-bold tracking-tight;
+  }
+  .page-description {
+    @apply text-sm sm:text-base text-muted-foreground mt-1 sm:mt-2;
+  }
+  .section-title {
+    @apply text-lg sm:text-xl font-semibold tracking-tight;
+  }
+  .responsive-grid {
+    @apply grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6;
+  }
+  .kpi-grid {
+    @apply grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 sm:gap-4;
+  }
+}
+
+/* --- Scrollbar hiding for tabs --- */
+@layer utilities {
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+/* --- Reduced motion --- */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
   }
 }

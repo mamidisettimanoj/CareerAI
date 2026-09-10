@@ -91,7 +91,7 @@ function ApplicationDetailContent() {
   };
 
   return (
-    <div className="w-full max-w-4xl mx-auto px-4 sm:px-6 py-6 md:py-8 space-y-6">
+    <div className="space-y-6">
       <div className="flex items-center justify-between mb-4">
         <Link href="/placement/applications">
           <Button variant="ghost" size="sm" className="px-2"><ArrowLeft className="h-4 w-4 mr-1" /> Back to Pipeline</Button>
@@ -109,7 +109,7 @@ function ApplicationDetailContent() {
       <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-4 border-b pb-6">
         <div>
           <div className="flex items-center gap-3 mb-2">
-            <h1 className="text-3xl font-heading font-bold">{application.companyName}</h1>
+            <h1 className="page-title">{application.companyName}</h1>
             <Badge variant="default" className="text-sm">{application.status}</Badge>
           </div>
           <p className="text-lg text-muted-foreground flex items-center gap-2"><Briefcase className="h-5 w-5" /> {application.roleTitle}</p>
@@ -125,7 +125,7 @@ function ApplicationDetailContent() {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
         
         {/* Left Col: Details & Interviews */}
         <div className="md:col-span-2 space-y-6">

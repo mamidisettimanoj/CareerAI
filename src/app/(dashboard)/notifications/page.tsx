@@ -32,7 +32,7 @@ export default function NotificationsCenter() {
   };
 
   return (
-    <div className="w-full max-w-4xl mx-auto px-4 py-6 space-y-6">
+    <div className="space-y-6">
       <div className="flex justify-between items-end border-b pb-4">
         <div>
           <h1 className="text-2xl md:text-3xl font-bold flex items-center gap-2">

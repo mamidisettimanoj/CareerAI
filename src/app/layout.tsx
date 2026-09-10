@@ -24,10 +24,10 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <head>
         <link rel="manifest" href="/manifest.json" />
-        <meta name="theme-color" content="#2563eb" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
       </head>
       <body className={`${inter.variable} font-sans antialiased`}>
-        <div className="relative flex min-h-screen flex-col bg-background">
+        <div className="relative flex min-h-screen flex-col bg-background overflow-x-hidden">
           <main className="flex-1 w-full min-w-0 flex flex-col">
             {children}
           </main>

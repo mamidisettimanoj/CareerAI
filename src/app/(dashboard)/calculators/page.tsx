@@ -127,7 +127,7 @@ export default function Calculators() {
   };
 
   return (
-    <div className="w-full max-w-5xl mx-auto px-4 sm:px-6 py-6 md:py-8 space-y-6 min-w-0">
+    <div className="space-y-6">
       <div>
         <h1 className="text-2xl md:text-3xl font-heading font-bold">Academic Calculators</h1>
         <p className="text-sm md:text-base text-muted-foreground">Comprehensive toolset for planning your academic trajectory.</p>

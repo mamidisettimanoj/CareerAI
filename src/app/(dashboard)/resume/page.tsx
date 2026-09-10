@@ -48,7 +48,7 @@ export default function ResumeStudio() {
   };
 
   return (
-    <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 py-6 md:py-8 space-y-6">
+    <div className="space-y-6">
       
       {/* Hide controls when printing */}
       <div className="print:hidden flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-b pb-4">

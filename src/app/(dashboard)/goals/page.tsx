@@ -86,7 +86,7 @@ export default function GoalsPage() {
   };
 
   return (
-    <div className="w-full max-w-6xl mx-auto px-4 sm:px-6 py-6 md:py-8 space-y-6">
+    <div className="space-y-6">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
           <h1 className="text-2xl md:text-3xl font-heading font-bold">Goals & Targets</h1>
@@ -95,7 +95,7 @@ export default function GoalsPage() {
         <Button onClick={handleAdd} disabled={isAdding}><Plus className="h-4 w-4 mr-2" /> New Goal</Button>
       </div>
 
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+      <div className="kpi-grid">
         <Card><CardContent className="p-4"><p className="text-sm text-muted-foreground">Total Goals</p><p className="text-2xl font-bold">{goals.length}</p></CardContent></Card>
         <Card><CardContent className="p-4"><p className="text-sm text-muted-foreground">In Progress</p><p className="text-2xl font-bold text-primary">{goals.filter(g => g.status === 'In Progress').length}</p></CardContent></Card>
         <Card><CardContent className="p-4"><p className="text-sm text-muted-foreground">Completed</p><p className="text-2xl font-bold text-success">{goals.filter(g => g.status === 'Completed').length}</p></CardContent></Card>

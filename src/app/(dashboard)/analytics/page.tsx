@@ -38,7 +38,7 @@ export default function AnalyticsDashboard() {
   const activeGoals = goals.filter(g => g.status === 'In Progress').length;
 
   return (
-    <div className="w-full max-w-7xl mx-auto px-4 py-6 md:py-8 space-y-6">
+    <div className="space-y-6">
       <div className="border-b pb-4">
         <h1 className="text-2xl md:text-3xl font-heading font-bold flex items-center gap-2">
           <LineChart className="h-6 w-6 text-primary" /> Cross-Module Analytics
@@ -46,7 +46,7 @@ export default function AnalyticsDashboard() {
         <p className="text-sm md:text-base text-muted-foreground mt-1">Unified view of your growth across academics, skills, and placements.</p>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <Card>
           <CardContent className="p-4 flex flex-col justify-center items-center text-center">
             <BookOpen className="h-8 w-8 text-blue-500 mb-2" />

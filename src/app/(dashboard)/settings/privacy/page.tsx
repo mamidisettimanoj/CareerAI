@@ -22,7 +22,7 @@ export default function PrivacyCenter() {
   };
 
   return (
-    <div className="max-w-4xl mx-auto px-4 py-8 space-y-6">
+    <div className="space-y-6">
       <div className="border-b pb-4">
         <h1 className="text-3xl font-heading font-bold flex items-center gap-2"><Shield className="h-6 w-6 text-primary"/> Privacy Center</h1>
         <p className="text-muted-foreground mt-1">Understand your data footprint and maintain complete control.</p>

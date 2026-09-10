@@ -55,9 +55,9 @@ export function EligibilityClient({ input }: EligibilityClientProps) {
 
   return (
     <div className="space-y-6 max-w-5xl mx-auto">
-      <div>
-        <h1 className="text-3xl font-heading font-bold">Placement Eligibility Checker</h1>
-        <p className="text-muted-foreground">Check if your profile meets specific company requirements.</p>
+      <div className="border-b border-border/60 pb-4">
+        <h1 className="page-title">Placement Eligibility</h1>
+        <p className="text-muted-foreground mt-1">Check if your profile meets specific company requirements.</p>
       </div>
 
       <div className="flex gap-2 mb-4 overflow-x-auto pb-2">

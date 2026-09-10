@@ -66,7 +66,7 @@ const TOOLS = [
 
 export default function Home() {
   return (
-    <div className="flex flex-col items-center justify-center min-h-[calc(100vh-4rem)] bg-background relative overflow-hidden py-12">
+    <div className="flex flex-col items-center justify-center min-h-[calc(100vh-3.5rem)] bg-background relative overflow-hidden py-8 sm:py-12">
       
       {/* Background decorations */}
       <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-primary/20 rounded-full blur-3xl pointer-events-none" />
@@ -77,13 +77,13 @@ export default function Home() {
           STUDENT CAREER & PLACEMENT ANALYZER
         </div>
         
-        <h1 className="font-heading text-4xl md:text-6xl font-bold tracking-tight mb-6 leading-tight">
-          Build a stronger academic profile.<br className="hidden md:block" />
-          Build stronger technical skills.<br className="hidden md:block" />
-          Become <span >placement ready</span>.
+        <h1 className="font-heading text-3xl sm:text-4xl md:text-6xl font-bold tracking-tight mb-4 sm:mb-6 leading-tight">
+          Build a stronger academic profile.<br className="hidden sm:block" />
+          Build stronger technical skills.<br className="hidden sm:block" />
+          Become <span className="text-primary">placement ready</span>.
         </h1>
         
-        <p className="max-w-[700px] text-muted-foreground text-lg md:text-xl mb-8">
+        <p className="max-w-[700px] text-muted-foreground text-base sm:text-lg md:text-xl mb-6 sm:mb-8">
           A completely local-first Student Operating System. Track academics, prepare for interviews, and manage placements with total privacy.
         </p>
         
@@ -101,7 +101,7 @@ export default function Home() {
           </a>
         </div>
         
-        <div id="explore-tools" className="w-full max-w-6xl grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 pt-8">
+        <div id="explore-tools" className="w-full max-w-6xl grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-6 pt-4 sm:pt-8">
           {TOOLS.map((tool, idx) => (
             <Link key={idx} href={tool.href} className="block group">
               <div className="p-6 flex flex-col items-center text-center h-full transition-all duration-300">
