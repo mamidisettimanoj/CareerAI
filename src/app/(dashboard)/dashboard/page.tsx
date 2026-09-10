@@ -88,31 +88,31 @@ export default function StudentCommandCenter() {
       {/* Core KPIs */}
       <div className="kpi-grid">
         <Card className="bg-primary/5 border-primary/20">
-          <CardContent className="p-4">
+          <CardContent className="flex flex-col justify-center p-4 sm:p-5 min-h-[110px]">
             <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Career Readiness</p>
             <div className="text-3xl font-bold mt-2 text-primary">{readinessScore}</div>
           </CardContent>
         </Card>
         <Card>
-          <CardContent className="p-4">
+          <CardContent className="flex flex-col justify-center p-4 sm:p-5 min-h-[110px]">
             <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">CGPA</p>
             <div className="text-3xl font-bold mt-2">{profile.degree.cgpa.toFixed(2)}</div>
           </CardContent>
         </Card>
         <Card>
-          <CardContent className="p-4">
+          <CardContent className="flex flex-col justify-center p-4 sm:p-5 min-h-[110px]">
             <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Applications</p>
             <div className="text-3xl font-bold mt-2">{applications.length}</div>
           </CardContent>
         </Card>
         <Card>
-          <CardContent className="p-4">
+          <CardContent className="flex flex-col justify-center p-4 sm:p-5 min-h-[110px]">
             <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Interviews</p>
             <div className="text-3xl font-bold mt-2">{interviewing}</div>
           </CardContent>
         </Card>
         <Card className="hidden sm:block">
-          <CardContent className="p-4">
+          <CardContent className="flex flex-col justify-center p-4 sm:p-5 min-h-[110px]">
             <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Profile Health</p>
             <div className="text-3xl font-bold mt-2">{profileCompleteness}%</div>
           </CardContent>

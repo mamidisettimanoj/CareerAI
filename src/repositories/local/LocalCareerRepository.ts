@@ -28,7 +28,8 @@ export class LocalCareerRepository implements ICareerRepository {
   async getPredictions(): Promise<PredictionResult[]> {
     if (!db) return [];
     try {
-      return await db.predictions.orderBy('date').reverse().toArray();
+      const all = await db.predictions.toArray();
+      return all.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
     } catch (error) {
       console.error("Failed to get predictions from DB", error);
       return [];

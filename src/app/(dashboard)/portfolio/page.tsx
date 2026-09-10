@@ -98,7 +98,7 @@ export default function PortfolioDashboard() {
 
           <Link href="/internships" className="block">
             <Card className="hover:border-primary transition-colors h-full cursor-pointer">
-              <CardContent className="p-4 flex items-center justify-between">
+              <CardContent className="p-4 sm:p-6 flex items-center justify-between h-full min-h-[100px]">
                 <div className="flex items-center gap-3">
                   <Briefcase className="h-8 w-8 text-orange-500" />
                   <div>
@@ -113,7 +113,7 @@ export default function PortfolioDashboard() {
 
           <Link href="/certifications" className="block">
             <Card className="hover:border-primary transition-colors h-full cursor-pointer">
-              <CardContent className="p-4 flex items-center justify-between">
+              <CardContent className="p-4 sm:p-6 flex items-center justify-between h-full min-h-[100px]">
                 <div className="flex items-center gap-3">
                   <Award className="h-8 w-8 text-green-500" />
                   <div>
@@ -128,7 +128,7 @@ export default function PortfolioDashboard() {
 
           <Link href="/achievements" className="block">
             <Card className="hover:border-primary transition-colors h-full cursor-pointer">
-              <CardContent className="p-4 flex items-center justify-between">
+              <CardContent className="p-4 sm:p-6 flex items-center justify-between h-full min-h-[100px]">
                 <div className="flex items-center gap-3">
                   <Trophy className="h-8 w-8 text-yellow-500" />
                   <div>
@@ -143,7 +143,7 @@ export default function PortfolioDashboard() {
 
           <Link href="/resume" className="block">
             <Card className="hover:border-primary transition-colors h-full cursor-pointer bg-primary/5">
-              <CardContent className="p-4 flex items-center justify-between">
+              <CardContent className="p-4 sm:p-6 flex items-center justify-between h-full min-h-[100px]">
                 <div className="flex items-center gap-3">
                   <FileText className="h-8 w-8 text-primary" />
                   <div>

@@ -68,35 +68,35 @@ export default function About() {
         </CardHeader>
         <CardContent>
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4 text-center">
-            <div className="p-4 bg-card rounded-lg border border-border">
+            <div className="flex flex-col justify-center p-4 sm:p-5 bg-card rounded-lg border border-border min-h-[100px]">
               <div className="font-bold text-foreground">React 18</div>
               <div className="text-xs text-muted-foreground">UI Library</div>
             </div>
-            <div className="p-4 bg-card rounded-lg border border-border">
+            <div className="flex flex-col justify-center p-4 sm:p-5 bg-card rounded-lg border border-border min-h-[100px]">
               <div className="font-bold text-foreground">TypeScript</div>
               <div className="text-xs text-muted-foreground">Type Safety</div>
             </div>
-            <div className="p-4 bg-card rounded-lg border border-border">
+            <div className="flex flex-col justify-center p-4 sm:p-5 bg-card rounded-lg border border-border min-h-[100px]">
               <div className="font-bold text-foreground">Next.js</div>
               <div className="text-xs text-muted-foreground">App Framework</div>
             </div>
-            <div className="p-4 bg-card rounded-lg border border-border">
+            <div className="flex flex-col justify-center p-4 sm:p-5 bg-card rounded-lg border border-border min-h-[100px]">
               <div className="font-bold text-foreground">Tailwind CSS</div>
               <div className="text-xs text-muted-foreground">Styling System</div>
             </div>
-            <div className="p-4 bg-card rounded-lg border border-border">
+            <div className="flex flex-col justify-center p-4 sm:p-5 bg-card rounded-lg border border-border min-h-[100px]">
               <div className="font-bold text-foreground">shadcn/ui</div>
               <div className="text-xs text-muted-foreground">Components</div>
             </div>
-            <div className="p-4 bg-card rounded-lg border border-border">
+            <div className="flex flex-col justify-center p-4 sm:p-5 bg-card rounded-lg border border-border min-h-[100px]">
               <div className="font-bold text-foreground">Recharts</div>
               <div className="text-xs text-muted-foreground">Data Visualization</div>
             </div>
-            <div className="p-4 bg-card rounded-lg border border-border">
+            <div className="flex flex-col justify-center p-4 sm:p-5 bg-card rounded-lg border border-border min-h-[100px]">
               <div className="font-bold text-foreground">Zod & RHF</div>
               <div className="text-xs text-muted-foreground">Form Validation</div>
             </div>
-            <div className="p-4 bg-card rounded-lg border border-border">
+            <div className="flex flex-col justify-center p-4 sm:p-5 bg-card rounded-lg border border-border min-h-[100px]">
               <div className="font-bold text-foreground">IndexedDB</div>
               <div className="text-xs text-muted-foreground">Dexie.js Persistence</div>
             </div>

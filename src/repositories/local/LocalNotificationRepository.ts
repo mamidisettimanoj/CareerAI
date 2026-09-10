@@ -5,9 +5,10 @@ export class LocalNotificationRepository {
   async getNotifications(): Promise<NotificationData[]> {
     if (!db) return [];
     try {
-      return await db.notifications.orderBy('date').reverse().toArray();
+      const all = await db.notifications.toArray();
+      return all.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
     } catch (e) {
-      console.error(e);
+      console.error('Failed to get notifications', e);
       return [];
     }
   }

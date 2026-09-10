@@ -9,7 +9,10 @@ import { Bell, CheckCircle2, GraduationCap, Briefcase, Trash2, ChevronRight } fr
 import Link from 'next/link';
 
 export default function NotificationsCenter() {
-  const notifications = useLiveQuery(() => db.notifications.orderBy('date').reverse().toArray()) || [];
+  const notifications = useLiveQuery(async () => {
+    const all = await db.notifications.toArray();
+    return all.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+  }) || [];
 
   const handleMarkAsRead = async (id: string) => {
     await repositories.notifications.markAsRead(id);

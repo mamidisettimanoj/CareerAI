@@ -67,33 +67,27 @@ export default function AcademicOverview() {
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
         
         {/* Core Stats */}
-        <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm text-muted-foreground uppercase tracking-wider">Current CGPA</CardTitle>
-          </CardHeader>
-          <CardContent>
+        <Card className="flex flex-col justify-center h-full min-h-[130px]">
+          <CardContent className="p-5 sm:p-6 flex flex-col justify-center">
+            <p className="text-sm font-semibold text-muted-foreground uppercase tracking-wider mb-1">Current CGPA</p>
             <div className="text-4xl font-bold text-primary">{displayCgpa.toFixed(2)}</div>
             <p className="text-xs text-muted-foreground mt-2">Target for most companies is 7.0+</p>
           </CardContent>
         </Card>
         
-        <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm text-muted-foreground uppercase tracking-wider">Best SGPA</CardTitle>
-          </CardHeader>
-          <CardContent>
+        <Card className="flex flex-col justify-center h-full min-h-[130px]">
+          <CardContent className="p-5 sm:p-6 flex flex-col justify-center">
+            <p className="text-sm font-semibold text-muted-foreground uppercase tracking-wider mb-1">Best SGPA</p>
             <div className="text-4xl font-bold text-success">{highestSgpa !== null ? highestSgpa.toFixed(2) : '-'}</div>
             <p className="text-xs text-muted-foreground mt-2">Your peak academic performance</p>
           </CardContent>
         </Card>
 
-        <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm text-muted-foreground uppercase tracking-wider">Active Backlogs</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className={`text-4xl font-bold ${backlogColor}`}>{backlogs}</div>
-            <p className="text-xs text-muted-foreground mt-2">Academic Risk: <span className={backlogColor}>{backlogRisk}</span></p>
+        <Card className="flex flex-col justify-center h-full min-h-[130px]">
+          <CardContent className="p-5 sm:p-6 flex flex-col justify-center">
+            <p className="text-sm font-semibold text-muted-foreground uppercase tracking-wider mb-1">Active Backlogs</p>
+            <div className={`text-4xl font-bold ${backlogs > 0 ? 'text-destructive' : 'text-success'}`}>{backlogs}</div>
+            <p className="text-xs text-muted-foreground mt-2">{backlogs === 0 ? 'Clear record. Keep it up!' : 'Focus on clearing these soon'}</p>
           </CardContent>
         </Card>
 
