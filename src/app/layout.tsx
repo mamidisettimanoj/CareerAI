@@ -1,0 +1,42 @@
+import './globals.css';
+import { Inter } from 'next/font/google';
+import { Toaster } from '@/components/ui/toaster';
+import { OfflineIndicator } from '@/components/layout/OfflineIndicator';
+
+const inter = Inter({ subsets: ['latin'], variable: '--font-sans' });
+
+export const metadata = {
+  title: 'CareerAI Student OS',
+  description: 'The 100% local-first student operating system',
+  manifest: '/manifest.json',
+};
+
+export const viewport = {
+  themeColor: '#2563eb'
+};
+
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  return (
+    <html lang="en" suppressHydrationWarning>
+      <head>
+        <link rel="manifest" href="/manifest.json" />
+        <meta name="theme-color" content="#2563eb" />
+      </head>
+      <body className={`${inter.variable} font-sans antialiased`}>
+        <div className="relative flex min-h-screen flex-col bg-background">
+          <main className="flex-1 w-full min-w-0 flex flex-col">
+            {children}
+          </main>
+          <Toaster />
+          <OfflineIndicator />
+        </div>
+      </body>
+    </html>
+  );
+}
+
+
