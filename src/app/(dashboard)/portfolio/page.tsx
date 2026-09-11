@@ -85,7 +85,7 @@ export default function PortfolioDashboard() {
             <Card className="hover:border-primary transition-colors h-full cursor-pointer">
               <CardContent className="p-4 flex items-center justify-between">
                 <div className="flex items-center gap-3">
-                  <FolderGit2 className="h-8 w-8 text-blue-500" />
+                  <FolderGit2 className="h-8 w-8 text-primary" />
                   <div>
                     <h3 className="font-bold">Projects</h3>
                     <p className="text-xs text-muted-foreground">{projects.length} recorded</p>
@@ -100,7 +100,7 @@ export default function PortfolioDashboard() {
             <Card className="hover:border-primary transition-colors h-full cursor-pointer">
               <CardContent className="p-4 sm:p-6 flex items-center justify-between h-full min-h-[100px]">
                 <div className="flex items-center gap-3">
-                  <Briefcase className="h-8 w-8 text-orange-500" />
+                  <Briefcase className="h-8 w-8 text-portfolio" />
                   <div>
                     <h3 className="font-bold">Internships</h3>
                     <p className="text-xs text-muted-foreground">{internships.length} recorded</p>
@@ -115,7 +115,7 @@ export default function PortfolioDashboard() {
             <Card className="hover:border-primary transition-colors h-full cursor-pointer">
               <CardContent className="p-4 sm:p-6 flex items-center justify-between h-full min-h-[100px]">
                 <div className="flex items-center gap-3">
-                  <Award className="h-8 w-8 text-green-500" />
+                  <Award className="h-8 w-8 text-success" />
                   <div>
                     <h3 className="font-bold">Certifications</h3>
                     <p className="text-xs text-muted-foreground">{certifications.length} recorded</p>
@@ -130,7 +130,7 @@ export default function PortfolioDashboard() {
             <Card className="hover:border-primary transition-colors h-full cursor-pointer">
               <CardContent className="p-4 sm:p-6 flex items-center justify-between h-full min-h-[100px]">
                 <div className="flex items-center gap-3">
-                  <Trophy className="h-8 w-8 text-yellow-500" />
+                  <Trophy className="h-8 w-8 text-warning" />
                   <div>
                     <h3 className="font-bold">Achievements</h3>
                     <p className="text-xs text-muted-foreground">{achievements.length} recorded</p>

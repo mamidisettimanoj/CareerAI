@@ -30,7 +30,7 @@ export function AcademicNav() {
             className={cn(
               "flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-t-md transition-colors whitespace-nowrap",
               isActive 
-                ? "bg-accent/10 text-accent border-b-2 border-accent" 
+                ? "bg-academic/10 text-academic border-b-2 border-academic" 
                 : "text-muted-foreground hover:text-foreground hover:bg-muted/50 border-b-2 border-transparent"
             )}
           >

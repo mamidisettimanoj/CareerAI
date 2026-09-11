@@ -43,7 +43,7 @@ export default function PlacementDashboard() {
                 <p className="text-sm font-medium text-muted-foreground">Applications</p>
                 <p className="text-3xl font-bold">{totalApplications}</p>
               </div>
-              <FileText className="h-8 w-8 text-blue-500 opacity-20" />
+              <FileText className="h-8 w-8 text-primary opacity-20" />
             </div>
           </CardContent>
         </Card>
@@ -55,7 +55,7 @@ export default function PlacementDashboard() {
                 <p className="text-sm font-medium text-muted-foreground">Interviewing</p>
                 <p className="text-3xl font-bold">{interviewing}</p>
               </div>
-              <Target className="h-8 w-8 text-orange-500 opacity-20" />
+              <Target className="h-8 w-8 text-portfolio opacity-20" />
             </div>
           </CardContent>
         </Card>
@@ -67,7 +67,7 @@ export default function PlacementDashboard() {
                 <p className="text-sm font-medium text-muted-foreground">Offers</p>
                 <p className="text-3xl font-bold">{totalOffers}</p>
               </div>
-              <Trophy className="h-8 w-8 text-green-500 opacity-20" />
+              <Trophy className="h-8 w-8 text-success opacity-20" />
             </div>
           </CardContent>
         </Card>

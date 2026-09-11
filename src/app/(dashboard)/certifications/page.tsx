@@ -58,7 +58,7 @@ export default function CertificationsCenter() {
 
       <div className="flex justify-between items-center">
         <h1 className="text-2xl md:text-3xl font-bold flex items-center gap-2">
-          <Award className="h-6 w-6 text-green-500" aria-hidden="true" /> Certification Center
+          <Award className="h-6 w-6 text-success" aria-hidden="true" /> Certification Center
         </h1>
         <Button onClick={() => setIsAdding(!isAdding)}><PlusCircle className="h-4 w-4 mr-2" /> Add Certification</Button>
       </div>

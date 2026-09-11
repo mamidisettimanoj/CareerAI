@@ -1,0 +1,262 @@
+{
+  "totalFiles": 189,
+  "components": [
+    "AcademicCharts",
+    "AcademicNav",
+    "DashboardCharts",
+    "EligibilityClient",
+    "Navbar",
+    "OfflineIndicator",
+    "Sidebar",
+    "PredictForm",
+    "ProjectsClient",
+    "SkillsClient",
+    "alert-dialog",
+    "alert",
+    "badge",
+    "button",
+    "card",
+    "checkbox",
+    "confirm-dialog",
+    "dialog",
+    "input",
+    "label",
+    "progress",
+    "select",
+    "slider",
+    "table",
+    "tabs",
+    "textarea",
+    "toast",
+    "toaster"
+  ],
+  "pages": [
+    {
+      "path": "app\\(dashboard)\\about\\page.tsx",
+      "route": "about"
+    },
+    {
+      "path": "app\\(dashboard)\\academic\\analytics\\page.tsx",
+      "route": "academic\\analytics"
+    },
+    {
+      "path": "app\\(dashboard)\\academic\\attendance\\page.tsx",
+      "route": "academic\\attendance"
+    },
+    {
+      "path": "app\\(dashboard)\\academic\\backlogs\\page.tsx",
+      "route": "academic\\backlogs"
+    },
+    {
+      "path": "app\\(dashboard)\\academic\\page.tsx",
+      "route": "academic"
+    },
+    {
+      "path": "app\\(dashboard)\\academic\\semesters\\page.tsx",
+      "route": "academic\\semesters"
+    },
+    {
+      "path": "app\\(dashboard)\\academic\\subjects\\page.tsx",
+      "route": "academic\\subjects"
+    },
+    {
+      "path": "app\\(dashboard)\\achievements\\page.tsx",
+      "route": "achievements"
+    },
+    {
+      "path": "app\\(dashboard)\\analytics\\page.tsx",
+      "route": "analytics"
+    },
+    {
+      "path": "app\\(dashboard)\\calculators\\page.tsx",
+      "route": "calculators"
+    },
+    {
+      "path": "app\\(dashboard)\\career\\page.tsx",
+      "route": "career"
+    },
+    {
+      "path": "app\\(dashboard)\\career\\paths\\page.tsx",
+      "route": "career\\paths"
+    },
+    {
+      "path": "app\\(dashboard)\\certifications\\page.tsx",
+      "route": "certifications"
+    },
+    {
+      "path": "app\\(dashboard)\\dashboard\\page.tsx",
+      "route": "dashboard"
+    },
+    {
+      "path": "app\\(dashboard)\\eligibility\\page.tsx",
+      "route": "eligibility"
+    },
+    {
+      "path": "app\\(dashboard)\\goals\\page.tsx",
+      "route": "goals"
+    },
+    {
+      "path": "app\\(dashboard)\\internships\\page.tsx",
+      "route": "internships"
+    },
+    {
+      "path": "app\\(dashboard)\\notifications\\page.tsx",
+      "route": "notifications"
+    },
+    {
+      "path": "app\\(dashboard)\\placement\\applications\\detail\\page.tsx",
+      "route": "placement\\applications\\detail"
+    },
+    {
+      "path": "app\\(dashboard)\\placement\\applications\\page.tsx",
+      "route": "placement\\applications"
+    },
+    {
+      "path": "app\\(dashboard)\\placement\\companies\\page.tsx",
+      "route": "placement\\companies"
+    },
+    {
+      "path": "app\\(dashboard)\\placement\\page.tsx",
+      "route": "placement"
+    },
+    {
+      "path": "app\\(dashboard)\\portfolio\\page.tsx",
+      "route": "portfolio"
+    },
+    {
+      "path": "app\\(dashboard)\\predict\\page.tsx",
+      "route": "predict"
+    },
+    {
+      "path": "app\\(dashboard)\\preparation\\aptitude\\page.tsx",
+      "route": "preparation\\aptitude"
+    },
+    {
+      "path": "app\\(dashboard)\\preparation\\dsa\\page.tsx",
+      "route": "preparation\\dsa"
+    },
+    {
+      "path": "app\\(dashboard)\\preparation\\interview\\page.tsx",
+      "route": "preparation\\interview"
+    },
+    {
+      "path": "app\\(dashboard)\\preparation\\mock-tests\\page.tsx",
+      "route": "preparation\\mock-tests"
+    },
+    {
+      "path": "app\\(dashboard)\\preparation\\page.tsx",
+      "route": "preparation"
+    },
+    {
+      "path": "app\\(dashboard)\\preparation\\review\\page.tsx",
+      "route": "preparation\\review"
+    },
+    {
+      "path": "app\\(dashboard)\\preparation\\technical\\page.tsx",
+      "route": "preparation\\technical"
+    },
+    {
+      "path": "app\\(dashboard)\\profile\\page.tsx",
+      "route": "profile"
+    },
+    {
+      "path": "app\\(dashboard)\\projects\\page.tsx",
+      "route": "projects"
+    },
+    {
+      "path": "app\\(dashboard)\\result\\page.tsx",
+      "route": "result"
+    },
+    {
+      "path": "app\\(dashboard)\\resume\\page.tsx",
+      "route": "resume"
+    },
+    {
+      "path": "app\\(dashboard)\\search\\page.tsx",
+      "route": "search"
+    },
+    {
+      "path": "app\\(dashboard)\\settings\\backup\\page.tsx",
+      "route": "settings\\backup"
+    },
+    {
+      "path": "app\\(dashboard)\\settings\\page.tsx",
+      "route": "settings"
+    },
+    {
+      "path": "app\\(dashboard)\\settings\\privacy\\page.tsx",
+      "route": "settings\\privacy"
+    },
+    {
+      "path": "app\\(dashboard)\\skills\\page.tsx",
+      "route": "skills"
+    },
+    {
+      "path": "app\\(dashboard)\\today\\page.tsx",
+      "route": "today"
+    },
+    {
+      "path": "app\\(marketing)\\page.tsx",
+      "route": "(marketing)"
+    }
+  ],
+  "colors": {},
+  "cssVars": {
+    "background": "222.2 84% 4.9%",
+    "foreground": "210 40% 98%",
+    "card": "224 50% 8%",
+    "card-foreground": "210 40% 98%",
+    "popover": "224 50% 8%",
+    "popover-foreground": "210 40% 98%",
+    "primary": "217.2 91.2% 59.8%",
+    "primary-foreground": "222.2 47.4% 11.2%",
+    "secondary": "217.2 32.6% 17.5%",
+    "secondary-foreground": "210 40% 98%",
+    "muted": "217.2 32.6% 17.5%",
+    "muted-foreground": "215 20% 65%",
+    "accent": "217.2 32.6% 17.5%",
+    "accent-foreground": "210 40% 98%",
+    "destructive": "0 62.8% 30.6%",
+    "destructive-foreground": "210 40% 98%",
+    "border": "217.2 32.6% 20%",
+    "input": "217.2 32.6% 20%",
+    "ring": "224.3 76.3% 48%",
+    "radius": "0.5rem",
+    "success": "142.1 70.6% 45.3%",
+    "success-foreground": "0 0% 100%",
+    "warning": "47.9 95.8% 53.1%",
+    "warning-foreground": "0 0% 0%",
+    "info": "199 89% 48%",
+    "info-foreground": "0 0% 100%",
+    "- Responsive utility classes --- */\r\n@layer components {\r\n  .page-container {\r\n    @apply w-full max-w-7xl mx-auto px-4 sm": "px-6 lg:px-8 py-4 sm:py-6 lg:py-8",
+    "- Scrollbar hiding for tabs --- */\r\n@layer utilities {\r\n  .scrollbar-hide {\r\n    -ms-overflow-style": "none",
+    "- Reduced motion --- */\r\n@media (prefers-reduced-motion": "reduce) {\r\n  *, *::before, *::after {\r\n    animation-duration: 0.01ms !important"
+  },
+  "hardcodedColors": {
+    "#2563EB": [
+      "app\\layout.tsx"
+    ],
+    "#333": [
+      "components\\academic\\AcademicCharts.tsx"
+    ],
+    "#888": [
+      "components\\academic\\AcademicCharts.tsx",
+      "components\\academic\\AcademicCharts.tsx"
+    ],
+    "#141B2D": [
+      "components\\academic\\AcademicCharts.tsx"
+    ],
+    "#1F2937": [
+      "components\\academic\\AcademicCharts.tsx"
+    ],
+    "#FFF": [
+      "components\\academic\\AcademicCharts.tsx"
+    ],
+    "#4361EE": [
+      "components\\academic\\AcademicCharts.tsx",
+      "components\\academic\\AcademicCharts.tsx",
+      "components\\academic\\AcademicCharts.tsx"
+    ]
+  },
+  "tailwindClasses": {}
+}

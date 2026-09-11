@@ -46,7 +46,7 @@ export default function PreparationDashboard() {
         <Link href="/preparation/dsa" className="md:col-span-1">
           <Card className="hover:border-primary transition-colors cursor-pointer h-full">
             <CardHeader className="pb-2">
-              <CardTitle className="text-lg flex items-center gap-2"><Code2 className="h-5 w-5 text-blue-500" /> DSA Center</CardTitle>
+              <CardTitle className="text-lg flex items-center gap-2"><Code2 className="h-5 w-5 text-primary" /> DSA Center</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">{totalDsaSolved} <span className="text-sm font-normal text-muted-foreground">Solved</span></div>
@@ -58,7 +58,7 @@ export default function PreparationDashboard() {
         <Link href="/preparation/aptitude" className="md:col-span-1">
           <Card className="hover:border-primary transition-colors cursor-pointer h-full">
             <CardHeader className="pb-2">
-              <CardTitle className="text-lg flex items-center gap-2"><Brain className="h-5 w-5 text-green-500" /> Aptitude</CardTitle>
+              <CardTitle className="text-lg flex items-center gap-2"><Brain className="h-5 w-5 text-success" /> Aptitude</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">{aptAccuracy.toFixed(0)}% <span className="text-sm font-normal text-muted-foreground">Accuracy</span></div>
@@ -70,7 +70,7 @@ export default function PreparationDashboard() {
         <Link href="/preparation/technical" className="md:col-span-1">
           <Card className="hover:border-primary transition-colors cursor-pointer h-full">
             <CardHeader className="pb-2">
-              <CardTitle className="text-lg flex items-center gap-2"><BookOpen className="h-5 w-5 text-orange-500" /> Core Tech</CardTitle>
+              <CardTitle className="text-lg flex items-center gap-2"><BookOpen className="h-5 w-5 text-portfolio" /> Core Tech</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">{techAccuracy.toFixed(0)}% <span className="text-sm font-normal text-muted-foreground">Accuracy</span></div>

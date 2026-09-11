@@ -27,10 +27,10 @@ export default function NotificationsCenter() {
 
   const getIcon = (category: string) => {
     switch (category) {
-      case 'Academic': return <GraduationCap className="h-5 w-5 text-blue-500" />;
-      case 'Placement': return <Briefcase className="h-5 w-5 text-purple-500" />;
-      case 'Goal': return <CheckCircle2 className="h-5 w-5 text-green-500" />;
-      default: return <Bell className="h-5 w-5 text-yellow-500" />;
+      case 'Academic': return <GraduationCap className="h-5 w-5 text-primary" />;
+      case 'Placement': return <Briefcase className="h-5 w-5 text-placement" />;
+      case 'Goal': return <CheckCircle2 className="h-5 w-5 text-success" />;
+      default: return <Bell className="h-5 w-5 text-warning" />;
     }
   };
 

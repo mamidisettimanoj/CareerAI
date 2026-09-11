@@ -33,7 +33,7 @@ interface SidebarProps {
 
 interface NavSection {
   label: string;
-  items: { name: string; path: string; icon: React.ElementType }[];
+  items: { name: string; path: string; icon: React.ElementType; iconColor?: string }[];
 }
 
 const NAV_SECTIONS: NavSection[] = [
@@ -49,28 +49,28 @@ const NAV_SECTIONS: NavSection[] = [
   {
     label: 'Academic',
     items: [
-      { name: 'Academic', path: '/academic', icon: GraduationCap },
-      { name: 'Calculators', path: '/calculators', icon: Calculator },
-      { name: 'Predict', path: '/predict', icon: LineChart },
+      { name: 'Academic', path: '/academic', icon: GraduationCap, iconColor: 'text-academic' },
+      { name: 'Calculators', path: '/calculators', icon: Calculator, iconColor: 'text-academic' },
+      { name: 'Predict', path: '/predict', icon: LineChart, iconColor: 'text-academic' },
     ],
   },
   {
     label: 'Career',
     items: [
-      { name: 'Career Center', path: '/career', icon: Briefcase },
-      { name: 'Skills', path: '/skills', icon: CheckCircle },
-      { name: 'Preparation', path: '/preparation', icon: ListTodo },
-      { name: 'Placement', path: '/placement', icon: Bookmark },
-      { name: 'Eligibility', path: '/eligibility', icon: Target },
+      { name: 'Career Center', path: '/career', icon: Briefcase, iconColor: 'text-skills' },
+      { name: 'Skills', path: '/skills', icon: CheckCircle, iconColor: 'text-skills' },
+      { name: 'Preparation', path: '/preparation', icon: ListTodo, iconColor: 'text-prep' },
+      { name: 'Placement', path: '/placement', icon: Bookmark, iconColor: 'text-placement' },
+      { name: 'Eligibility', path: '/eligibility', icon: Target, iconColor: 'text-placement' },
     ],
   },
   {
     label: 'Portfolio',
     items: [
-      { name: 'Portfolio', path: '/portfolio', icon: FolderOpen },
-      { name: 'Projects', path: '/projects', icon: FileCheck },
-      { name: 'Resume', path: '/resume', icon: FileText },
-      { name: 'Achievements', path: '/achievements', icon: Trophy },
+      { name: 'Portfolio', path: '/portfolio', icon: FolderOpen, iconColor: 'text-portfolio' },
+      { name: 'Projects', path: '/projects', icon: FileCheck, iconColor: 'text-portfolio' },
+      { name: 'Resume', path: '/resume', icon: FileText, iconColor: 'text-portfolio' },
+      { name: 'Achievements', path: '/achievements', icon: Trophy, iconColor: 'text-portfolio' },
     ],
   },
   {
@@ -147,13 +147,13 @@ export function Sidebar({ open, onClose }: SidebarProps) {
                 <Link key={route.path} href={route.path}>
                   <button
                     className={cn(
-                      "w-full flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-all duration-150",
+                      "w-full flex items-center gap-3 rounded-lg px-3 py-2 text-sm transition-all duration-150 border-l-2",
                       isActive(route.path)
-                        ? "bg-primary/10 text-primary shadow-sm"
-                        : "text-muted-foreground hover:bg-muted hover:text-foreground"
+                        ? "bg-primary/8 text-primary font-medium border-primary shadow-sm"
+                        : "border-transparent text-muted-foreground hover:bg-muted hover:text-foreground"
                     )}
                   >
-                    <route.icon className="h-4 w-4 shrink-0" />
+                    <route.icon className={cn("h-4 w-4 shrink-0", route.iconColor)} />
                     <span className="truncate">{route.name}</span>
                     {isActive(route.path) && (
                       <ChevronRight className="h-3 w-3 ml-auto shrink-0 text-primary/60" />
@@ -180,7 +180,7 @@ export function Sidebar({ open, onClose }: SidebarProps) {
     <>
       {/* Desktop sidebar — always visible ≥1024px */}
       <aside
-        className="hidden lg:flex w-64 shrink-0 flex-col h-[100dvh] sticky top-0 border-r border-border/60 bg-card"
+        className="hidden lg:flex w-64 shrink-0 flex-col h-[100dvh] sticky top-0 border-r border-border bg-card"
       >
         {navContent}
       </aside>
@@ -197,7 +197,7 @@ export function Sidebar({ open, onClose }: SidebarProps) {
       {/* Mobile/Tablet drawer — slides from left */}
       <aside
         className={cn(
-          "fixed inset-y-0 left-0 z-50 w-[280px] sm:w-[300px] bg-card border-r border-border/60 shadow-2xl flex flex-col lg:hidden",
+          "fixed inset-y-0 left-0 z-50 w-[280px] sm:w-[300px] bg-card border-r border-border shadow-2xl flex flex-col lg:hidden",
           "transition-transform duration-200 ease-out",
           open ? "translate-x-0" : "-translate-x-full"
         )}

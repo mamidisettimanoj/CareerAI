@@ -64,7 +64,7 @@ export default function AptitudeCenter() {
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
           <h1 className="text-2xl md:text-3xl font-heading font-bold flex items-center gap-2">
-            <Brain className="h-6 w-6 text-green-500" /> Aptitude Practice
+            <Brain className="h-6 w-6 text-success" /> Aptitude Practice
           </h1>
           <p className="text-sm md:text-base text-muted-foreground">Master quantitative and logical reasoning for placements.</p>
         </div>

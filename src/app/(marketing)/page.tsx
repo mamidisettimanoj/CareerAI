@@ -34,7 +34,7 @@ const TOOLS = [
     desc: 'Easily calculate and convert your SGPA, CGPA, and Percentage.',
     icon: Calculator,
     href: '/calculators',
-    color: 'text-cyan-400',
+    color: 'text-skills',
     bg: 'bg-cyan-400/20',
   },
 
@@ -59,7 +59,7 @@ const TOOLS = [
     desc: 'View your holistic career and academic progress all in one place.',
     icon: LayoutDashboard,
     href: '/dashboard',
-    color: 'text-cyan-400',
+    color: 'text-skills',
     bg: 'bg-cyan-400/20',
   },
 ];

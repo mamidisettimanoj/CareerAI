@@ -296,18 +296,18 @@ export default function Result() {
             <Card >
               <CardHeader className="pb-3">
                 <CardTitle className="flex items-center gap-2 text-lg">
-                  <CalendarDays className="h-5 w-5 text-cyan-400" /> 30-Day Roadmap
+                  <CalendarDays className="h-5 w-5 text-skills" /> 30-Day Roadmap
                 </CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
                   {engineResult.thirtyDayRoadmap.map((week) => (
                     <div key={week.week} className="bg-cyan-400/5 border border-cyan-400/10 p-3 rounded-lg">
-                      <div className="text-xs font-bold text-cyan-400 mb-1 uppercase tracking-wider">Week {week.week}: {week.theme}</div>
+                      <div className="text-xs font-bold text-skills mb-1 uppercase tracking-wider">Week {week.week}: {week.theme}</div>
                       <ul className="space-y-1 mt-2">
                         {week.goals.map((goal, i) => (
                           <li key={i} className="text-sm flex items-start gap-2">
-                            <span className="text-cyan-400 opacity-50 mt-1">•</span> {goal}
+                            <span className="text-skills opacity-50 mt-1">•</span> {goal}
                           </li>
                         ))}
                       </ul>

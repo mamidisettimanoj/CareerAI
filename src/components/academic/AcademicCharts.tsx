@@ -12,6 +12,13 @@ interface AcademicChartsProps {
 }
 
 export function AcademicCharts({ semesters, hasSemesters, trend }: AcademicChartsProps) {
+  const root = typeof window !== 'undefined'
+    ? getComputedStyle(document.documentElement)
+    : null;
+  const getVar = (v: string) => {
+    const val = root?.getPropertyValue(v).trim();
+    return val ? `hsl(${val})` : '';
+  };
   return (
     <Card className="sm:col-span-2">
       <CardHeader>
@@ -29,14 +36,14 @@ export function AcademicCharts({ semesters, hasSemesters, trend }: AcademicChart
           <div className="h-64 w-full">
             <ResponsiveContainer width="100%" height="100%">
               <LineChart data={semesters} margin={{ top: 5, right: 20, bottom: 5, left: 0 }}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#333" opacity={0.5} />
-                <XAxis dataKey="name" stroke="#888" fontSize={12} />
-                <YAxis domain={[0, 10]} stroke="#888" fontSize={12} />
+                <CartesianGrid strokeDasharray="3 3" stroke={getVar('--muted-foreground')} opacity={0.3} />
+                <XAxis dataKey="name" stroke={getVar('--muted-foreground')} fontSize={12} />
+                <YAxis domain={[0, 10]} stroke={getVar('--muted-foreground')} fontSize={12} />
                 <RechartsTooltip 
-                  contentStyle={{ backgroundColor: '#141b2d', borderColor: '#1f2937', color: '#fff' }}
-                  itemStyle={{ color: '#4361ee' }}
+                  contentStyle={{ backgroundColor: getVar('--card'), borderColor: getVar('--border'), color: getVar('--foreground') }}
+                  itemStyle={{ color: getVar('--primary-light') }}
                 />
-                <Line type="monotone" dataKey="sgpa" stroke="#4361ee" strokeWidth={3} dot={{ r: 5, fill: '#4361ee' }} activeDot={{ r: 8 }} />
+                <Line type="monotone" dataKey="sgpa" stroke={getVar('--primary-light')} strokeWidth={3} dot={{ r: 5, fill: getVar('--primary-light') }} activeDot={{ r: 8 }} />
               </LineChart>
             </ResponsiveContainer>
           </div>

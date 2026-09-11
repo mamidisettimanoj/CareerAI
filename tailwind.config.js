@@ -66,7 +66,13 @@ export default {
 			info: {
 				DEFAULT: 'hsl(var(--info))',
 				foreground: 'hsl(var(--info-foreground))'
-			}
+			},
+			academic: 'hsl(var(--accent-academic))',
+			placement: 'hsl(var(--accent-placement))',
+			portfolio: 'hsl(var(--accent-portfolio))',
+			skills: 'hsl(var(--accent-skills))',
+			prep: 'hsl(var(--accent-prep))',
+			'primary-light': 'hsl(var(--primary-light))'
   		},
   		borderRadius: {
   			lg: 'var(--radius)',

@@ -57,7 +57,7 @@ export default function AchievementsCenter() {
 
       <div className="flex justify-between items-center">
         <h1 className="text-2xl md:text-3xl font-bold flex items-center gap-2">
-          <Trophy className="h-6 w-6 text-yellow-500" /> Achievement Center
+          <Trophy className="h-6 w-6 text-warning" /> Achievement Center
         </h1>
         <Button onClick={() => setIsAdding(!isAdding)}><PlusCircle className="h-4 w-4 mr-2" /> Add Achievement</Button>
       </div>

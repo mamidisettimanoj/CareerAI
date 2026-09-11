@@ -94,21 +94,46 @@ export default function ResumeStudio() {
           {activeVersion && (
             <Card>
               <CardHeader className="pb-2">
-                <CardTitle className="text-lg flex items-center gap-2"><LayoutTemplate className="h-4 w-4"/> Sections</CardTitle>
+                <CardTitle className="text-lg flex items-center gap-2"><LayoutTemplate className="h-4 w-4"/> Settings</CardTitle>
               </CardHeader>
-              <CardContent className="space-y-2">
-                {activeVersion.sections.sort((a,b) => a.order - b.order).map(section => (
-                  <div key={section.id} className="flex justify-between items-center text-sm border p-2 rounded bg-background">
-                    <span>{section.type}</span>
-                    <Button variant="ghost" size="sm" className="h-5 p-1" onClick={async () => {
-                      const updated = { ...activeVersion, sections: activeVersion.sections.map(s => s.id === section.id ? { ...s, isVisible: !s.isVisible } : s) };
+              <CardContent className="space-y-4">
+                <div className="space-y-2">
+                  <label className="text-xs font-semibold text-muted-foreground">Resume Name</label>
+                  <input 
+                    className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+                    value={activeVersion.name}
+                    onChange={async (e) => {
+                      const updated = { ...activeVersion, name: e.target.value };
                       await db.resumeVersions.put(updated);
-                    }}>
-                      {section.isVisible ? <Eye className="h-4 w-4 text-primary" /> : <Eye className="h-4 w-4 text-muted-foreground opacity-50" />}
-                    </Button>
-                  </div>
-                ))}
-                <p className="text-[10px] text-muted-foreground text-center pt-2">Drag to reorder (Coming soon)</p>
+                    }}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <label className="text-xs font-semibold text-muted-foreground">Target Role</label>
+                  <input 
+                    className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+                    value={activeVersion.targetRole}
+                    onChange={async (e) => {
+                      const updated = { ...activeVersion, targetRole: e.target.value };
+                      await db.resumeVersions.put(updated);
+                    }}
+                  />
+                </div>
+                <div className="space-y-2 pt-2 border-t">
+                  <label className="text-xs font-semibold text-muted-foreground">Sections Visibility</label>
+                  {activeVersion.sections.sort((a,b) => a.order - b.order).map(section => (
+                    <div key={section.id} className="flex justify-between items-center text-sm border p-2 rounded bg-background">
+                      <span>{section.type}</span>
+                      <Button variant="ghost" size="sm" className="h-5 p-1" onClick={async () => {
+                        const updated = { ...activeVersion, sections: activeVersion.sections.map(s => s.id === section.id ? { ...s, isVisible: !s.isVisible } : s) };
+                        await db.resumeVersions.put(updated);
+                      }}>
+                        {section.isVisible ? <Eye className="h-4 w-4 text-primary" /> : <Eye className="h-4 w-4 text-muted-foreground opacity-50" />}
+                      </Button>
+                    </div>
+                  ))}
+                  <p className="text-[10px] text-muted-foreground text-center pt-2">Drag to reorder (Coming soon)</p>
+                </div>
               </CardContent>
             </Card>
           )}
@@ -117,7 +142,11 @@ export default function ResumeStudio() {
         {/* Main Editor/Preview Pane */}
         <div className="md:col-span-3">
           {activeVersion ? (
-            <div className="bg-white text-black min-h-[1056px] w-full max-w-[816px] mx-auto shadow-lg print:shadow-none p-8 sm:p-12 border print:border-none print:p-0 resume-document">
+            <div 
+              className="bg-white text-black min-h-[1056px] w-full max-w-[816px] mx-auto shadow-lg print:shadow-none p-8 sm:p-12 border print:border-none print:p-0 resume-document outline-none focus:ring-2 focus:ring-primary/20"
+              contentEditable 
+              suppressContentEditableWarning
+            >
               
               {/* Personal Info */}
               {activeVersion.sections.find(s => s.type === 'Personal')?.isVisible && (

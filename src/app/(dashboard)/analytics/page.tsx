@@ -49,28 +49,28 @@ export default function AnalyticsDashboard() {
       <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <Card>
           <CardContent className="p-4 flex flex-col justify-center items-center text-center">
-            <BookOpen className="h-8 w-8 text-blue-500 mb-2" />
+            <BookOpen className="h-8 w-8 text-primary mb-2" />
             <h3 className="text-2xl font-bold">{semesters.length}</h3>
             <p className="text-sm text-muted-foreground">Semesters Recorded</p>
           </CardContent>
         </Card>
         <Card>
           <CardContent className="p-4 flex flex-col justify-center items-center text-center">
-            <Target className="h-8 w-8 text-green-500 mb-2" />
+            <Target className="h-8 w-8 text-success mb-2" />
             <h3 className="text-2xl font-bold">{completedGoals}</h3>
             <p className="text-sm text-muted-foreground">Goals Completed</p>
           </CardContent>
         </Card>
         <Card>
           <CardContent className="p-4 flex flex-col justify-center items-center text-center">
-            <LineChart className="h-8 w-8 text-purple-500 mb-2" />
+            <LineChart className="h-8 w-8 text-placement mb-2" />
             <h3 className="text-2xl font-bold">{applications.length}</h3>
             <p className="text-sm text-muted-foreground">Total Applications</p>
           </CardContent>
         </Card>
         <Card>
           <CardContent className="p-4 flex flex-col justify-center items-center text-center">
-            <CheckCircle className="h-8 w-8 text-orange-500 mb-2" />
+            <CheckCircle className="h-8 w-8 text-portfolio mb-2" />
             <h3 className="text-2xl font-bold">{offered}</h3>
             <p className="text-sm text-muted-foreground">Offers Received</p>
           </CardContent>
@@ -91,28 +91,28 @@ export default function AnalyticsDashboard() {
               <div className="flex items-center gap-4">
                 <div className="w-16 text-right font-bold">{saved + applied + interviewing + offered}</div>
                 <div className="flex-1 bg-muted h-6 rounded-md overflow-hidden relative">
-                  <div className="bg-slate-300 h-full" style={{width: '100%'}}></div>
-                  <span className="absolute inset-0 flex items-center justify-center text-xs font-bold z-10 text-slate-800">Total Pipeline</span>
+                  <div className="bg-border h-full" style={{width: '100%'}}></div>
+                  <span className="absolute inset-0 flex items-center justify-center text-xs font-bold z-10 text-foreground">Total Pipeline</span>
                 </div>
               </div>
               <div className="flex items-center gap-4">
                 <div className="w-16 text-right font-bold">{applied + interviewing + offered}</div>
                 <div className="flex-1 bg-muted h-6 rounded-md overflow-hidden relative">
-                  <div className="bg-blue-400 h-full" style={{width: `${Math.min(((applied+interviewing+offered)/(saved+applied+interviewing+offered || 1))*100, 100)}%`}}></div>
-                  <span className="absolute inset-0 flex items-center justify-center text-xs font-bold z-10 text-slate-900">Applied</span>
+                  <div className="bg-primary/10 h-full" style={{width: `${Math.min(((applied+interviewing+offered)/(saved+applied+interviewing+offered || 1))*100, 100)}%`}}></div>
+                  <span className="absolute inset-0 flex items-center justify-center text-xs font-bold z-10 text-foreground">Applied</span>
                 </div>
               </div>
               <div className="flex items-center gap-4">
                 <div className="w-16 text-right font-bold">{interviewing + offered}</div>
                 <div className="flex-1 bg-muted h-6 rounded-md overflow-hidden relative">
-                  <div className="bg-yellow-400 h-full" style={{width: `${Math.min(((interviewing+offered)/(applied+interviewing+offered || 1))*100, 100)}%`}}></div>
-                  <span className="absolute inset-0 flex items-center justify-center text-xs font-bold z-10 text-yellow-900">Interviewing</span>
+                  <div className="bg-warning h-full" style={{width: `${Math.min(((interviewing+offered)/(applied+interviewing+offered || 1))*100, 100)}%`}}></div>
+                  <span className="absolute inset-0 flex items-center justify-center text-xs font-bold z-10 text-warning-foreground">Interviewing</span>
                 </div>
               </div>
               <div className="flex items-center gap-4">
                 <div className="w-16 text-right font-bold">{offered}</div>
                 <div className="flex-1 bg-muted h-6 rounded-md overflow-hidden relative">
-                  <div className="bg-green-500 h-full" style={{width: `${Math.min(((offered)/(interviewing+offered || 1))*100, 100)}%`}}></div>
+                  <div className="bg-success/10 h-full" style={{width: `${Math.min(((offered)/(interviewing+offered || 1))*100, 100)}%`}}></div>
                   <span className="absolute inset-0 flex items-center justify-center text-xs font-bold z-10 text-white">Offered</span>
                 </div>
               </div>

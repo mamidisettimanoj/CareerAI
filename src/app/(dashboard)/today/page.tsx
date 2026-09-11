@@ -97,7 +97,7 @@ export default function TodayPage() {
           <p className="text-sm md:text-base text-muted-foreground">Your focus for {new Date().toLocaleDateString(undefined, { weekday: 'long', month: 'long', day: 'numeric' })}</p>
         </div>
         {streak && (
-          <div className="flex items-center gap-2 bg-orange-500/10 text-orange-500 px-4 py-2 rounded-full font-bold">
+          <div className="flex items-center gap-2 bg-orange-500/10 text-portfolio px-4 py-2 rounded-full font-bold">
             <Flame className="h-5 w-5" />
             {streak.currentStreak} Day Streak
           </div>

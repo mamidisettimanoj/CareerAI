@@ -53,7 +53,7 @@ export default function Settings() {
             <CardDescription>Load dummy data to test the dashboard UI.</CardDescription>
           </CardHeader>
           <CardContent>
-            <Button onClick={handleLoadDemo} variant="outline" className="text-accent hover:text-accent hover:bg-accent/10">
+            <Button onClick={handleLoadDemo} variant="outline" className="text-primary hover:text-primary hover:bg-primary/10 border-primary/20">
               Load Demo Profile
             </Button>
             <p className="text-xs text-muted-foreground mt-2">Warning: This will overwrite your existing data.</p>

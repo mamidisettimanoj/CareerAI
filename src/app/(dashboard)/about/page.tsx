@@ -11,7 +11,7 @@ export default function About() {
         <p className="text-sm sm:text-base text-muted-foreground max-w-2xl mx-auto">
           Understanding the methodology and technology behind the student career & placement analyzer.
         </p>
-        <p className="text-sm font-medium text-accent pt-2">
+        <p className="text-sm font-medium text-primary pt-2">
           Designed by Manoj from KL University
         </p>
       </div>
@@ -31,7 +31,7 @@ export default function About() {
             <p>
               It simulates how recruiters typically weigh different aspects of a student profile: Academic consistency (CGPA & Backlogs), Technical proficiency, Aptitude, Communication skills, and practical experience (Internships & Projects).
             </p>
-            <p className="text-accent font-medium mt-2">
+            <p className="text-warning font-medium mt-2">
               Disclaimer: This score is strictly an educational tool to help students identify their weak areas. It does not guarantee employment.
             </p>
           </CardContent>
@@ -61,7 +61,7 @@ export default function About() {
       <Card className="border-cyan-400/20 bg-cyan-400/5 mt-4 sm:mt-8">
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
-            <Code2 className="h-5 w-5 text-cyan-400" />
+            <Code2 className="h-5 w-5 text-skills" />
             Technology Stack
           </CardTitle>
           <CardDescription>Built with modern web technologies for performance and scale.</CardDescription>

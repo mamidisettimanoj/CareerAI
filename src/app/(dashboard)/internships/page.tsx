@@ -58,7 +58,7 @@ export default function InternshipsCenter() {
 
       <div className="flex justify-between items-center">
         <h1 className="text-2xl md:text-3xl font-bold flex items-center gap-2">
-          <Briefcase className="h-6 w-6 text-orange-500" aria-hidden="true" /> Internship Center
+          <Briefcase className="h-6 w-6 text-portfolio" aria-hidden="true" /> Internship Center
         </h1>
         <Button onClick={() => setIsAdding(!isAdding)}><PlusCircle className="h-4 w-4 mr-2" /> Add Internship</Button>
       </div>

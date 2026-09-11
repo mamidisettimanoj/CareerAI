@@ -87,34 +87,34 @@ export default function StudentCommandCenter() {
 
       {/* Core KPIs */}
       <div className="kpi-grid">
-        <Card className="bg-primary/5 border-primary/20">
+        <Card className="bg-primary/5 border-primary/20 border-l-4 border-l-primary">
           <CardContent className="flex flex-col justify-center p-4 sm:p-5 min-h-[110px]">
-            <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Career Readiness</p>
-            <div className="text-3xl font-bold mt-2 text-primary">{readinessScore}</div>
+            <p className="text-muted-foreground text-sm">Career Readiness</p>
+            <div className="text-foreground font-semibold text-2xl mt-2 text-primary">{readinessScore}</div>
           </CardContent>
         </Card>
-        <Card>
+        <Card className="border-l-4 border-l-academic">
           <CardContent className="flex flex-col justify-center p-4 sm:p-5 min-h-[110px]">
-            <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">CGPA</p>
-            <div className="text-3xl font-bold mt-2">{profile.degree.cgpa.toFixed(2)}</div>
+            <p className="text-muted-foreground text-sm">CGPA</p>
+            <div className="text-foreground font-semibold text-2xl mt-2">{profile.degree.cgpa.toFixed(2)}</div>
           </CardContent>
         </Card>
-        <Card>
+        <Card className="border-l-4 border-l-placement">
           <CardContent className="flex flex-col justify-center p-4 sm:p-5 min-h-[110px]">
-            <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Applications</p>
-            <div className="text-3xl font-bold mt-2">{applications.length}</div>
+            <p className="text-muted-foreground text-sm">Applications</p>
+            <div className="text-foreground font-semibold text-2xl mt-2">{applications.length}</div>
           </CardContent>
         </Card>
-        <Card>
+        <Card className="border-l-4 border-l-placement">
           <CardContent className="flex flex-col justify-center p-4 sm:p-5 min-h-[110px]">
-            <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Interviews</p>
-            <div className="text-3xl font-bold mt-2">{interviewing}</div>
+            <p className="text-muted-foreground text-sm">Interviews</p>
+            <div className="text-foreground font-semibold text-2xl mt-2">{interviewing}</div>
           </CardContent>
         </Card>
-        <Card className="hidden sm:block">
+        <Card className="hidden sm:block border-l-4 border-l-portfolio">
           <CardContent className="flex flex-col justify-center p-4 sm:p-5 min-h-[110px]">
-            <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Profile Health</p>
-            <div className="text-3xl font-bold mt-2">{profileCompleteness}%</div>
+            <p className="text-muted-foreground text-sm">Profile Health</p>
+            <div className="text-foreground font-semibold text-2xl mt-2">{profileCompleteness}%</div>
           </CardContent>
         </Card>
       </div>
@@ -125,7 +125,7 @@ export default function StudentCommandCenter() {
         <Card>
           <CardHeader className="pb-3 border-b">
             <CardTitle className="text-lg flex justify-between items-center">
-              <span className="flex items-center gap-2"><BookOpen className="h-5 w-5 text-blue-500" aria-hidden="true" /> Academic</span>
+              <span className="flex items-center gap-2"><BookOpen className="h-5 w-5 text-primary" aria-hidden="true" /> Academic</span>
               <Link href="/academic" className="text-xs text-primary hover:underline flex items-center">View <ChevronRight className="h-3 w-3" /></Link>
             </CardTitle>
           </CardHeader>
@@ -151,22 +151,22 @@ export default function StudentCommandCenter() {
         <Card>
           <CardHeader className="pb-3 border-b">
             <CardTitle className="text-lg flex justify-between items-center">
-              <span className="flex items-center gap-2"><Briefcase className="h-5 w-5 text-purple-500" aria-hidden="true" /> Placement Pipeline</span>
+              <span className="flex items-center gap-2"><Briefcase className="h-5 w-5 text-placement" aria-hidden="true" /> Placement Pipeline</span>
               <Link href="/placement" className="text-xs text-primary hover:underline flex items-center">View <ChevronRight className="h-3 w-3" /></Link>
             </CardTitle>
           </CardHeader>
           <CardContent className="pt-4 space-y-4">
             <div className="space-y-2 text-sm">
               <div className="flex justify-between items-center"><span className="text-muted-foreground">Applied</span><span className="font-bold">{applied}</span></div>
-              <div className="w-full bg-muted rounded-full h-1.5"><div className="bg-blue-500 h-1.5 rounded-full" style={{width: `${Math.min((applied/10)*100, 100)}%`}}></div></div>
+              <div className="w-full bg-muted rounded-full h-1.5"><div className="bg-primary/10 h-1.5 rounded-full" style={{width: `${Math.min((applied/10)*100, 100)}%`}}></div></div>
             </div>
             <div className="space-y-2 text-sm">
-              <div className="flex justify-between items-center"><span className="text-muted-foreground">Interviewing</span><span className="font-bold text-yellow-600">{interviewing}</span></div>
-              <div className="w-full bg-muted rounded-full h-1.5"><div className="bg-yellow-500 h-1.5 rounded-full" style={{width: `${Math.min((interviewing/5)*100, 100)}%`}}></div></div>
+              <div className="flex justify-between items-center"><span className="text-muted-foreground">Interviewing</span><span className="font-bold text-warning">{interviewing}</span></div>
+              <div className="w-full bg-muted rounded-full h-1.5"><div className="bg-warning h-1.5 rounded-full" style={{width: `${Math.min((interviewing/5)*100, 100)}%`}}></div></div>
             </div>
             <div className="space-y-2 text-sm">
               <div className="flex justify-between items-center"><span className="text-muted-foreground">Offers</span><span className="font-bold text-success">{offered}</span></div>
-              <div className="w-full bg-muted rounded-full h-1.5"><div className="bg-green-500 h-1.5 rounded-full" style={{width: `${Math.min((offered/1)*100, 100)}%`}}></div></div>
+              <div className="w-full bg-muted rounded-full h-1.5"><div className="bg-success/10 h-1.5 rounded-full" style={{width: `${Math.min((offered/1)*100, 100)}%`}}></div></div>
             </div>
           </CardContent>
         </Card>
@@ -175,7 +175,7 @@ export default function StudentCommandCenter() {
         <Card>
           <CardHeader className="pb-3 border-b">
             <CardTitle className="text-lg flex justify-between items-center">
-              <span className="flex items-center gap-2"><FileText className="h-5 w-5 text-green-500" aria-hidden="true" /> Portfolio</span>
+              <span className="flex items-center gap-2"><FileText className="h-5 w-5 text-success" aria-hidden="true" /> Portfolio</span>
               <Link href="/portfolio" className="text-xs text-primary hover:underline flex items-center">View <ChevronRight className="h-3 w-3" /></Link>
             </CardTitle>
           </CardHeader>

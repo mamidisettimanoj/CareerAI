@@ -27,6 +27,31 @@ export default function ProfilePage() {
 
   const handleSave = async () => {
     if (profile) {
+      // Validate Email
+      if (profile.personal?.email && !profile.personal.email.includes('@')) {
+        alert("Please enter a valid email address containing '@'.");
+        return;
+      }
+      // Validate Phone
+      if (profile.personal?.phone && !/^\d{10}$/.test(profile.personal.phone)) {
+        alert("Please enter a valid 10-digit phone number.");
+        return;
+      }
+      // Validate URLs
+      const urlRegex = /^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?$/i;
+      const validateUrl = (url: string | undefined, name: string) => {
+        if (url && !urlRegex.test(url)) {
+          alert(`Please enter a valid URL for ${name}.`);
+          return false;
+        }
+        return true;
+      };
+      
+      if (!validateUrl(profile.links?.linkedin, 'LinkedIn')) return;
+      if (!validateUrl(profile.links?.github, 'GitHub')) return;
+      if (!validateUrl(profile.links?.portfolio, 'Portfolio')) return;
+      if (!validateUrl(profile.links?.codingProfile, 'Coding Profile')) return;
+
       await profileService.saveProfile(profile);
       alert("Profile updated successfully");
     }
