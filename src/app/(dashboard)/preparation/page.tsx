@@ -29,7 +29,7 @@ export default function PreparationDashboard() {
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
           <h1 className="text-2xl md:text-3xl font-heading font-bold flex items-center gap-2">
-            <Target className="h-6 w-6 text-primary" /> Preparation Intelligence Center
+            <Target className="h-6 w-6 text-primary" aria-hidden="true" /> Preparation Intelligence Center
           </h1>
           <p className="text-sm md:text-base text-muted-foreground">Track your placement preparation across DSA, Aptitude, and Core Technical subjects.</p>
         </div>

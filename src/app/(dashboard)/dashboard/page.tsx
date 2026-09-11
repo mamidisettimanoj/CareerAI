@@ -52,7 +52,7 @@ export default function StudentCommandCenter() {
       <div className="flex flex-col items-center justify-center min-h-[60vh] text-center space-y-6">
         <h2 className="text-2xl font-bold">Welcome to CareerAI</h2>
         <p className="text-muted-foreground max-w-md">Complete your profile to unlock your personalized command center.</p>
-        <Link href="/predict"><Button>Set Up Profile</Button></Link>
+        <Button asChild><Link href="/predict">Set Up Profile</Link></Button>
       </div>
     );
   }
@@ -80,8 +80,8 @@ export default function StudentCommandCenter() {
           </p>
         </div>
         <div className="flex flex-wrap gap-2">
-          <Link href="/today"><Button variant="default"><Zap className="h-4 w-4 mr-2" /> Daily Plan</Button></Link>
-          <Link href="/analytics"><Button variant="outline"><LineChart className="h-4 w-4 mr-2" /> Analytics</Button></Link>
+          <Button variant="default" asChild><Link href="/today"><Zap className="h-4 w-4 mr-2" /> Daily Plan</Link></Button>
+          <Button variant="outline" asChild><Link href="/analytics"><LineChart className="h-4 w-4 mr-2" /> Analytics</Link></Button>
         </div>
       </div>
 
@@ -125,7 +125,7 @@ export default function StudentCommandCenter() {
         <Card>
           <CardHeader className="pb-3 border-b">
             <CardTitle className="text-lg flex justify-between items-center">
-              <span className="flex items-center gap-2"><BookOpen className="h-5 w-5 text-blue-500" /> Academic</span>
+              <span className="flex items-center gap-2"><BookOpen className="h-5 w-5 text-blue-500" aria-hidden="true" /> Academic</span>
               <Link href="/academic" className="text-xs text-primary hover:underline flex items-center">View <ChevronRight className="h-3 w-3" /></Link>
             </CardTitle>
           </CardHeader>
@@ -151,7 +151,7 @@ export default function StudentCommandCenter() {
         <Card>
           <CardHeader className="pb-3 border-b">
             <CardTitle className="text-lg flex justify-between items-center">
-              <span className="flex items-center gap-2"><Briefcase className="h-5 w-5 text-purple-500" /> Placement Pipeline</span>
+              <span className="flex items-center gap-2"><Briefcase className="h-5 w-5 text-purple-500" aria-hidden="true" /> Placement Pipeline</span>
               <Link href="/placement" className="text-xs text-primary hover:underline flex items-center">View <ChevronRight className="h-3 w-3" /></Link>
             </CardTitle>
           </CardHeader>
@@ -175,7 +175,7 @@ export default function StudentCommandCenter() {
         <Card>
           <CardHeader className="pb-3 border-b">
             <CardTitle className="text-lg flex justify-between items-center">
-              <span className="flex items-center gap-2"><FileText className="h-5 w-5 text-green-500" /> Portfolio</span>
+              <span className="flex items-center gap-2"><FileText className="h-5 w-5 text-green-500" aria-hidden="true" /> Portfolio</span>
               <Link href="/portfolio" className="text-xs text-primary hover:underline flex items-center">View <ChevronRight className="h-3 w-3" /></Link>
             </CardTitle>
           </CardHeader>

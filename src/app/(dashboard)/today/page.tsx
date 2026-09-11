@@ -111,7 +111,7 @@ export default function TodayPage() {
           <Card className="border-primary/20">
             <CardHeader className="pb-2 bg-primary/5 rounded-t-lg">
               <CardTitle className="text-lg flex items-center gap-2">
-                <Target className="h-5 w-5 text-primary" /> Priority Engine
+                <Target className="h-5 w-5 text-primary" aria-hidden="true" /> Priority Engine
               </CardTitle>
               <CardDescription>Auto-generated action items based on deadlines and academic risks.</CardDescription>
             </CardHeader>

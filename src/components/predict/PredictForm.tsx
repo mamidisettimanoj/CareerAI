@@ -269,7 +269,7 @@ export function PredictForm({ initialProfile }: PredictFormProps) {
         </form>
       </Card>
       
-      <div className="text-xs text-center text-muted-foreground/60">
+      <div className="text-xs text-center text-muted-foreground">
         All data is securely saved to your CareerAI profile.
       </div>
     </>

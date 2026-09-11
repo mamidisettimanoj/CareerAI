@@ -138,7 +138,7 @@ export default function Calculators() {
         {/* CGPA Planner */}
         <Card className="w-full lg:col-span-2 border-primary/20">
           <CardHeader>
-            <CardTitle className="flex items-center gap-2"><Target className="h-5 w-5 text-primary" /> CGPA Target Planner</CardTitle>
+            <CardTitle className="flex items-center gap-2"><Target className="h-5 w-5 text-primary" aria-hidden="true" /> CGPA Target Planner</CardTitle>
             <CardDescription>Find out exactly what average you need in future semesters to reach your dream CGPA.</CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">

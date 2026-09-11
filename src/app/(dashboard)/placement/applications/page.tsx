@@ -25,7 +25,7 @@ export default function ApplicationsPipeline() {
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
           <h1 className="text-2xl md:text-3xl font-heading font-bold flex items-center gap-2">
-            <FileText className="h-6 w-6 text-primary" /> Application Pipeline
+            <FileText className="h-6 w-6 text-primary" aria-hidden="true" /> Application Pipeline
           </h1>
           <p className="text-sm md:text-base text-muted-foreground">Track the status of all your ongoing placement applications.</p>
         </div>

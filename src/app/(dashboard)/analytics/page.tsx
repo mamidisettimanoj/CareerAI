@@ -41,7 +41,7 @@ export default function AnalyticsDashboard() {
     <div className="space-y-6">
       <div className="border-b pb-4">
         <h1 className="text-2xl md:text-3xl font-heading font-bold flex items-center gap-2">
-          <LineChart className="h-6 w-6 text-primary" /> Cross-Module Analytics
+          <LineChart className="h-6 w-6 text-primary" aria-hidden="true" /> Cross-Module Analytics
         </h1>
         <p className="text-sm md:text-base text-muted-foreground mt-1">Unified view of your growth across academics, skills, and placements.</p>
       </div>

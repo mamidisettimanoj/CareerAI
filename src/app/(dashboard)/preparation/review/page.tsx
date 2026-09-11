@@ -55,7 +55,7 @@ export default function ReviewCenter() {
                     <h4 className="font-bold">{p.title}</h4>
                     <p className="text-xs text-muted-foreground">{p.topic}</p>
                   </div>
-                  <Link href="/preparation/dsa"><Button variant="outline" size="sm">Go to DSA</Button></Link>
+                  <Button variant="outline" size="sm" asChild><Link href="/preparation/dsa">Go to DSA</Link></Button>
                 </div>
               ))}
             </CardContent>
@@ -78,7 +78,7 @@ export default function ReviewCenter() {
                   </div>
                 </div>
               ))}
-              <div className="pt-2"><Link href="/preparation/aptitude"><Button variant="outline">Practice Aptitude Again</Button></Link></div>
+              <div className="pt-2"><Button variant="outline" asChild><Link href="/preparation/aptitude">Practice Aptitude Again</Link></Button></div>
             </CardContent>
           </Card>
         )}
@@ -99,7 +99,7 @@ export default function ReviewCenter() {
                   </div>
                 </div>
               ))}
-              <div className="pt-2"><Link href="/preparation/technical"><Button variant="outline">Practice Tech Again</Button></Link></div>
+              <div className="pt-2"><Button variant="outline" asChild><Link href="/preparation/technical">Practice Tech Again</Link></Button></div>
             </CardContent>
           </Card>
         )}

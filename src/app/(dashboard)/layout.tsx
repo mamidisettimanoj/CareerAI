@@ -40,7 +40,7 @@ export default function DashboardLayout({
   };
 
   return (
-    <div className="flex w-full min-h-screen overflow-x-hidden">
+    <div className="flex w-full min-h-[100dvh] overflow-x-hidden">
       <Sidebar open={sidebarOpen} onClose={closeSidebar} />
 
       <div className="flex-1 flex flex-col min-w-0">

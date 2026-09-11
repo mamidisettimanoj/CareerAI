@@ -31,7 +31,7 @@ export default function PortfolioDashboard() {
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
           <h1 className="text-2xl md:text-3xl font-heading font-bold flex items-center gap-2">
-            <Briefcase className="h-6 w-6 text-primary" /> Portfolio Center
+            <Briefcase className="h-6 w-6 text-primary" aria-hidden="true" /> Portfolio Center
           </h1>
           <p className="text-sm md:text-base text-muted-foreground">Manage your evidence of skills: Projects, Internships, Certifications, and Resumes.</p>
         </div>

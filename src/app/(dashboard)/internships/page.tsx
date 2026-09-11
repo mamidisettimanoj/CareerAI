@@ -58,7 +58,7 @@ export default function InternshipsCenter() {
 
       <div className="flex justify-between items-center">
         <h1 className="text-2xl md:text-3xl font-bold flex items-center gap-2">
-          <Briefcase className="h-6 w-6 text-orange-500" /> Internship Center
+          <Briefcase className="h-6 w-6 text-orange-500" aria-hidden="true" /> Internship Center
         </h1>
         <Button onClick={() => setIsAdding(!isAdding)}><PlusCircle className="h-4 w-4 mr-2" /> Add Internship</Button>
       </div>
@@ -137,7 +137,7 @@ export default function InternshipsCenter() {
                     <Badge variant={internship.status === 'Completed' ? 'default' : 'secondary'}>{internship.status}</Badge>
                   </div>
                   <div className="flex flex-wrap gap-4 text-sm text-muted-foreground">
-                    <span className="flex items-center gap-1"><Briefcase className="h-4 w-4" /> {internship.company} ({internship.type})</span>
+                    <span className="flex items-center gap-1"><Briefcase className="h-4 w-4" aria-hidden="true" /> {internship.company} ({internship.type})</span>
                     {internship.location && <span className="flex items-center gap-1"><MapPin className="h-4 w-4" /> {internship.location}</span>}
                     <span className="flex items-center gap-1"><Calendar className="h-4 w-4" /> {new Date(internship.startDate).toLocaleDateString()} {internship.endDate ? `- ${new Date(internship.endDate).toLocaleDateString()}` : '- Present'}</span>
                   </div>

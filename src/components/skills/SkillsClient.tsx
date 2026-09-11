@@ -137,7 +137,7 @@ export function SkillsClient({ initialTargetRole, intelligenceResult }: SkillsCl
         <Card className="md:col-span-2">
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
-              <Briefcase className="h-5 w-5 text-primary" /> Required Skills
+              <Briefcase className="h-5 w-5 text-primary" aria-hidden="true" /> Required Skills
             </CardTitle>
             <CardDescription>Click a skill to toggle your proficiency level.</CardDescription>
           </CardHeader>

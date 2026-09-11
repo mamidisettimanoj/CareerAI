@@ -320,7 +320,7 @@ export default function Result() {
         </div>
       </div>
       
-      <div className="text-xs text-muted-foreground/60 text-center bg-card p-4 rounded-lg border border-border mt-8">
+      <div className="text-xs text-muted-foreground text-center bg-card p-4 rounded-lg border border-border mt-8">
         <strong>Disclaimer:</strong> This is a career readiness estimate and educational guidance tool. It does not guarantee placement or employment.
       </div>
     </div>

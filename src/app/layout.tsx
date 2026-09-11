@@ -12,7 +12,10 @@ export const metadata = {
 };
 
 export const viewport = {
-  themeColor: '#2563eb'
+  themeColor: '#2563eb',
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 5,
 };
 
 export default function RootLayout({
@@ -22,12 +25,9 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <head>
-        <link rel="manifest" href="/manifest.json" />
-        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
-      </head>
+
       <body className={`${inter.variable} font-sans antialiased`}>
-        <div className="relative flex min-h-screen flex-col bg-background overflow-x-hidden">
+        <div className="relative flex min-h-[100dvh] flex-col bg-background overflow-x-hidden">
           <main className="flex-1 w-full min-w-0 flex flex-col">
             {children}
           </main>

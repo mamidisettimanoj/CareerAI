@@ -153,7 +153,7 @@ export default function SkillsPage() {
 
         <div className="md:col-span-2 space-y-4">
           <h3 className="font-semibold text-lg flex items-center gap-2">
-            <Award className="h-5 w-5" /> Your Skill Matrix
+            <Award className="h-5 w-5" aria-hidden="true" /> Your Skill Matrix
           </h3>
           
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">

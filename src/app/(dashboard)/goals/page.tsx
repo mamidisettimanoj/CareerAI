@@ -230,7 +230,7 @@ export default function GoalsPage() {
                 </div>
 
                 {/* Actions */}
-                <div className="absolute top-4 right-4 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity bg-background/80 backdrop-blur-sm rounded-md p-1">
+                <div className="absolute top-4 right-4 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity bg-card shadow-md rounded-md p-1">
                   <Button variant="ghost" size="icon" className="h-8 w-8 text-muted-foreground hover:text-primary" onClick={() => handleEdit(goal)}>
                     <Edit2 className="h-4 w-4" />
                   </Button>

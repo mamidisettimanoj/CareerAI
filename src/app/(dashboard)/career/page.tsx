@@ -78,7 +78,7 @@ export default function CareerReadinessPage() {
     <div className="space-y-6">
       <div>
         <h1 className="text-2xl md:text-3xl font-heading font-bold flex items-center gap-2">
-          <Target className="h-6 w-6 text-primary" /> Career Readiness Center
+          <Target className="h-6 w-6 text-primary" aria-hidden="true" /> Career Readiness Center
         </h1>
         <p className="text-sm md:text-base text-muted-foreground">
           Target Role: <span className="font-semibold text-foreground">{profile.targetRole || 'Not Set'}</span>

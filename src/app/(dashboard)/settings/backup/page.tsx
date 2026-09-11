@@ -123,6 +123,16 @@ export default function BackupCenter() {
         <p className="text-muted-foreground mt-1">Export, import, and verify your local database integrity.</p>
       </div>
 
+      <div className="bg-warning/10 border border-warning/20 text-warning-foreground p-4 rounded-lg flex gap-3 items-start">
+        <AlertCircle className="h-5 w-5 shrink-0 mt-0.5" />
+        <div className="text-sm">
+          <strong>Important: Local-First Architecture</strong>
+          <p className="mt-1">
+            CareerAI is 100% local-first. Your data is stored entirely within your browser and is never sent to a cloud server. <strong>If you clear your browser cache, reinstall your browser, or switch devices, your data will be lost.</strong> Please export your data regularly to keep a safe backup.
+          </p>
+        </div>
+      </div>
+
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <Card>
           <CardHeader>

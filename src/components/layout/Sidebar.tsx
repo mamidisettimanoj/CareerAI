@@ -180,7 +180,7 @@ export function Sidebar({ open, onClose }: SidebarProps) {
     <>
       {/* Desktop sidebar — always visible ≥1024px */}
       <aside
-        className="hidden lg:flex w-64 shrink-0 flex-col h-screen sticky top-0 border-r border-border/60 bg-card"
+        className="hidden lg:flex w-64 shrink-0 flex-col h-[100dvh] sticky top-0 border-r border-border/60 bg-card"
       >
         {navContent}
       </aside>
